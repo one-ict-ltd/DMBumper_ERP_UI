@@ -1,0 +1,76 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+  </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+  <nb-card-header class="text-right">
+    <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+      </ag-grid-angular>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+  <nb-card-header>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+      <form #masterForm="ngForm">
+        <div class="row">
+          <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="levelOfEducationName">Lavel Of
+                Education<span>*</span></label>
+              <div class="col-sm-12">
+                <ng-select (change)="(master.levelOfEducationId=this.$event.id);" nbselect
+                  [items]="LevelOfEducationList" name="levelOfEducationName" bindLabel="name"
+                  [ngModelOptions]="{standalone: true}" id="levelOfEducationName" placeholder="Select a Lavel"
+                  appendTo="body" [(ngModel)]="levelOfEducationSelected">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="Degree">Degree Name<span>*</span></label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.name" id="Degree" name="Degree"
+                  nbInput fullWidth placeholder="Type name in English">
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="shortName">Short Name</label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.shortName" id="shortName"
+                  name="shortName" nbInput fullWidth placeholder="Short Name">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="isActive">Status</label>
+              <div class="col-sm-12 validation-checkboxes">
+                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                  <b>Is Active?</b>
+                </nb-checkbox>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-header>
+</nb-card>

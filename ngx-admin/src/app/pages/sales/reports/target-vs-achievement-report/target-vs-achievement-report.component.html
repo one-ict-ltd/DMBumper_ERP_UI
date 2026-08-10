@@ -1,0 +1,135 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    <form [formGroup]="formPeriod">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6">
+          <div class="form-group row">
+            <label class="col-sm-12 col-form-label" for="fromDate">From Date<span class="text-danger">*</span></label>
+            <div class="col-sm-12">
+              <input id="fromDate" [nbDatepicker]="fromDate" nbInput fullWidth placeholder="Date"
+                formControlName="fromDate" readonly
+                [status]="formPeriod.get('fromDate').errors?.required && submitted ? 'danger':''">
+              <nb-datepicker #fromDate></nb-datepicker>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6">
+          <div class="form-group row">
+            <label class="col-sm-12 col-form-label" for="toDate">To Date<span class="text-danger">*</span></label>
+            <div class="col-sm-12">
+              <input id="toDate" [nbDatepicker]="toDate" nbInput fullWidth placeholder="Date" formControlName="toDate"
+                readonly [status]="formPeriod.get('toDate').errors?.required && submitted ? 'danger':''">
+              <nb-datepicker #toDate></nb-datepicker>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+  </nb-card-body>
+</nb-card>
+
+<div class="col-lg-12 col-md-12 col-sm-12" *ngIf="showbody">
+  <nb-card size="large">
+    <nb-card-body>
+      <div style="max-height: 550px;">
+        <ng-container *ngTemplateOutlet="targetVsAchievement"></ng-container>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>
+
+<ng-template #targetVsAchievement>
+  <div class="table-wrapper-scroll-y my-custom-scrollbar">
+    <div class="grid-wrapper">
+      <table class=" table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th style="text-align: center; background-color: darkseagreen;" rowspan="2">#</th>
+            <th style="text-align: center; background-color: goldenrod;" rowspan="2">Depot</th>
+            <th style="text-align: center; background-color: darkseagreen;" colspan="6">Sales</th>
+            <th style="text-align: center; background-color: goldenrod;" colspan="6">Collection</th>
+          </tr>
+          <tr>
+            <th style="text-align: center;  background-color: darkorange;">Target'{{year}} (tk)</th>
+            <th style="text-align: center;  background-color: goldenrod;">Achieved'{{year}} (tk)</th>
+            <th style="text-align: center;  background-color: darkorange;">Variance''{{year}} (tk)</th>
+            <th style="text-align: center;  background-color: goldenrod;">Tgt. Vs Achv.(%)</th>
+            <th style="text-align: center;  background-color: darkorange;">Achieved'{{lastYear}} (Tk)</th>
+            <th style="text-align: center;  background-color: goldenrod;">YTD Growth (%)</th>
+
+            <th style="text-align: center;  background-color: darkorange;">Target'{{year}} (tk)</th>
+            <th style="text-align: center;  background-color: darkseagreen;">Achieved'{{year}} (tk)</th>
+            <th style="text-align: center;  background-color: darkorange;">Variance''{{year}} (tk)</th>
+            <th style="text-align: center;  background-color: darkseagreen;">Tgt. Vs Achv.(%)</th>
+            <th style="text-align: center;  background-color: darkorange;">Achieved'{{lastYear}} (Tk)</th>
+            <th style="text-align: center;  background-color: darkseagreen;">YTD Growth (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let details of rowData; let rowIndex = index">
+            <td>
+              {{rowIndex+1}}
+            </td>
+            <td>{{details.depotName}}</td>
+            <td style="text-align: right;">{{details.salesTarget | currencyFormatter:2}}</td>
+            <td style="text-align: right;">{{details.salesAchievment | currencyFormatter:2}}</td>
+            <td style="text-align: right;">{{(details.salesTarget - details.salesAchievment) | currencyFormatter:2}}
+            </td>
+            <td style="text-align: right;">{{getPercentage(details.salesAchievment,details.salesTarget) |
+              currencyFormatter:0}}%</td>
+            <td style="text-align: right;">{{details.salesAchievmentLastPeriod | currencyFormatter:2}}</td>
+            <td style="text-align: right;">{{getPercentage((details.salesAchievment -
+              details.salesAchievmentLastPeriod),details.salesAchievmentLastPeriod)| currencyFormatter:0}}%</td>
+            <td style="text-align: right;">{{details.collectionTarget | currencyFormatter:2}}</td>
+            <td style="text-align: right;">{{details.collectionAchievment | currencyFormatter:2}}</td>
+            <td style="text-align: right;">{{(details.collectionTarget - details.collectionAchievment) |
+              currencyFormatter:2}}</td>
+            <td style="text-align: right;">{{getPercentage(details.collectionAchievment,details.collectionTarget) |
+              currencyFormatter:0}}%</td>
+            <td style="text-align: right;">{{details.collectionAchievmentLastPeriod | currencyFormatter:2}}</td>
+            <td style="text-align: right;">
+              {{getPercentage((details.collectionAchievment-details.collectionAchievmentLastPeriod),details.collectionAchievmentLastPeriod)|
+              currencyFormatter:0}}%</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="2">Total</th>
+            <th  style="text-align: right;">{{getTotal(rowData,'salesTarget') | currencyFormatter: 2}}</th>
+            <th  style="text-align: right;">{{getTotal(rowData,'salesAchievment') | currencyFormatter: 2}}</th>
+            <th  style="text-align: right;">{{(getTotal(rowData,'salesTarget') - getTotal(rowData,'salesAchievment')) | currencyFormatter: 2}}</th>
+            <th  style="text-align: right;">
+              {{getPercentage(getTotal(rowData,'salesAchievment'),getTotal(rowData,'salesTarget'))| currencyFormatter: 0}}%
+            </th>
+            <th style="text-align: right;">{{getTotal(rowData,'salesAchievmentLastPeriod')| currencyFormatter: 2}}</th>
+            <th style="text-align: right;">
+              {{getPercentage(getTotal(rowData,'salesAchievment')-getTotal(rowData,'salesAchievmentLastPeriod'),getTotal(rowData,'salesAchievmentLastPeriod'))|
+              currencyFormatter: 0}}%
+            </th>
+
+            <th style="text-align: right;">{{getTotal(rowData,'collectionTarget') | currencyFormatter: 2}}</th>
+            <th style="text-align: right;">{{getTotal(rowData,'collectionAchievment') | currencyFormatter: 2}}</th>
+            <th style="text-align: right;">
+              {{(getTotal(rowData,'collectionTarget') - getTotal(rowData,'collectionAchievment')) | currencyFormatter: 2}}
+            </th>
+            <th style="text-align: right;">
+              {{getPercentage(getTotal(rowData,'collectionAchievment'),getTotal(rowData,'collectionTarget')) |
+              currencyFormatter: 0}}%
+            </th>
+            <th style="text-align: right;">{{getTotal(rowData,'collectionAchievmentLastPeriod') | currencyFormatter: 2}}</th>
+            <th style="text-align: right;">
+              {{getPercentage(getTotal(rowData,'collectionAchievment')-getTotal(rowData,'collectionAchievmentLastPeriod'),getTotal(rowData,'collectionAchievmentLastPeriod'))
+              | currencyFormatter: 0}}%
+            </th>
+          </tr>
+        </tfoot>
+
+      </table>
+    </div>
+  </div>
+</ng-template>
+

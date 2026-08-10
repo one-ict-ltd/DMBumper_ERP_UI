@@ -1,0 +1,122 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <fieldset>
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryPeriodId" class="col-4 col-form-label">Salary Period
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="salaryPeriodItems"
+                                    (change)="(master.salaryPeriodId = $event.id);LoadType()" name="salaryPeriodId"
+                                    bindLabel="name" id="salaryPeriodId" [(ngModel)]="master.salaryPeriodSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Salary Period"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6" *ngIf="typeload" hidden>
+                        <div class="form-group row">
+                            <label for="salaryPeriodId" class="col-4 col-form-label">Report Type
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="ApprovalStatusList" (change)="(master.typeId = $event.id);"
+                                    name="typeId" bindLabel="name" id="typeId" [(ngModel)]="ApprovalStatusSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Salary Report Type"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6" *ngIf="!typeload" hidden>
+                        <div class="form-group row">
+                            <label for="salaryPeriodId" class="col-4 col-form-label">Report Type
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="ApprovalStatusBonusList"
+                                    (change)="(master.typeId = $event.id);" name="typeId" bindLabel="name" id="typeId"
+                                    [(ngModel)]="ApprovalStatusBonusSelected" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Select Salary Report Type" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12" hidden>
+                        <div class="form-group row">
+                            <label for="salaryLocation" class="col-sm-4 col-form-label">Salary Location</label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.salaryLocation = $event.id); "
+                                    [items]="SalaryLocationList" name="salaryLocation" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="salaryLocation"
+                                    placeholder="Select salaryLocation" appendTo="body"
+                                    [(ngModel)]="master.salaryLocationSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+        <label><b>Total Employee: {{totalEmployee}}</b></label>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="row">
+
+            <div class="col-sm-8 col-md-8 col-lg-8">
+
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <div class="form-group row">
+                    <label for="voucherNo" class="col-sm-4 col-form-label">Search</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="searchText" required [(ngModel)]="searchText"
+                            name="searchText" nbInput fullWidth placeholder="Search...">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th style="text-align: right;">Bank Payable</th>
+                        <th style="text-align: right;">Cash Payable</th>
+                        <th style="text-align: right;">Net Payable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData | filter: searchText; let i = index;"
+                        (click)="GetRptPayslip(item.employeeId,item.salaryPeriodId)">
+                        <td>{{i+1}}</td>
+                        <td>{{item.fullName}}</td>
+                        <td>{{item.designation}}</td>
+                        <td align="right">{{currencyFormatter(item.bankPayable)}}</td>
+                        <td align="right">{{currencyFormatter(item.cashPayable)}}</td>
+                        <td align="right">{{currencyFormatter(item.netPayable)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

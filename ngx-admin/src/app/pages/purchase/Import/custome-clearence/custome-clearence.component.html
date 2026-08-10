@@ -1,0 +1,513 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+  </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+  <nb-card-header class="text-right">
+    <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+      </ag-grid-angular>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+  <nb-card-header>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+      <form #masterForm="ngForm" novalidate>
+
+        <div class="row">
+          <div class="col-8">
+            <div class="form-group row">
+              <label for="dropdown" class="col-sm-2 col-form-label"><span>*</span> Reference No</label>
+              <div class="col-sm-10">
+                <ng-select nbselect
+                  (change)="( master.shipmentId= this.$event.bankclearanceId); getShipmentLcPreLcData(this.$event.bankclearanceId)"
+                  [items]="referenceList" name="refNo" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                  id="bankclearanceId" placeholder="Select Reference No" appendTo="body"
+                  [(ngModel)]="master.referenceSelected">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="actBankClrDt" class="col-sm-4 col-form-label"
+                style="font-size: 12px;font-weight: bold;">Actual Custome Clr Date</label>
+              <div class="col-sm-8">
+                <input (ngModelChange)="getActualDate($event);" id="actBankClrDt" [(ngModel)]="master.actBankClrDt"
+                  name="actBankClrDt" [nbDatepicker]="actBankClrDt" nbInput fullWidth
+                  [ngModelOptions]="{standalone: true}">
+                <nb-datepicker #actBankClrDt></nb-datepicker>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="expCustomeClrDt" class="col-sm-4 col-form-label"
+                style="font-size: 11px; font-weight: bold;">Expected Custom Clr Date</label>
+              <div class="col-sm-8">
+                <input (ngModelChange)="getActualDate($event);" id="expCustomeClrDt"
+                  [(ngModel)]="master.expCustomeClrDt" name="expCustomeClrDt" [nbDatepicker]="expCustomeClrDt" nbInput
+                  fullWidth [ngModelOptions]="{standalone: true}">
+                <nb-datepicker #expCustomeClrDt></nb-datepicker>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="remainderDays" class="col-sm-4 col-form-label"><span>*</span>Remind(Days)</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="remainderDays" required [(ngModel)]="master.remainderDays"
+                  name="remainderDays" nbInput fullWidth placeholder="">
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="lcNo" class="col-sm-4 col-form-label"><span>*</span> LC No</label>
+              <div class="col-sm-8">
+                <input type="text" (keyup)="getDuplicate();" class="form-control" id="lcNo" required
+                  [(ngModel)]="master.lcNo" name="lcNo" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="lcOpenDate" class="col-sm-4 col-form-label" style="font-size: 11px; font-weight: bold;">LC
+                Open Date</label>
+              <div class="col-sm-8">
+                <input (ngModelChange)="getActualDate($event);" id="lcOpenDate" [(ngModel)]="master.lcOpenDate"
+                  name="LCOpenDate" [nbDatepicker]="businessStartDateShow" nbInput fullWidth
+                  [ngModelOptions]="{standalone: true}" disabled>
+                <nb-datepicker #businessStartDateShow></nb-datepicker>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4" hidden>
+            <div class="form-group row">
+              <label for="lcaNo" class="col-sm-4 col-form-label"><span>*</span> LCA No</label>
+              <div class="col-sm-8">
+                <input type="text" (keyup)="getDuplicate();" class="form-control" id="lcaNo" required
+                  [(ngModel)]="master.lcaNo" name="lcaNo" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="lcAmount" class="col-sm-4 col-form-label"><span>*</span>LC Amount</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="lcAmount" required [(ngModel)]="master.lcAmount"
+                  name="lcAmount" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="totalAmount" class="col-sm-4 col-form-label">Total LC Amount</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="totalAmount" [(ngModel)]="master.totalAmount"
+                  name="totalAmount" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="currenyName" class="col-sm-4 col-form-label">Currency</label>
+              <div class="col-sm-8">
+                <input type="text" (keyup)="getDuplicate();" class="form-control" id="currenyName"
+                  [(ngModel)]="master.currenyName" name="currenyName" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="loadingPortName" class="col-sm-4 col-form-label"><span>*</span> Port of Loading</label>
+              <div class="col-sm-8">
+                <input type="text" (keyup)="getDuplicate();" class="form-control" id="loadingPortName" required
+                  [(ngModel)]="master.loadingPortName" name="loadingPortName" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="localAgentName" class="col-sm-4 col-form-label"><span>*</span>Local Agent</label>
+              <div class="col-sm-8">
+                <input type="text" (keyup)="getDuplicate();" class="form-control" id="localAgentName" required
+                  [(ngModel)]="master.localAgentName" name="localAgentName" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="productTypeName" class="col-sm-4 col-form-label">Item Type</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="productTypeName" required
+                  [(ngModel)]="master.productTypeName" name="productTypeName" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="destinationPortName" class="col-sm-4 col-form-label">Destination</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="destinationPortName" required
+                  [(ngModel)]="master.destinationPortName" name="destinationPortName" nbInput fullWidth placeholder=""
+                  disabled>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="benificiaryName" class="col-sm-4 col-form-label">Benificiary</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="benificiaryName" required
+                  [(ngModel)]="master.benificiaryName" name="benificiaryName" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="modeOfTransportName" class="col-sm-4 col-form-label"
+                style="font-size: 14px;"><span>*</span>Mode of Transport</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="modeOfTransportName" required
+                  [(ngModel)]="master.modeOfTransportName" name="modeOfTransportName" nbInput fullWidth placeholder=""
+                  disabled>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="shipmentNo" class="col-sm-4 col-form-label" style="font-size: 14px;">Shipment No</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="shipmentNo" required [(ngModel)]="master.shipmentNo"
+                  name="shipmentNo" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="shipmentStatus" class="col-sm-4 col-form-label" style="font-size: 14px;">Shipment
+                Status</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="shipmentStatus" required [(ngModel)]="master.shipmentStatus"
+                  name="shipmentStatus" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="shipmentDate" class="col-sm-4 col-form-label">Shipment Date</label>
+              <div class="col-sm-8">
+                <input (ngModelChange)="getActualDate($event);" id="shipmentDate" [(ngModel)]="master.shipmentDate"
+                  name="shipmentDate" [nbDatepicker]="shipmentDate" nbInput fullWidth
+                  [ngModelOptions]="{standalone: true}" disabled>
+                <nb-datepicker #shipmentDate></nb-datepicker>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="invoiceNo" class="col-sm-4 col-form-label" style="font-size: 14px;">Invoice No</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="invoiceNo" required [(ngModel)]="master.invoiceNo"
+                  name="invoiceNo" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="invoiceDate" class="col-sm-4 col-form-label">Invoice Date</label>
+              <div class="col-sm-8">
+                <input (ngModelChange)="getActualDate($event);" id="invoiceDate" [(ngModel)]="master.invoiceDate"
+                  name="shipmentDate" [nbDatepicker]="invoiceDate" nbInput fullWidth
+                  [ngModelOptions]="{standalone: true}" disabled>
+                <nb-datepicker #invoiceDate></nb-datepicker>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="invoiceAmount" class="col-sm-4 col-form-label" style="font-size: 14px;">Invoice Amount</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="invoiceAmount" required [(ngModel)]="master.invoiceAmount"
+                  name="invoiceAmount" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="carrierBillNo" class="col-sm-4 col-form-label" style="font-size: 14px;">Carrier Bill
+                No</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="carrierBillNo" required [(ngModel)]="master.carrierBillNo"
+                  name="carrierBillNo" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="NocagesItems" class="col-sm-4 col-form-label" style="font-size: 12px; font-weight: bold;">No
+                Caese/Drugs/Items</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" id="NocagesItems" required [(ngModel)]="master.NocagesItems"
+                  name="NocagesItems" nbInput fullWidth placeholder="" disabled>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="expectedDrugDate" class="col-sm-4 col-form-label"
+                style="font-size: 12px; font-weight: bold;">Expected Drug Clr Date</label>
+              <div class="col-sm-8">
+                <input (ngModelChange)="getActualDate($event);" id="expectedDrugDate"
+                  [(ngModel)]="master.expectedDrugDate" name="shipmentDate" [nbDatepicker]="expectedDrugDate" nbInput
+                  fullWidth [ngModelOptions]="{standalone: true}" disabled>
+                <nb-datepicker #expectedDrugDate></nb-datepicker>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="bankCLrDate" class="col-sm-4 col-form-label" style="font-size: 12px; font-weight: bold;">Bank
+                Clr Date</label>
+              <div class="col-sm-8">
+                <input (ngModelChange)="getActualDate($event);" id="bankCLrDate" [(ngModel)]="master.bankCLrDate"
+                  name="shipmentDate" [nbDatepicker]="bankCLrDate" nbInput fullWidth
+                  [ngModelOptions]="{standalone: true}" disabled>
+                <nb-datepicker #bankCLrDate></nb-datepicker>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label for="remarks" class="col-sm-4 col-form-label">Remarks</label>
+              <div class="col-sm-8">
+                <!-- <input type="text" class="form-control" id="remarks" required [(ngModel)]="master.remarks"
+                      name="remarks" nbInput fullWidth placeholder="remarks"> -->
+                <textarea type="text" class="form-control" id="remarks" required [(ngModel)]="master.remarks"
+                  name="remarks" nbInput fullWidth></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row col-md-12 col-lg-12">
+
+            <div class="col-md-6 col-lg-6">
+              <div class="grid-wrapper">
+                <table class=" table table-bordered table-striped">
+                  <tr>
+                    <th colspan="3" style="text-align: center;background-color: gray;">Global Taxes </th>
+                  </tr>
+                  <tr>
+                    <th>Tax Code </th>
+                    <th>TAX Description</th>
+                    <th>Amount</th>
+                  </tr>
+
+                  <tr>
+                    <td> FP </td>
+                    <td> Fines/ Penalties </td>
+                    <td>
+                      <input [(ngModel)]="master.gtaxFP" type="number" class="form-control text-right" id="gtaxFP"
+                        required name="gtaxFP" nbInput fullWidth placeholder="FP">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> CV </td>
+                    <td> VAT on C&F Commission </td>
+                    <td>
+                      <input [(ngModel)]="master.gtaxCV" type="number" class="form-control text-right" id="gtaxCV"
+                        required name="gtaxCV" nbInput fullWidth placeholder="CV">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> SCV </td>
+                    <td> VAT on Scanning Fee </td>
+                    <td>
+                      <input [(ngModel)]="master.gtaxSCV" type="number" class="form-control text-right" id="gtaxSCV"
+                        required name="gtaxSCV" nbInput fullWidth placeholder="SCV">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> DF </td>
+                    <td> Document Processing Fee </td>
+                    <td>
+                      <input [(ngModel)]="master.gtaxDF" type="number" class="form-control text-right" id="gtaxDF"
+                        required name="gtaxDF" nbInput fullWidth placeholder="DF">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> ITC </td>
+                    <td> Income Tax on C & F Commission</td>
+                    <td>
+                      <input [(ngModel)]="master.gtaxITC" type="number" class="form-control text-right" id="gtaxITC"
+                        required name="gtaxITC" nbInput fullWidth placeholder="ITC">
+                    </td>
+                  </tr>
+
+
+                  <tr>
+                    <td> DFV </td>
+                    <td> VAT on Document Fee</td>
+                    <td>
+                      <input [(ngModel)]="master.gtaxDFV" type="number" class="form-control text-right" id="gtaxDFV"
+                        required name="gtaxDFV" nbInput fullWidth placeholder="DFV">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> CSF </td>
+                    <td> Container Scanning Fee</td>
+                    <td>
+                      <input [(ngModel)]="master.gtaxCSF" type="number" class="form-control text-right" id="gtaxCSF"
+                        required name="gtaxCSF" nbInput fullWidth placeholder="CSF">
+                    </td>
+                  </tr>
+
+                </table>
+              </div>
+
+            </div>
+            <div class="col-md-6 col-lg-6">
+              <div class="grid-wrapper">
+                <table class=" table table-bordered table-striped">
+                  <tr>
+                    <th colspan="3" style="text-align: center;background-color: gray;">Item Taxes </th>
+
+                  </tr>
+                  <tr>
+                    <th>Tax Code </th>
+                    <th>TAX Description</th>
+                    <th>Amount</th>
+                  </tr>
+
+                  <tr>
+                    <td> CD </td>
+                    <td> Custom Duty </td>
+                    <td>
+                      <input [(ngModel)]="master.itaxCD" type="number" class="form-control text-right" id="itaxCD"
+                        required name="itaxCD" nbInput fullWidth placeholder="CD">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> RD </td>
+                    <td> Requlatory Duty </td>
+                    <td>
+                      <input [(ngModel)]="master.itaxRD" type="number" class="form-control text-right" id="itaxRD"
+                        required name="itaxRD" nbInput fullWidth placeholder="RD">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> SD </td>
+                    <td> Supplementary Duty </td>
+                    <td>
+                      <input [(ngModel)]="master.itaxSD" type="number" class="form-control text-right" id="itaxSD"
+                        required name="itaxSD" nbInput fullWidth placeholder="SD">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> VAT </td>
+                    <td> Value added Tax </td>
+                    <td>
+                      <input [(ngModel)]="master.itaxVAT" type="number" class="form-control text-right" id="itaxVAT"
+                        required name="itaxVAT" nbInput fullWidth placeholder="VAT">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> AIT </td>
+                    <td> Advance Income Tax</td>
+                    <td>
+                      <input [(ngModel)]="master.itaxAIT" type="number" class="form-control text-right" id="itaxAIT"
+                        required name="itaxAIT" nbInput fullWidth placeholder="AIT">
+                    </td>
+                  </tr>
+
+
+                  <tr>
+                    <td> AT </td>
+                    <td> Advance Tax</td>
+                    <td>
+                      <input [(ngModel)]="master.itaxAT" type="number" class="form-control text-right" id="itaxAT"
+                        required name="itaxAT" nbInput fullWidth placeholder="AT">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td> ATV </td>
+                    <td> Advance Trade VAT</td>
+                    <td>
+                      <input [(ngModel)]="master.itaxATV" type="number" class="form-control text-right" id="itaxATV"
+                        required name="itaxATV" nbInput fullWidth placeholder="ATV">
+                    </td>
+                  </tr>
+
+                </table>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        <div class="row" *ngIf="master.clearenceFlag">
+
+
+        </div>
+
+        <div class="row" *ngIf="!master.clearenceFlag">
+
+
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-header>
+</nb-card>
+
+<!-- ------------------------------------------------------ lc info end--------------------------------------------------------- -->
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////// -->

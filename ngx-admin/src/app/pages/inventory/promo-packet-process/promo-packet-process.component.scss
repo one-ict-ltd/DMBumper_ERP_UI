@@ -1,0 +1,29 @@
+span {
+    color: red;
+}
+
+// table tr,
+table td {
+    padding: 1px 1px 1px 1px;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 200px;
+    width: auto;
+    overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+table tr th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #eee;
+    font-weight: bold;
+}

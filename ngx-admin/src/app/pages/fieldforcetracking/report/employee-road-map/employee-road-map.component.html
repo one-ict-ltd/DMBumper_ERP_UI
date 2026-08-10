@@ -1,0 +1,251 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-rpt-map-button (click)="RptButtonAction()"></ngx-rpt-map-button>
+    <!-- <ngx-report-button (click)="RptButtonAction()"></ngx-report-button> -->
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="form-group row">
+          <label for="SearchForValue" class="col-sm-12 col-form-label">Search For<span> *</span></label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="(master.SearchForValue = this.$event.id); DropdownChange('');"
+              [items]="SearchForList" bindLabel="name" [ngModelOptions]="{standalone: true}" id="SearchForValue"
+              name="SearchForValue" placeholder="Search For" appendTo="body" [(ngModel)]="master.SearchForSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="form-group row">
+          <label for="ZoneCode" class="col-sm-12 col-form-label">Zone<span> *</span></label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetDepo(master.ZoneId = this.$event.id); DropdownChange('Z');"
+              [items]="ZoneList" name="Zone Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="ZoneCode"
+              placeholder="Zone Code" appendTo="body" [(ngModel)]="master.ZoneCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="form-group row">
+          <label for="DepotCode" class="col-sm-12 col-form-label">Depot</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetRegion(master.DepoId = this.$event.id); DropdownChange('D');"
+              [items]="DepoList" name="Depo Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="DepotCode"
+              placeholder="Depo Code" appendTo="body" [(ngModel)]="master.DepoCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="form-group row">
+          <label for="RegionCode" class="col-sm-12 col-form-label">Region</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetArea(master.RegionId = this.$event.id); DropdownChange('R');"
+              [items]="RegionList" name="Region Code" bindLabel="name" [ngModelOptions]="{standalone: true}"
+              id="RegionCode" placeholder="Region Code" appendTo="body" [(ngModel)]="master.RegionCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="form-group row">
+          <label for="Area Code" class="col-sm-12 col-form-label">Area</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetTerritory(master.AreaId = this.$event.id); DropdownChange('A');"
+              [items]="AreaList" name="Area Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="Area Code"
+              placeholder="Area Code" appendTo="body" [(ngModel)]="master.AreaCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="form-group row">
+          <label for="Territory Code" class="col-sm-12 col-form-label">Territory</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetMIO(master.TerritoryID = this.$event.id); DropdownChange('T');"
+              [items]="TerritoryList" name="Territory Code" bindLabel="name" [ngModelOptions]="{standalone: true}"
+              id="Territory Code" placeholder="Territory Code" appendTo="body"
+              [(ngModel)]="master.TerritoryCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="form-group row">
+          <label for="MIOCode" class="col-sm-12 col-form-label">Employee Name<span>*</span></label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="(master.MIOCode = this.$event.id);" [items]="MIOList" name="MIOCode"
+              bindLabel="name" [ngModelOptions]="{standalone: true}" id="MIOCode" placeholder="Employee Name"
+              appendTo="body" [(ngModel)]="master.MIOSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <div class="form-group row">
+          <label for="Date" class="col-sm-12 col-form-label">Date
+            <span>*</span></label>
+          <div class="col-sm-12">
+            <input required [(ngModel)]="master.Date" [nbDatepicker]="fdatepicker" nbInput fullWidth placeholder="Date"
+              (ngModelChange)="onMapView();" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #fdatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-3">
+        <h6>Total Employee Found: {{master.ttlEmployee}}</h6>
+      </div>
+      <div class="col-lg-8 col-md-8 col-sm-8" style="text-align: center;">
+        <!-- <button (click)="onMapView()" class="btn btn-sm btn-success">View Map</button> -->
+      </div>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showMapBody">
+  <nb-card-header>
+    <h6>Current Location On Map</h6>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12"
+        style="width:98%; height:520px;border: 1px; border-style: ridge; border-color: cornflowerblue;">
+        <div class="form-group">
+          <div id='map' class="row col-sm-12" style="width:100%; height:100%;"></div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="">
+      <table id="simple_table" class="table">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{item.MIOCode}}</td>
+            <td>{{item.MIOName}}</td>
+            <td>{{item.DateTime}}</td>
+            <td>{{item.LLAddress}}</td>
+            <!-- <td><a target="_blank" href="{{item.LLAddress}}">view map</a></td> -->
+            <td><a target="_blank" href="{{item.ViewMap}}">view map</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+  <nb-card-header>
+    <div id="reportHeader">
+      <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+
+      <table id="header_table_top" class="table" style="width: 550px;">
+        <tbody>
+          <tr>
+            <td> <strong>Current Location Report</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table id="header_table" class="table" style="width: 550px;">
+        <tbody>
+          <tr>
+            <td>Search For</td>
+            <td>: {{SearchForName}}</td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Zone Name</td>
+            <td>: {{ZoneName}}</td>
+            <td>Depot Name</td>
+            <td>: {{DepotName}}</td>
+            <td>Region Name</td>
+            <td>: {{RegionName}}</td>
+          </tr>
+          <tr>
+            <td>Area Name</td>
+            <td>: {{AreaName}}</td>
+            <td>Territory Name</td>
+            <td>: {{TerritoryName}}</td>
+            <td>MIO Name</td>
+            <td>: {{MioName}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <table id="body_table" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{item.MIOCode}}</td>
+            <td>{{item.MIOName}}</td>
+            <td>{{item.DateTime}}</td>
+            <!-- <td>{{item.Location}}</td> -->
+            <td>{{item.LLAddress}}</td>
+            <td>{{item.ViewMap}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <ngx-rpt-footer></ngx-rpt-footer>
+  </nb-card-footer>
+</nb-card>
+
+<!-- <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script> -->
+
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+<link rel="stylesheet"
+  href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
+  type="text/css" />
+
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>

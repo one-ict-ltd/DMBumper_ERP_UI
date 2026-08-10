@@ -1,0 +1,168 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <!-- <ngx-report-button (click)="RptButtonAction()"></ngx-report-button> -->
+    </nb-card-header>
+    <nb-card-body>
+        <fieldset>
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-2">
+                        <img id="user_img_current" style="width: 180px;height: 165px;border-radius: 120px;"
+                            src="{{master.imageUrl}}" alt="" class="img-thumbnail float-left" (click)="OpenModal(dialog)">
+                        <i class="fa fa-camera" data-toggle="modal" data-target="#updateEmpPhotoModal"
+                            style="position:relative;margin-top:120px;margin-left:-22px"></i>
+                        <input type="hidden" id="hiddenFile" />
+                    </div>
+                    <div class="col-8" style="color: black; font-size: 15px;padding-top: 24px;">
+                        <span style="font-weight:bold;">Employee No. :
+                        </span><span>{{master.employeeNo}}</span><br />
+                        <span style="font-weight:bold;">Employee Name :
+                        </span><span>{{master.fullName}}</span><br />
+                        <span style="font-weight:bold;">Designation :
+                        </span><span>{{master.currentDesignation}}</span><br />
+                        <span style="font-weight:bold;">Contact :
+                        </span><span>{{master.mobileNo}}</span><br />
+                        <span style="font-weight:bold;">Email : </span><span>{{master.emailId}}</span><br />
+                    </div>
+                    <div class="col-2">
+                        <a class='btn btn-info' style="float:right;" data-toggle='tooltip' title='Back to List'
+                            href="/#/pages/hrm/employeeinformation">
+                            <i class='fa fa-list' style="color:white"> Back to List</i></a>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-body>
+
+    <nb-card-body>
+        <div class="row">
+            <div class="col-2">
+                <div class="form-group text-center card" style="background-color:#efecee;border-color:lightgray;">
+                    <a class="text-center btn btn-default" href="/#/pages/hrm/empbasic?employeeId={{master.employeeId}}"
+                        style="text-decoration:none;">
+                        <i class="fa fa-user-tie fa-3x "></i>
+                        <br /><span style="color: black; font-size: 10pt; font-weight: 400;">Basic</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group text-center card" style="background-color:#efecee;border-color:lightgray;">
+                    <a class="text-center btn btn-default"
+                        href="/#/pages/hrm/empaddress?employeeId={{master.employeeId}}" style="text-decoration:none;">
+                        <i class="fa fa-map-marker-alt fa-3x "></i>
+                        <br /><span style="color: black; font-size: 10pt; font-weight: 400;">Address</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group text-center card" style="background-color:#efecee;border-color:lightgray;">
+                    <a class="text-center btn btn-default"
+                        href="/#/pages/hrm/empeducation?employeeId={{master.employeeId}}" style="text-decoration:none;">
+                        <i class="fa fa-book fa-3x "></i>
+                        <br /><span style="color: black; font-size: 10pt; font-weight: 400;">Education</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group text-center card" style="background-color:#efecee;border-color:lightgray;">
+                    <a class="text-center btn btn-default"
+                        href="/#/pages/hrm/empexperience?employeeId={{master.employeeId}}" style="text-decoration:none;">
+                        <i class="fa fa-user fa-3x"></i>
+                        <br /><span style="color: black; font-size: 10pt; font-weight: 400;">Experience</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group text-center card" style="background-color:#efecee;border-color:lightgray;">
+                    <a class="text-center btn btn-default"
+                        href="/#/pages/hrm/empfamily?employeeId={{master.employeeId}}" style="text-decoration:none;">
+                        <i class="fa fa-female fa-3x"></i>
+                        <br /><span style="color: black; font-size: 10pt; font-weight: 400;">Family Information</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group text-center card" style="background-color:#efecee;border-color:lightgray;">
+                    <a class="text-center btn btn-default"
+                        href="/#/pages/hrm/empemergencycontact?employeeId={{master.employeeId}}" style="text-decoration:none;">
+                        <i class="fa fa-user-tie fa-3x"></i>
+                        <br /><span style="color: black; font-size: 10pt; font-weight: 400;">Emergency Contact</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group text-center card" style="background-color:#efecee;border-color:lightgray;">
+                    <a class="text-center btn btn-default"
+                        href="/#/pages/hrm/empreference?employeeId={{master.employeeId}}" style="text-decoration:none;">
+                        <i class="fa fa-user fa-3x"></i>
+                        <br /><span style="color: black; font-size: 10pt; font-weight: 400;">Reference</span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="form-group text-center card" style="background-color:#efecee;border-color:lightgray;">
+                    <a class="text-center btn btn-default"
+                        href="/#/pages/hrm/empjobdescription?employeeId={{master.employeeId}}" style="text-decoration:none;">
+                        <i class="fa fa-user-tie fa-3x"></i>
+                        <br /><span style="color: black; font-size: 10pt; font-weight: 400;">Job Description</span>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<!-- Start Modal -->
+
+<ng-template #dialog let-data let-ref="dialogRef">
+    <div class="col-sm-12 col-md-12 col-lg-12" style="width: 880px;">
+      <nb-card class="min-height">
+        <nb-card-header>
+          <div class="row">
+            <div class="col-lg-11 col-md-11 col-sm-11">
+              <h4>Upload Image</h4>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1">
+              <button style="text-align: right;" nbButton (click)="ref.close(); resetImage()"><span>X</span></button>
+            </div>
+          </div>
+        </nb-card-header>
+        <nb-card-body>
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="form-group row">
+                  <label for="pName" class="col-sm-12 col-form-label">Choose Image<span>*</span></label>
+                  <div class="col-sm-12">
+                    <input type="file" class="form-control" id="pName" required style="height: 50px;"
+                      [(ngModel)]="pName" name="pName" nbInput fullWidth (change)="onSelectImage($event); getFileName($event)">
+                  </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <img id="user_img_current" style="margin-left: 100px; width: 180px;height: 170px; border-radius: 120px;"
+                    [src]="tempImageUrl" alt="" class="img-thumbnail float-left">
+                <i data-toggle="modal" data-target="#updateEmpPhotoModal"
+                    style="position:relative;margin-top:120px;margin-left:-22px"></i>
+                <input type="hidden" id="hiddenFile" />
+            </div>
+          </div>
+          
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="row">
+            <div class="col-lg-11 col-md-11 col-sm-11">
+              <span>{{msg}}</span>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: -45px;">
+              <div style="text-align: center;">
+                <button class="btn btn-success m-0 !important" nbButton (click)="uploadImage();ref.close()">Upload</button>
+              </div>
+            </div>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </ng-template>
+  
+  <!-- End Modal -->

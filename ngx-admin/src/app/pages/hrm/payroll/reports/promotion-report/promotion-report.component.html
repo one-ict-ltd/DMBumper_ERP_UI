@@ -1,0 +1,46 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="fiscalYearId" class="col-sm-6 col-form-label">Year Name <span>*</span>
+                    </label>
+                    <div class="col-sm-6">
+                        <ng-select [items]="fiscalYearItems" (change)="(fiscalYearId = this.$event.id);"
+                            name="fiscalYearId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="fiscalYearId"
+                            placeholder="Select Year Name" appendTo="body" [(ngModel)]="fiscalYearSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="monthName" class="col-sm-6 col-form-label">Month Name
+                    </label>
+                    <div class="col-sm-6">
+                        <ng-select [items]="monthItems" (change)="(monthName = this.$event.name);" name="monthName"
+                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="monthName"
+                            placeholder="Select Month Name" appendTo="body" [(ngModel)]="monthSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </nb-card-body>
+</nb-card>
+<nb-card>
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <iframe id="pdfPreview" [src]="base64Pdf" frameborder="0" width="100%" height="480px">
+            </iframe>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

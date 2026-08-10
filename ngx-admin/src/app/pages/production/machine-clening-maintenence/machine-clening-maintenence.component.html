@@ -1,0 +1,259 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="machineCode">Machine Code<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.machineCode"
+                                    id="machineCode" name="machineCode" nbInput fullWidth placeholder="machine Code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="machineName">Machine Name<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.machineName"
+                                    id="machineName" name="machineName" nbInput fullWidth placeholder=" Machine Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="originCountry">Section<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.originCountry"
+                                    id="originCountry" name="originCountry" nbInput fullWidth placeholder="Country Origin">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group row">
+                          <label for="dropdown" class="col-sm-12 col-form-label"><span>*</span> Purpose</label>
+                          <div class="col-sm-12">
+                            <ng-select nbselect (change)="( master.preLcId = this.$event.id); getPreLcData(this.$event.id)" [items]="referenceList" name="refNo"
+                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="preLcId" placeholder="Select"
+                            appendTo="body" [(ngModel)]="master.referenceSelected">
+                          </ng-select>
+                          </div>
+                        </div>
+                      </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="originCountry">Previous Batch<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.originCountry"
+                                    id="originCountry" name="originCountry" nbInput fullWidth placeholder="Previous Batch">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="originCountry">Product Name<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.originCountry"
+                                    id="originCountry" name="originCountry" nbInput fullWidth placeholder="Country Origin">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="purchaseDate">Start Date 
+                                 <span>*</span></label>
+                            <div class="col-sm-4">
+                                <input required [(ngModel)]="master.purchaseDate"
+                                    name="purchaseDate" id="purchaseDate" [nbDatepicker]="purchaseDate" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #purchaseDate></nb-datepicker>
+                                
+                            </div>
+                            <div class="col-sm-2">
+                                <input required [(ngModel)]="master.sHour"
+                                    name="sHour" id="sHour" nbInput fullWidth
+                                    placeholder="" [ngModelOptions]="{standalone: true}">
+                                
+                            </div>
+                            <div class="col-sm-2">
+                                <input required [(ngModel)]="master.sMin"
+                                    name="sMin" id="sMin" nbInput fullWidth
+                                    placeholder="" [ngModelOptions]="{standalone: true}">
+                                
+                            </div>
+                            <div class="col-sm-4">
+                                <ng-select nbselect (change)="( master.preLcId = this.$event.id); getPreLcData(this.$event.id)" [items]="meridiemList" name="refNo"
+                                bindLabel="name" [ngModelOptions]="{standalone: true}" id="preLcId" placeholder="Select"
+                                appendTo="body" [(ngModel)]="master.referenceSelected">
+                              </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="startDate">End
+                                Date <span>*</span></label>
+                            <div class="col-sm-4">
+                                <input required [(ngModel)]="master.startDate"
+                                    name="startDate" id="startDate" [nbDatepicker]="startDate" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #startDate></nb-datepicker>
+                            </div>
+                            <div class="col-sm-2">
+                                <input required [(ngModel)]="master.sHour"
+                                    name="sHour" id="sHour" nbInput fullWidth
+                                    placeholder="" [ngModelOptions]="{standalone: true}">
+                                
+                            </div>
+                            <div class="col-sm-2">
+                                <input required [(ngModel)]="master.sMin"
+                                    name="sMin" id="sMin" nbInput fullWidth
+                                    placeholder="" [ngModelOptions]="{standalone: true}">
+                                
+                            </div>
+                            <div class="col-sm-4">
+                                <ng-select nbselect (change)="( master.preLcId = this.$event.id); getPreLcData(this.$event.id)" [items]="meridiemList" name="refNo"
+                                bindLabel="name" [ngModelOptions]="{standalone: true}" id="preLcId" placeholder="Select"
+                                appendTo="body" [(ngModel)]="master.referenceSelected">
+                              </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                   
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="remarks">Remarks</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.remarks"
+                                    id="remarks" name="remarks" nbInput fullWidth placeholder="Remarks">
+                            </div>
+                        </div>
+                    </div>    
+                    <div class="col-4" style="margin-top: 20px;">
+                        <div class="form-group row">
+                          <label for="transShipment" class="col-sm-4 col-form-label">QC Approved </label>
+                          <div class="col-sm-8">
+                            <nb-radio-group [(ngModel)]="master.transShipment" name="transShipment">
+                              <nb-radio value="ALLOWED">
+                                ALLOWED
+                              </nb-radio>
+                              <nb-radio value="NOT  ALLOWED">
+                               NOT  ALLOWED
+                              </nb-radio>
+                             
+                            </nb-radio-group>
+                          </div>
+                        </div>
+                      </div>
+          
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="remarks">Checked By</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.remarks"
+                                    id="remarks" name="remarks" nbInput fullWidth placeholder="Remarks">
+                            </div>
+                        </div>
+                    </div>    
+                      
+                    
+                   
+                </div>
+                <div class="row">
+                   
+                   
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+
+                    <nb-tab tabTitle="Involved Person" class="btn-tab">
+
+                       
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SL</th>
+                                  
+                                    <th>Employee ID</th>
+                                    <th>Employee Name</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    
+                                    
+                                </tr>
+
+                                <tr *ngFor="let detail of master.lstReqDetailsViewModel; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                   
+                                    <td>{{detail.productName}}
+                                       
+                                    </td>
+                                    <td>{{detail.uomName}}</td>
+                                    <td>
+                                        {{detail.unitPrice}}
+                                       
+                                    </td>
+
+                                    <td>{{detail.blNo}}
+                                       
+                                    </td>
+                                                                           
+
+                                    <td>
+                                        <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+                    </nb-tab>
+
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+   </div>        
+
+
+
+

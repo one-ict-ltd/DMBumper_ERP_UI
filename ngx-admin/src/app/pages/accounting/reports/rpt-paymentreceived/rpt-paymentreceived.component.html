@@ -1,0 +1,384 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="companyId" class="col-4 col-form-label">Company Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect (change)="getBranch(this.$event.id);" [items]="companies" name="companyId"
+                            bindLabel="name" id="companyId" [(ngModel)]="companySelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="BranchId" class="col-4 col-form-label">Branch Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="branchs" name="BranchId" bindLabel="name" id="BranchId"
+                            [(ngModel)]="branchSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Branch" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="fromdateSelected" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker (dateChange)="getYearName($event);"></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="todateSelected" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+        <h5>Details</h5>
+
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table" class="table table-bordered">
+                <thead style="background-color:lightgray;border-bottom:groove;">
+                    <tr>
+                        <th style="text-align:center;vertical-align: middle;">Action</th>
+                        <th style="text-align:center;vertical-align: middle;">Account Name</th>
+                        <th style="text-align:center;vertical-align: middle;">Account Code</th>
+                        <th style="text-align:center;">Opening Balance<br>(Tk.)</th>
+                        <th style="text-align:center;">Payment<br>(Tk.)</th>
+                        <th style="text-align:center;">Receive<br>(Tk.)</th>
+                        <th style="text-align:center;">Closing Balance<br>(Tk.)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let rowIndex = index">
+                        <button (click)="showLedgerBook(dialog,rowIndex)" class="btn btn-success btn-sm m-1">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
+                        <td style="width:50%;">{{item.accountName}}</td>
+                        <td style="width:50%;">{{item.accountCode}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(item.OpeningBalance)}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(item.Payment)}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(item.Received)}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(item.ClosingBalance)}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">Total:</td>
+
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(this.TotalOpening)}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(this.TotalPayment)}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(this.TotalReceived)}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(this.TotalClosing)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </nb-card-body>
+    <nb-card-footer>
+
+    </nb-card-footer>
+</nb-card>
+
+<!-- PDF  -->
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td><strong>Payment Receive Book</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue }}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row" style="padding: 0px 15px 0px 15px;">
+                <table id="body_table" class="table table-bordered">
+                    <thead style="background-color:lightgray;border-bottom:groove;">
+                        <tr>
+                            <th style="text-align:center;vertical-align: middle;">Account Name</th>
+                            <th style="text-align:center;vertical-align: middle;">Account Code</th>
+                            <th style="text-align:center;">Opening Balance<br>(Tk.)</th>
+                            <th style="text-align:center;">Payment<br>(Tk.)</th>
+                            <th style="text-align:center;">Receive<br>(Tk.)</th>
+                            <th style="text-align:center;">Closing Balance<br>(Tk.)</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let item of bodyData;">
+                            <td style="width:50%;">{{item.accountName}}</td>
+                            <td style="width:50%;">{{item.accountCode}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(item.OpeningBalance)}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(item.Payment)}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(item.Received)}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(item.ClosingBalance)}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Total:</td>
+
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(this.TotalOpening)}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(this.TotalPayment)}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(this.TotalReceived)}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(this.TotalClosing)}}</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>
+
+<ng-template #dialog let-data let-ref="dialogRef">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <nb-card-header>Ledger Book
+                <button nbTooltip="Print Button" (click)="generateReportL('print')"
+                    class="btn btn-demo btn-secondary btn-sm float-right m-1 ml-1 ng-star-inserted"><i
+                        class="fa-print fas"></i> Print</button>
+                <button nbTooltip="CSV Button" (click)="generateReportL('csv')"
+                    class="btn btn-demo btn-sm btn-success float-right m-1 ml-1 ng-star-inserted"><i
+                        class="fa-file-excel far"></i>CSV</button>
+                <button nbTooltip="PDF Button" (click)="generateReportL('pdf')"
+                    class="btn btn-danger btn-demo btn-sm float-right m-1 ml-1 ng-star-inserted"><i
+                        class="fa fa-file"></i>PDF</button>
+                <button nbTooltip="Email Button" (click)="generateReportL('email')"
+                    class="btn btn-demo btn-info btn-sm float-right m-1 ml-1 ng-star-inserted"><i
+                        class="fa fa-envelope"></i>EMAIL</button>
+
+            </nb-card-header>
+            <nb-card-body>
+
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <nb-card class="min-height">
+                            <fieldset [disabled]="disabled ? 'disabled' : null">
+                                <nb-tabset>
+                                    <nb-tab tabTitle="Details" class="btn-tab">
+                                        <div class="grid-wrapper">
+                                            <table id="simple_table" class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th *ngFor="let item of tableHeaderL; let i = index;">{{item}}
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let item of bodyDataL; let i = index;">
+                                                        <td>{{i+1}}</td>
+                                                        <td>{{item.voucherDate }}</td>
+                                                        <td>{{item.voucherNo}}</td>
+                                                        <td>{{item.voucherTypeName}}</td>
+                                                        <td>{{item.accountCode}}</td>
+                                                        <td>{{item.accountName}}</td>
+                                                        <td>{{item.partyName}}</td>
+                                                        <td align="right">{{this.currencyFormatter(item.drAmount)}}</td>
+                                                        <td align="right">{{this.currencyFormatter(item.crAmount)}}</td>
+                                                        <td *ngIf="item.showtd">
+
+                                                            <button (click)="showvoucher(i)"
+                                                                class="btn btn-success btn-sm m-1">
+                                                                <i class="fa fa-file" aria-hidden="true"></i>
+                                                            </button>
+
+
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </nb-tab>
+
+                                </nb-tabset>
+                            </fieldset>
+                        </nb-card>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-11">
+
+                    </div>
+                    <div class="col-1">
+                        <button style="text-align: right;" nbButton (click)="ref.close()">X</button>
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</ng-template>
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+
+            <table id="header_tableV" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Voucher No:</strong></td>
+                        <td>{{VoucherNo}}</td>
+                        <td><strong>Voucher Date:</strong></td>
+                        <td>{{VoucherDate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_tableV" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeaderV; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyDataV; let j = index;">
+
+                        <td>{{j+1}}</td>
+                        <td>{{item.accountName}}</td>
+                        <td>{{item.partyName}}</td>
+                        <td>{{item.costCentreName}}</td>
+                        <td text-align="right">{{this.currencyFormatter(item.drAmount)}}</td>
+                        <td text-align="right">{{this.currencyFormatter(item.crAmount)}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Total:</td>
+
+                        <td>{{this.currencyFormatter(TDR)}}</td>
+                        <td>{{this.currencyFormatter(TCR)}}</td>
+                    </tr>
+
+                    <tr style="background: white;border: transparent;">
+                        <td colspan="2"> <strong>Amount In Word:</strong></td>
+                        <td colspan="4">{{AmountInWord}}</td>
+
+                    </tr>
+
+                    <tr style="background: white;border: transparent;">
+                        <td colspan="2"><strong>Narration:</strong></td>
+                        <td colspan="4">{{Narration}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="footer_table" class="table" style="width: 550px;">
+
+                <tbody>
+                    <tr>
+
+                        <td>
+                            <P>Received By</P><br><br>
+                            <P>Sign:</P><br><br>
+                            <P>Name:</P>
+                        </td>
+                        <td>
+                            <P>Recomanded By</P><br><br>
+                            <P>Sign:</P><br><br>
+                            <P>Name:</P>
+                        </td>
+                        <td>
+                            <P>Approved By</P><br><br>
+                            <P>Sign:</P><br><br>
+                            <P>Name:</P>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+
+            <table id="header_tableL" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of paramsL; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue }}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_tableL" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeaderLL; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyDataLL; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.voucherDate }}</td>
+                        <td>{{item.voucherNo}}</td>
+                        <td>{{item.voucherTypeName}}</td>
+                        <td>{{item.accountCode}}</td>
+                        <td>{{item.accountName}}</td>
+                        <td>{{item.partyName}}</td>
+                        <td align="right">{{this.currencyFormatter(item.drAmount)}}</td>
+                        <td align="right">{{this.currencyFormatter(item.crAmount)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

@@ -1,0 +1,87 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="LoanCategoryId" class="col-sm-3 col-form-label">Loan Category<span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="LoanCategoryList"
+                                    (change)="(master.LoanCategoryId = this.$event.id);GetEmployee(this.$event.id);"
+                                    name="LoanCategoryId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="LoanCategoryId" placeholder="Select Loan Category" appendTo="body"
+                                    [(ngModel)]="master.LoanCategorySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salaryTypeId" class="col-sm-3 col-form-label">Employee's Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.loanId = this.$event.id);GetEmployeeDetails(this.$event.id);"
+                                    [items]="employeeList" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId" placeholder="Select Employee"
+                                    appendTo="body" [(ngModel)]="master.employeeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+        <div class="col-11">Pending Loan Installment</div>
+        <div class="header-content">
+            <button (click)="confirmCancelLoan();" class="btn btn-warning btn-sm">
+                Cancel Loan
+            </button>
+        </div>
+        <fieldset>
+            <div class="grid-wrapper">
+                <table class=" table table-bordered table-striped">
+                    <tr>
+                        <th style="width: 5%;">SN</th>
+                        <th style="width: 10%;">Pay Date</th>
+                        <th style="width: 30%;">Opening Amount</th>
+                        <th style="width: 20%;">Principal Amount</th>
+                        <th style="width: 20%;">Amount to be Paid</th>
+                        <th style="width: 15%;">Cumulative Principal</th>
+                        <th style="width: 15%;">principal Balance</th>
+                    </tr>
+                    <tr *ngFor="let item of master.lstDetails; let rowIndex = index">
+                        <td>{{rowIndex+1}}</td>
+                        <td>{{item.PayDate}}</td>
+                        <td>{{item.OpeningAmount}}</td>
+                        <td>{{item.PrincipalAmount}}</td>
+                        <td>{{item.Amounttobepaid}}</td>
+                        <td>{{item.cumulativePrincipal}}</td>
+                        <td>{{item.principalBalance}}</td>
+                    </tr>
+                </table>
+            </div>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

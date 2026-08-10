@@ -1,0 +1,200 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="description" class="col-sm-3 col-form-label">Team Member</label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="EmployeeTeamList"
+                                    (change)="(master.teamMemberEmployeeId = this.$event.id);(master.departmentId = this.$event.departmentId);(master.designationId = this.$event.designationId);getCoreFunctionByDepartmentId(this.$event.departmentId);getEmployeeJobDescriptionById(this.$event.id);"
+                                    name="teamMemberEmployeeId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="teamMemberEmployeeId" placeholder="Select team member" appendTo="body"
+                                    [(ngModel)]="master.teamMemberEmployeeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Job Description" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>Job Description</th>
+                                </tr>
+                                <tr *ngFor="let detail of JobDescriptionList; let rowIndex = index">
+                                    <td>
+                                        {{detail.jobDescription}}
+                                        <!-- <input [(ngModel)]="detail.jobDescription" type="text" class="form-control"
+                                            id="jobDescription" required name="jobDescription" nbInput fullWidth
+                                            placeholder="Job Description" readonly> -->
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="yearId" class="col-sm-3 col-form-label">Year Name<span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="yearItems" (change)="(master.year = this.$event.id);" name="yearId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="yearId"
+                                    placeholder="Select Year Name" appendTo="body" [(ngModel)]="master.yearSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-sm-3 col-form-label">Core Function<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="CoreFunctionList"
+                                    (change)="(master.coreFunctionId = this.$event.id);"
+                                    name="coreFunctionId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="coreFunctionId" placeholder="Select core function" appendTo="body"
+                                    [(ngModel)]="master.coreFunctionSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label for="description" class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea type="text" class="form-control" id="description" required
+                                    [(ngModel)]="master.description" name="description" nbInput fullWidth></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="monthSelected" class="col-sm-3 col-form-label">Month<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.month = this.$event.name)" [items]="monthList"
+                                    name="monthId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="monthId"
+                                    placeholder="Select month name" appendTo="body" [(ngModel)]="master.monthSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="taskQty" class="col-sm-3 col-form-label">Quantity
+                                <span>*</span></label>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" id="taskQty" required [(ngModel)]="master.taskQty"
+                                    name="taskQty" nbInput fullWidth placeholder="Quantity">
+                            </div>
+                            <div class="col-sm-3">
+                                <button (click)="addDetails(dialog)" class="btn btn-warning btn-sm"><i
+                                        class="fa fa-plus" aria-hidden="true"></i>
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Task Assign Details" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Team Member</th>
+                                    <th>Year</th>
+                                    <th>Month</th>
+                                    <th>Core Function</th>
+                                    <th>Quantity</th>
+                                    <th>Description</th>
+                                    <td>Action</td>
+                                </tr>
+                                <tr *ngFor="let detail of master.lstDetails; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <input [(ngModel)]="detail.teamMemberEmployeeName" type="text" class="form-control"
+                                            id="teamMemberEmployeeName" required name="teamMemberEmployeeName" nbInput fullWidth
+                                            placeholder="Team Member Employee Name" readonly>
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.year" type="text" class="form-control" id="year"
+                                            required name="year" nbInput fullWidth placeholder="Year" readonly>
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.month" type="text" class="form-control" id="month"
+                                            required name="month" nbInput fullWidth placeholder="Month" readonly>
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.functionName" type="text" class="form-control"
+                                            id="coreFunctionName" required name="coreFunctionName" nbInput fullWidth
+                                            placeholder="Core Function Name" readonly>
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.taskQty" type="text" class="form-control" id="taskQty"
+                                            required name="taskQty" nbInput fullWidth placeholder="Task Quantity">
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.description" type="text" class="form-control" id="description"
+                                            required name="description" nbInput fullWidth placeholder="Description">
+                                    </td>
+                                    <td>
+                                        <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

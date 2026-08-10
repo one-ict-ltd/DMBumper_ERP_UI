@@ -1,0 +1,369 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="territoryCode">Territory <span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="GetAllPartysByTypeId(0);" [items]="territoryList"
+                                    [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select territory" appendTo="body"
+                                    [(ngModel)]="terriSelected" [readonly]="isReadonly ? 'readonly' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="returnDate">Date <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.returnDate" (ngModelChange)="getMaxNo();"
+                                    name="returnDate" [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="expireReturnNumber">Credit Note
+                                No. <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.expireReturnNumber"
+                                    id="expireReturnNumber" name="expireReturnNumber" nbInput fullWidth
+                                    placeholder="Product Return No." readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="partyId">Customer Name <span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="master.partyId=this.$event.id;" [items]="partyList"
+                                    name="partyName" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Select Customer" appendTo="body" [virtualScroll]="true"
+                                    [(ngModel)]="partySelected" [readonly]="isReadonly ? 'readonly' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="productName">Product
+                                Name <span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect [items]="productSpecList" name="productName" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productName"
+                                    placeholder="Select a product" appendTo="body" [(ngModel)]="productSpecSelected"
+                                    (ngModelChange)="productChange();" tabindex="4">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <div class="col-6">
+                                <label class="col-sm-12 col-form-label" for="price">UOM</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control text-right" required [(ngModel)]="UOM"
+                                        id="UOM" name="UOM" nbInput fullWidth placeholder="UOM" readonly>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="col-sm-12 col-form-label" for="price">Pack Size</label>
+                                <div class="col-sm-12">
+                                    <input type="text" class="form-control text-right" required [(ngModel)]="packSize"
+                                        id="packSize" min="0" name="packSize" nbInput fullWidth placeholder="packSize"
+                                        readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="returnQty">Qty.<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="number" class="form-control" required [(ngModel)]="returnQty" min="0"
+                                    name="returnQty" nbInput fullWidth placeholder="Return Qty."
+                                    oninput="this.value = Math.abs(this.value)" (ngModelChange)="calculateAmount();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="amount">Input Total Amount
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="number" class="form-control text-left" required [(ngModel)]="amount"
+                                    min="0" iname="amount" nbInput fullWidth placeholder="amount"
+                                    (ngModelChange)="calculateTotalAmount();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="returnPrice">Propossed
+                                Price<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="number" class="form-control" required [(ngModel)]="returnPrice"
+                                    id="returnPrice" min="0" name="returnPrice" nbInput fullWidth
+                                    placeholder="Return Unit Price" (ngModelChange)="calculateAmount();">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="price">Current Price<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="number" class="form-control text-left" required [(ngModel)]="price"
+                                    id="price" min="0" name="price" nbInput fullWidth placeholder="price" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="price">Batch No<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control text-left" required [(ngModel)]="master.batchNo"
+                                    id="batchNo" min="0" name="batchNo" nbInput fullWidth placeholder="batchNo"
+                                    (blur)="onbatchNoChange()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="price">Manufacturing Date<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.mgfDate" (ngModelChange)="getMaxNo();"
+                                    name="mgfDate" id="mgfDate" [nbDatepicker]="mdatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #mdatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="price">Expire Date<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.expireDate" (ngModelChange)="getMaxNo();"
+                                    name="expireDate" id="expireDate" [nbDatepicker]="edatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #edatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div style="text-align: center;">
+                            <button (click)="addToGrid()" class="btn btn-success btn-sm m-3"> <i class="fa fa-plus"
+                                    aria-hidden="true"></i> Add </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-10 text-right"><b>Total Amount :</b></div>
+                    <div class="col-2"> <span> <b> {{master.grandTotal|number:'1.0-2'}}</b></span></div>
+
+                    <div class="col-12">
+                        <div class=" table-wrapper-scroll-y my-custom-scrollbar">
+                            <div class="grid-wrapper" style="overflow-y:scroll; overflow-x: scroll; max-height: 500px">
+                                <table class=" table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <!-- <th>Invoice No.</th> -->
+                                            <th>Product Name</th>
+                                            <th>Return Qty.</th>
+                                            <th>UOM</th>
+                                            <th>Pack Size</th>
+                                            <th>Propossed Price</th>
+                                            <th>batchNo</th>
+                                            <th>Manfacturing Date</th>
+                                            <th>Expire Date</th>
+                                            <th>Amount</th>
+                                            <th style="width: 100px;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+                                            <td>{{rowIndex+1}}</td>
+                                            <!-- <td>{{details.salesInvoiceNo}}</td> -->
+                                            <td style="width: 35%;">{{details.productName}}</td>
+                                            <td>{{details.returnQty}}</td>
+                                            <td>{{details.uomName}}</td>
+                                            <td>{{details.packSize}}</td>
+                                            <td>{{details.returnPrice}}</td>
+                                            <td>{{details.batchNo}}</td>
+                                            <td>{{details.mgfDate}}</td>
+                                            <td>{{details.expireDate}}</td>
+                                            <td>
+                                                <div class="form-control text-right">{{details.amount}}</div>
+                                            </td>
+                                            <td>
+                                                <button (click)="removeItem(rowIndex)" class="btn btn-danger btn-sm m-0"
+                                                    style="height: 25px; width: 25px; padding: 0 0 0 0;">
+                                                    <i class="fa fa-trash" aria-hidden="true"
+                                                        style="font-size: x-small;"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+
+<!-- Start HTML Report  -->
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th colspan="4">
+                            <h4 style="text-align:center">
+                                Credit Note
+                            </h4>
+                        </th>
+                    </tr>
+                </thead>
+                <br> <br />
+                <tbody>
+                    <tr>
+                        <td><strong>Credit Note No.</strong></td>
+                        <td>: {{expireReturnNumber}}</td>
+                        <td><strong>Credit Note Date</strong></td>
+                        <td>: {{returnDate}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customer Name</strong></td>
+                        <td>: {{partyName}}</td>
+                        <td><strong>Net Amount</strong></td>
+                        <td>: {{rgrandTotal}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Territory</strong></td>
+                        <td>: {{territory}}</td>
+                        <td><strong>MIO</strong></td>
+                        <td>: {{mioName}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Invoice No.</strong></td>
+                        <td>: {{salesInvoiceNo}}</td>
+                        <td><strong></strong></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th colspan="4">Product</th>
+                        <th colspan="2">Original</th>
+                        <th colspan="2">Propose</th>
+                        <th rowspan="2">Variance</th>
+                    </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Code</th>
+                        <th>Name</th>
+                        <th>Pack Size</th>
+                        <!-- <th>UOM</th> -->
+                        <th>Qty.</th>
+                        <th>Unit Price</th>
+                        <th>Amnt.</th>
+                        <th>Unit Price</th>
+                        <th>Amnt.</th>
+                        <!-- <th>Variance</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.productCode}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.packSize}}</td>
+                        <!-- <td>{{item.uomName}}</td> -->
+                        <td>{{item.returnQty}}</td>
+                        <td>{{item.originalPrice}}</td>
+                        <td>{{item.originalAmount}}</td>
+                        <td>{{item.returnPrice}}</td>
+                        <td>{{item.amount}}</td>
+                        <td>{{currencyFormatter(item.originalAmount - item.amount)}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">Total :</td>
+                        <td>{{rgrandQty}}</td>
+                        <td>{{rgrandOriginalPrice}}</td>
+                        <td>{{rgrandOriginalTotal}}</td>
+                        <td>{{rgrandPrice}}</td>
+                        <td>{{rgrandTotal}}</td>
+                        <td>{{currencyFormatter(rgrandOriginalTotal - rgrandTotal)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="table_signature" class="table">
+                <tbody>
+                    <tr>
+
+                        <td>________________</td>
+                        <td>________________</td>
+                        <td>________________</td>
+                    </tr>
+                    <tr>
+                        <td> <strong>Store In-Charge</strong></td>
+                        <td> <strong>Accounts Officer</strong></td>
+                        <td> <strong>Depot In-Charge</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>
+
+<!-- End HTML Report  -->

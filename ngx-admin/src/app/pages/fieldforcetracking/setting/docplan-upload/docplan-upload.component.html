@@ -1,0 +1,101 @@
+<h5>Doctor Visit Plan Upload</h5>
+<input type="file" (change)="onFileChange($event)" multiple="false" />
+
+
+<nb-card>
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id="simple_table" class="table table-bordered table-striped mb-0">
+        <!-- <thead>
+            <tr>
+              <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+            </tr>
+          </thead> -->
+        <tbody>
+          <!-- <tr *ngFor="let item of bodyData; let i = index;">
+              <td>{{i+1}}</td>
+              <td>{{item.natureName}}</td>
+              <td>{{item.groupCode}}</td>
+              <td>{{item.groupName}}</td>
+              <td>{{item.accountCode}}</td>
+              <td>{{item.accountName}}</td>
+            </tr> -->
+          <tr *ngFor="let row of data">
+            <td *ngFor="let val of row">
+              {{val}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="col-5">
+        <a href="./../../../../assets/DocFormat/DoctorVisitPlan.xlsx" download="DoctorVisitPlan.xlsx"
+          class="btn btn-warning btn-sm">
+          Download Format
+        </a>
+      </div>
+      <div class="col-5">
+
+      </div>
+      <div class="col-2">
+        <div class="form-group row">
+          <div class="text-right">
+            <button (click)="refesh()" class="btn btn-warning btn-sm"> <i class="fa fa-refresh" aria-hidden="true"></i>
+              Refesh </button>
+            <button (click)="addDetails()" class="btn btn-success btn-sm m-3"> <i class="fa fa-plus"
+                aria-hidden="true"></i> Add </button>
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>
+
+<nb-card class="actions-card">
+  <nb-card-header>Process
+    <button (click)="export()">Process</button>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+
+
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="fromdateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+          <div class="col-sm-7">
+            <input required [(ngModel)]="fromdateSelected" [nbDatepicker]="fdatepicker" nbInput fullWidth
+              placeholder="From Date" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #fdatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="todateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+          <div class="col-sm-7">
+            <input required [(ngModel)]="todateSelected" [nbDatepicker]="datepicker" nbInput fullWidth
+              placeholder="To Date" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #datepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+<!-- <table class="sjs-table">
+		<tbody>
+      <tr *ngFor="let row of data">
+			<td *ngFor="let val of row">
+				{{val}}
+			</td>
+		</tr>
+    </tbody>
+	</table> -->

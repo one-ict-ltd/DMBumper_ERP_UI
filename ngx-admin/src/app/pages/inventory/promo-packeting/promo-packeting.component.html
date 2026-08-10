@@ -1,0 +1,352 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+  </nb-card-header>
+</nb-card>
+<nb-card *ngIf="show">
+  <nb-card-header class="text-right">
+    <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+      </ag-grid-angular>
+    </div>
+  </nb-card-body>
+</nb-card>
+<nb-card *ngIf="!show">
+  <nb-card-header>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+      <form #masterForm="ngForm">
+        <div class="row">
+          <div class="col-lg-4 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="packetingMasterDate">Transfer
+                Date <span>*</span></label>
+              <div class="col-sm-12">
+                <input required [(ngModel)]="master.packetingMasterDate" (ngModelChange)="getPacketTransferNo();"
+                  name="packetingMasterDate" id="packetingMasterDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                  placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                <nb-datepicker #fdatepicker [min]="minDate" [max]="maxDate"></nb-datepicker>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="packetingMasterNo">Promo Packeting
+                No. <span>*</span></label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.packetingMasterNo"
+                  id="packetingMasterNo" name="packetingMasterNo" nbInput fullWidth placeholder="Promo Received No."
+                  readonly>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="promoRequisitionId">Promo Requisition
+                No. <span>*</span></label>
+              <div class="col-sm-12">
+                <ng-select nbselect (change)="GetTerritoryByRequisition(master.promoRequisitionId = this.$event.id,this.$event.requisitionType);
+                  GetAreaManagerCodeByRequisition(this.$event.id, this.$event.requisitionType);
+                  GetRSMCodeByRequisition(this.$event.id, this.$event.requisitionType)" [items]="RequisitionList"
+                  name="promoRequisitionId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                  id="promoRequisitionId" placeholder="Select Req. No." appendTo="body"
+                  [(ngModel)]="master.productTransferNoSelected" [disabled]="disabledDdl ? 'disabled' : null">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-8 col-sm-12" *ngIf="isShowTerritory">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="partyId">Territory <span>*</span></label>
+              <div class="col-sm-12">
+                <ng-select nbselect (change)="(master.territoryCode = $event.id);
+                resetPacketDetails();
+                loadPacketDetails($event.id, master.promoRequisitionId);
+                  getProductSubCategoryList();" [items]="territoryList" [virtualScroll]="true" name="territoryCode"
+                  bindLabel="name" [ngModelOptions]="{standalone: true}" id="territoryCode"
+                  placeholder="Select territory" appendTo="body" [(ngModel)]="master.territorySelected">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-8 col-sm-12" *ngIf="isShowArea">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="partyId">Area<span>*</span></label>
+              <div class="col-sm-12">
+                <ng-select nbselect (change)="(master.territoryCode = $event.id);
+                          resetPacketDetails();
+                          loadPacketDetails($event.id, master.promoRequisitionId);
+                            getProductSubCategoryList();" [items]="areaManagerCodeList" [virtualScroll]="true"
+                  name="territoryCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="territoryCode"
+                  placeholder="Select territory" appendTo="body" [(ngModel)]="master.territorySelected">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-8 col-sm-12" *ngIf="isShowRegion">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="partyId">Region<span>*</span></label>
+              <div class="col-sm-12">
+                <ng-select nbselect (change)="(master.territoryCode = $event.id);
+                                    resetPacketDetails();
+                                    loadPacketDetails($event.id, master.promoRequisitionId);
+                                      getProductSubCategoryList();" [items]="rsmCodeList" [virtualScroll]="true"
+                  name="territoryCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="territoryCode"
+                  placeholder="Select territory" appendTo="body" [(ngModel)]="master.territorySelected">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="productSubCategoryId">Product Category</label>
+              <div class="col-sm-12">
+                <ng-select nbselect (change)="(master.productSubCategoryId = $event.id);
+                 filterByProductSubCategory(master.productSubCategoryId); resetPacketDetails();"
+                  [items]="productSubCategoryList" [virtualScroll]="true" name="productSubCategoryId" bindLabel="name"
+                  [ngModelOptions]="{standalone: true}" id="productSubCategoryId" placeholder="Select product category"
+                  appendTo="body" [(ngModel)]="master.productCategorySelected">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-8 col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="remarks">Purpose</label>
+              <div class="col-sm-12">
+                <textarea type="text" class="form-control" required [(ngModel)]="master.remarks" id="remarks"
+                  name="remarks" nbInput fullWidth placeholder="remarks">{{master.remarks}}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-header>
+</nb-card>
+
+<!-- <nb-card style="height: 300px;" *ngIf="!show">
+  <nb-card-body>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+      <nb-tabset>
+        <nb-tab tabTitle="Packet Details" class="btn-tab">
+          <div class="row">
+          </div> -->
+<nb-card class="actions-card" *ngIf="!show">
+  <nb-card-header>List of Items
+  </nb-card-header>
+</nb-card>
+<div class="grid-wrapper table-wrapper-scroll-y my-custom-scrollbar" *ngIf="!show" style="height: 300px;">
+  <table class=" table table-bordered table-striped">
+    <tr>
+      <th style="width: 5%;">#</th>
+      <th style="width: 25%;">Product Name</th>
+      <th style="width: 15%;">Requisition Qty.</th>
+      <th style="width: 15%;">Packed Qty.</th>
+      <th style="width: 15%;">Rest Qty.</th>
+      <th style="width: 15%;">Number of Qty.</th>
+    </tr>
+    <tr *ngFor="let detail of master.lstDetailsViewModelTemp; let rowIndex = index">
+      <td>{{rowIndex+1}}</td>
+      <td>
+        <div style="margin-left: 5px;">{{detail.productName}}</div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;">{{detail.quantity}}</div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;">{{detail.transferedQty}}</div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;">{{detail.restQty}}</div>
+      </td>
+      <td>
+        <input style="height: 25px;" [(ngModel)]="detail.transferQty"
+          (change)="( detail.transferQty = this.$event.target.value);" (input)="getTotalOfTable();" type="number"
+          class="form-control" id="text" required name="text" nbInput fullWidth placeholder="transfer Qty." min="0"
+          [disabled]="detail.restQty===0">
+      </td>
+    </tr>
+    <tr style="background-color: rgb(60, 173, 218); width: 80px; font-weight: bold;">
+
+      <td colspan="2">
+        <div style="margin-left: 5px;">Total</div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;"></div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;"></div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;"></div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;">{{totalNumberOfPacks}}</div>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- </nb-tab>
+      </nb-tabset>
+    </fieldset>
+  </nb-card-body>
+  <nb-card-footer> -->
+<div class="col-lg-12 text-right text-danger" style="font-weight: bold;" *ngIf="!show">Total Qty.:
+  {{totalNumberOfPacks}}</div>
+<!-- </nb-card-footer>
+</nb-card> -->
+
+<div class="row" *ngIf="!show">
+  <div class="col-lg-4" style="text-align: center;">
+
+  </div>
+  <div class="col-lg-4" style="text-align: center;">
+    <button (click)="addToFinalDetailsGrid()" class="btn btn-success btn-sm m-3"> <i class="fa fa-plus"
+        aria-hidden="true"></i>
+      Add To Carton </button>
+  </div>
+  <div class="col-lg-4" style="text-align: center;">
+
+  </div>
+</div>
+
+<!-- <nb-card style="height: 300px;" *ngIf="!show">
+  <nb-card-body>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+      <nb-tabset>
+        <nb-tab tabTitle="Packet Details final" class="btn-tab">
+          <div class="row">
+          </div> -->
+<nb-card class="actions-card" *ngIf="!show">
+  <nb-card-header>Final Packet
+  </nb-card-header>
+</nb-card>
+<div class="grid-wrapper table-wrapper-scroll-y my-custom-scrollbar" style="height: 300px;" *ngIf="!show">
+  <table class=" table table-bordered table-striped">
+    <tr>
+      <th style="width: 5%;">#</th>
+      <th style="width: 25%;">Product Name</th>
+      <th style="width: 15%;">Requisition Qty.</th>
+      <th style="width: 15%;">Packed Qty.</th>
+      <th style="width: 15%;">Rest Qty.</th>
+      <th style="width: 15%;">Number of Qty.</th>
+    </tr>
+    <tr *ngFor="let detail of master.lstDetailsViewModel; let rowIndex = index">
+      <td>{{rowIndex+1}}</td>
+      <td>
+        <div style="margin-left: 5px;">{{detail.productName}}</div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;">{{detail.quantity}}</div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;">{{detail.transferedQty}}</div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;">{{detail.restQty}}</div>
+      </td>
+      <td>
+        <input style="height: 25px;" [(ngModel)]="detail.transferQty"
+          (change)="( detail.transferQty = this.$event.target.value);" (input)="getTotalOfFinalTable();" type="number"
+          class="form-control" id="text" required name="text" nbInput fullWidth placeholder="transfer Qty." min="0"
+          [disabled]="detail.restQty===0">
+      </td>
+    </tr>
+    <tr style="background-color: rgb(60, 173, 218); width: 80px; font-weight: bold;">
+
+      <td colspan="2">
+        <div style="margin-left: 5px;">Total</div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;"></div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;"></div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;"></div>
+      </td>
+      <td>
+        <div style="margin-left: 5px;">{{ftotalNumberOfPacks}}</div>
+      </td>
+    </tr>
+  </table>
+</div>
+<!-- </nb-tab>
+      </nb-tabset>
+    </fieldset>
+  </nb-card-body>
+  <nb-card-footer> -->
+<div style="font-weight: bold;" class="col-lg-12 text-right text-danger fw-bold" *ngIf="!show">Total Qty.:
+  {{ftotalNumberOfPacks}}</div>
+<!-- </nb-card-footer>
+</nb-card> -->
+
+
+<nb-card class="actions-card" *ngIf="!show">
+  <nb-card-body>
+    <nb-tabset>
+      <nb-tab tabTitle="Packet No." class="btn-tab">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label" for="packetNo">Packet No.</label>
+              <div class="col-sm-8">
+                <input type="text" min="0" class="form-control" [(ngModel)]="master.packetNo" id="packetNo"
+                  name="packetNo" nbInput fullWidth placeholder="Packet No.">
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div style="text-align: center;">
+              <button (click)="addToDetailsGrid()" class="btn btn-success btn-sm m-3"> <i class="fa fa-plus"
+                  aria-hidden="true"></i> Add </button>
+            </div>
+          </div>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+          <div class="grid-wrapper" style="overflow-y:scroll; overflow-x: scroll; max-height: 300px">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Packet No.</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let details of master.lstPacketDetailsViewModel; let rowIndex = index">
+                  <td style="width: 25%;">{{rowIndex+1}}</td>
+                  <td style="width: 25%;">
+                    <input [(ngModel)]="details.packetNo" (change)="( details.packetNo = this.$event.target.value)"
+                      type="text" class="form-control" id="text" required name="text" nbInput fullWidth
+                      placeholder="packetNo" min="0">
+                  </td>
+                  <td style="width: 8%;">
+                    <button (click)="deleteTableRow(rowIndex)" class="btn btn-danger"><i class="fa fa-trash"
+                        aria-hidden="true"></i></button>
+                    <!-- Added delete button -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+</nb-card>
+<nb-card class="actions-card" *ngIf="!show">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body style="text-align: right;">
+    <input type="button" class="btn btn-success p-20" (click)="save()" value="Save">
+  </nb-card-body>
+</nb-card>

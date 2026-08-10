@@ -1,0 +1,385 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+      <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+  </nb-card>
+  
+  <nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+      <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="grid-wrapper">
+        <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+          [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+          [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+          (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+        </ag-grid-angular>
+      </div>
+    </nb-card-body>
+  </nb-card>
+  
+  <nb-card *ngIf="!show">
+    <nb-card-header>
+      <fieldset [disabled]="disabled ? 'disabled' : null">
+        <form #masterForm="ngForm" novalidate>
+
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group row">
+                <label for="dropdown" class="col-sm-4 col-form-label"><span>*</span> Reference No</label>
+                <div class="col-sm-8">
+                  <ng-select nbselect (change)="( master.preLcId = this.$event.id); getPreLcData(this.$event.id)" [items]="finalreferenceList" name="refNo"
+                  bindLabel="name" [ngModelOptions]="{standalone: true}" id="preLcId" placeholder="Select Reference No"
+                  appendTo="body" [(ngModel)]="master.referenceSelected">
+                </ng-select>
+                </div>
+              </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                  <label for="clearenceType" class="col-sm-4 col-form-label">Clearence Type</label>
+                  <div class="col-sm-8">
+                    <ng-select nbselect (change)="(master.clearenceType = this.$event.id); getChargeType(this.$event.id);"
+                    [items]="ClearenceList" name="clearenceType" bindLabel="name"
+                    [ngModelOptions]="{standalone: true}" id="clearenceType"
+                    placeholder="Select Clearence type" appendTo="body"
+                    [(ngModel)]="master.clearenceTypeSelected" [disabled]="disabled ? 'disabled' : null">
+                </ng-select>
+                  </div>
+                </div>
+           </div>
+
+           <div class="col-4">
+
+           </div>
+          
+
+            
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="actBankClrDt" class="col-sm-4 col-form-label" style="font-size: 12px;font-weight: bold;">Actual Bank Clr Date</label>
+                  <div class="col-sm-8">
+                    <input (ngModelChange)="getActualDate($event);" id="actBankClrDt" 
+                      [(ngModel)]="master.actBankClrDt" name="actBankClrDt"
+                      [nbDatepicker]="actBankClrDt" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                    <nb-datepicker #actBankClrDt></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="expCustomeClrDt" class="col-sm-4 col-form-label" style="font-size: 11px; font-weight: bold;">Expected Custom Clr Date</label>
+                  <div class="col-sm-8">
+                    <input (ngModelChange)="getActualDate($event);" id="expCustomeClrDt" 
+                      [(ngModel)]="master.expCustomeClrDt" name="expCustomeClrDt"
+                      [nbDatepicker]="expCustomeClrDt" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                    <nb-datepicker #expCustomeClrDt></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4"  *ngIf="master.clearenceFlag">
+                <div class="form-group row">
+                  <label for="cnfAgent" class="col-sm-4 col-form-label"><span>*</span>CNF Agent</label>
+                  <div class="col-sm-8">
+                    <input type="text" (keyup)="getDuplicate();" class="form-control" id="cnfAgent" required
+                    [(ngModel)]="master.cnfAgent" name="cnfAgent" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+             </div>
+             <div class="col-4"  *ngIf="master.clearenceFlag">
+              <div class="form-group row">
+                <label for="DocRecvDate" class="col-sm-4 col-form-label" style="font-size: 11px; font-weight: bold;">Document Recv Date</label>
+                <div class="col-sm-8">
+                  <input (ngModelChange)="getActualDate($event);" id="DocRecvDate" 
+                    [(ngModel)]="master.DocRecvDate" name="DocRecvDate"
+                    [nbDatepicker]="businessStartDateShow" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                  <nb-datepicker #businessStartDateShow></nb-datepicker>
+                </div>
+              </div>
+            </div>
+
+             <div class="col-4">
+              <div class="form-group row">
+                <label for="remainderDays" class="col-sm-4 col-form-label"><span>*</span>Remind(Days)</label>
+                <div class="col-sm-8">
+                  <input type="text"  class="form-control" id="remainderDays" required
+                  [(ngModel)]="master.remainderDays" name="remainderDays" nbInput fullWidth placeholder="">
+                </div>
+              </div>
+           </div>
+
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="lcNo" class="col-sm-4 col-form-label"><span>*</span> LC No</label>
+                  <div class="col-sm-8">
+                    <input type="text" (keyup)="getDuplicate();" class="form-control" id="lcNo" required
+                    [(ngModel)]="master.lcNo" name="lcNo" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="LCOpenDate" class="col-sm-4 col-form-label" style="font-size: 11px; font-weight: bold;">LC Open Date</label>
+                  <div class="col-sm-8">
+                    <input (ngModelChange)="getActualDate($event);" id="LCOpenDate" 
+                      [(ngModel)]="master.LCOpenDate" name="LCOpenDate"
+                      [nbDatepicker]="businessStartDateShow" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                    <nb-datepicker #businessStartDateShow></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4" hidden>
+                <div class="form-group row">
+                  <label for="referenceNo" class="col-sm-4 col-form-label"><span>*</span> LCA No</label>
+                  <div class="col-sm-8">
+                    <input type="text" (keyup)="getDuplicate();" class="form-control" id="lcaNo" required
+                    [(ngModel)]="master.partyName" name="partyName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+            <div class="col-4">
+              <div class="form-group row">
+                <label for="fatherName" class="col-sm-4 col-form-label"><span>*</span>LC  Amount</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="lcAmount" required [(ngModel)]="master.fatherName"
+                    name="fatherName" nbInput fullWidth placeholder="">
+                </div>
+              </div>
+            </div>
+           
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="" class="col-sm-4 col-form-label">Total LC Amount</label>
+                  <div class="col-sm-8">
+                    <input type="text" (keyup)="getDuplicate();" class="form-control" id="countryOrigin" 
+                    [(ngModel)]="master.partyName" name="partyName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="" class="col-sm-4 col-form-label">Currency</label>
+                  <div class="col-sm-8">
+                    <input type="text" (keyup)="getDuplicate();" class="form-control" id="countryOrigin" 
+                    [(ngModel)]="master.partyName" name="partyName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="" class="col-sm-4 col-form-label"><span>*</span> Port of Loading</label>
+                  <div class="col-sm-8">
+                    <input type="text" (keyup)="getDuplicate();" class="form-control" id="portLoading" required
+                    [(ngModel)]="master.partyName" name="partyName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="" class="col-sm-4 col-form-label"><span>*</span>Local Agent</label>
+                  <div class="col-sm-8">
+                    <input type="text" (keyup)="getDuplicate();" class="form-control" id="portLoading" required
+                    [(ngModel)]="master.partyName" name="partyName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="productTypeId" class="col-sm-4 col-form-label">Item Type</label>
+                  <div class="col-sm-8">
+                    <ng-select nbselect (change)="(master.productTypeId = this.$event.id);"
+                    [items]="productTypeList" name="productTypeId" bindLabel="name"
+                    [ngModelOptions]="{standalone: true}" id="productSubCategoryId"
+                    placeholder="Select Product Item" appendTo="body"
+                    [(ngModel)]="master.productTypeSelected" [disabled]="disabled ? 'disabled' : null">
+                </ng-select>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="officeName" class="col-sm-4 col-form-label">Destination</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="officeName" required [(ngModel)]="master.officeName"
+                      name="officeName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="officeName" class="col-sm-4 col-form-label">Benificiary</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="officeName" required [(ngModel)]="master.officeName"
+                      name="officeName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="motherName" class="col-sm-4 col-form-label" style="font-size: 14px;"><span>*</span>Mode of Transport</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modeTransport" required [(ngModel)]="master.motherName"
+                      name="motherName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="motherName" class="col-sm-4 col-form-label" style="font-size: 14px;">Shipment No</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modeTransport" required [(ngModel)]="master.motherName"
+                      name="motherName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="motherName" class="col-sm-4 col-form-label" style="font-size: 14px;">Shipment Status</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modeTransport" required [(ngModel)]="master.motherName"
+                      name="motherName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="shipmentDate" class="col-sm-4 col-form-label">Shipment Date</label>
+                  <div class="col-sm-8">
+                    <input (ngModelChange)="getActualDate($event);" id="shipmentDate" 
+                      [(ngModel)]="master.shipmentDate" name="shipmentDate"
+                      [nbDatepicker]="shipmentDate" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                    <nb-datepicker #shipmentDate></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="motherName" class="col-sm-4 col-form-label" style="font-size: 14px;">Invoice No</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modeTransport" required [(ngModel)]="master.motherName"
+                      name="motherName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="invoiceDate" class="col-sm-4 col-form-label">Invoice Date</label>
+                  <div class="col-sm-8">
+                    <input (ngModelChange)="getActualDate($event);" id="invoiceDate" 
+                      [(ngModel)]="master.invoiceDate" name="shipmentDate"
+                      [nbDatepicker]="invoiceDate" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                    <nb-datepicker #invoiceDate></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="" class="col-sm-4 col-form-label" style="font-size: 14px;">Invoice Amount</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modeTransport" required [(ngModel)]="master.motherName"
+                      name="" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="motherName" class="col-sm-4 col-form-label" style="font-size: 14px;">Carrier Bill No</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modeTransport" required [(ngModel)]="master.motherName"
+                      name="motherName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="motherName" class="col-sm-4 col-form-label" style="font-size: 12px; font-weight: bold;">No Caese/Drugs/Items</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="modeTransport" required [(ngModel)]="master.motherName"
+                      name="motherName" nbInput fullWidth placeholder="">
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="shipmentDate" class="col-sm-4 col-form-label" style="font-size: 12px; font-weight: bold;">Expected Drug Clr Date</label>
+                  <div class="col-sm-8">
+                    <input (ngModelChange)="getActualDate($event);" id="shipmentDate" 
+                      [(ngModel)]="master.shipmentDate" name="shipmentDate"
+                      [nbDatepicker]="shipmentDate" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                    <nb-datepicker #shipmentDate></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-4"  *ngIf="!master.chargeFlag" >
+                <div class="form-group row">
+                  <label for="bankCLrDate" class="col-sm-4 col-form-label" style="font-size: 12px; font-weight: bold;">Bank Clr Date</label>
+                  <div class="col-sm-8">
+                    <input (ngModelChange)="getActualDate($event);" id="bankCLrDate" 
+                      [(ngModel)]="master.bankCLrDate" name="shipmentDate"
+                      [nbDatepicker]="bankCLrDate" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                    <nb-datepicker #bankCLrDate></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+
+              
+              <div class="col-4">
+                <div class="form-group row">
+                  <label for="Remarks" class="col-sm-4 col-form-label">Remarks</label>
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control" id="remarks" required [(ngModel)]="master.Remarks"
+                      name="ownerName" nbInput fullWidth placeholder="Remarks">
+                  </div>
+                </div>
+              </div>         
+          </div>
+        <div class="row" *ngIf="master.clearenceFlag">
+    
+           
+        </div>
+
+        <div class="row" *ngIf="!master.clearenceFlag">
+            
+
+        </div>
+        </form>
+      </fieldset>
+    </nb-card-header>
+  </nb-card>
+
+  <!-- ------------------------------------------------------ lc info end--------------------------------------------------------- -->
+
+           <!-- //////////////////////////////////////////////////////////////////////////////////////// -->
+ 
+
+                 
+
+

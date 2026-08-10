@@ -1,0 +1,169 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="form-group row">
+                            <label for="nid" class="col-sm-3 col-form-label">NID
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="nid" required [(ngModel)]="master.nid"
+                                    name="nid" nbInput fullWidth placeholder="NID">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <button (click)="addDetails(dialog)" class="btn btn-warning btn-sm"><i class="fa fa-eye"
+                                        aria-hidden="true"></i> Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="partyName" class="col-sm-3 col-form-label">Party Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="partyName" required
+                                    [(ngModel)]="master.partyName" name="partyName" nbInput fullWidth
+                                    placeholder="party Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="ownerName" class="col-sm-3 col-form-label">Owner Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="ownerName" required
+                                    [(ngModel)]="master.ownerName" name="ownerName" nbInput fullWidth
+                                    placeholder="party Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="motherName" class="col-sm-3 col-form-label">Mother Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="partyName" required
+                                    [(ngModel)]="master.motherName" name="motherName" nbInput fullWidth
+                                    placeholder="Mother Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="nid" class="col-sm-3 col-form-label">NID</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="nid" required [(ngModel)]="master.nid"
+                                    name="nid" nbInput fullWidth placeholder="NID" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="officeName" class="col-sm-3 col-form-label">Office Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="officeName" required
+                                    [(ngModel)]="master.officeName" name="officeName" nbInput fullWidth
+                                    placeholder="Office Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="fatherName" class="col-sm-3 col-form-label">Father Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="fatherName" required
+                                    [(ngModel)]="master.fatherName" name="fatherName" nbInput fullWidth
+                                    placeholder="Father Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="birthdate" class="col-sm-3 col-form-label">Birth Date</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="birthdate" required
+                                    [(ngModel)]="master.birthdate" name="birthdate" nbInput fullWidth
+                                    placeholder="Birth Date" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="gender" class="col-sm-3 col-form-label">Gender</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="gender" required [(ngModel)]="master.gender"
+                                    name="gender" nbInput fullWidth placeholder="Gender" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<!-- <div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Visa Group Details" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Agent Id</th>
+                                    <th>Agent Name</th>
+                                    <th>Office Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Father Name</th>
+                                    <th>Mother Name</th>                                    
+                                    <th>Birth Date</th>
+                                    <th>NID</th>
+                                    <th>Gender</th>
+                                    
+                                </tr>
+                                <tr *ngFor="let detail of master.lstLocalAgent; let rowIndex = index">
+                                    <td >{{rowIndex+1}}</td>
+                                    <td style="width:100px;">{{detail.agent_id}}</td>
+                                    <td style="width:150px;">{{detail.agent_name}}</td>
+                                    <td style="width:150px;">{{detail.office_name}}</td>
+                                    <td style="width:150px;">{{detail.owner_name}}</td>
+                                    <td style="width:150px;">{{detail.father_name}}</td>
+                                    <td style="width:150px;">{{detail.mother_name}}</td>                                 
+                                    <td style="width:150px;">{{detail.birth_date}}</td>
+                                    <td style="width:150px;">{{detail.nid}}</td>
+                                    <td style="width:150px;">{{detail.gender}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div> -->

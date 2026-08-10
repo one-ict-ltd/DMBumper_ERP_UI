@@ -1,0 +1,112 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group row">
+          <label for="examId" class="col-2 col-form-label">Exam<span>*</span></label>
+          <div class="col-sm-10">
+            <ng-select nbselect [items]="examList" [virtualScroll]="true" name="examId" bindLabel="name" id="examId"
+              [(ngModel)]="examSelected" [ngModelOptions]="{standalone: true}" placeholder="Select Exam"
+              [virtualScroll]="true" appendTo="body">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showBody">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+        <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 500px">
+        <table id="simple_table" class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="text-align:center;vertical-align: middle; background-color:goldenrod;border-bottom:groove;" colspan="6">Exam Result For {{examSelected.name}}</th>
+            </tr>
+            <tr>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Employee No</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Employee Name</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Territory</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Area</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Region</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Marks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of bodyData;">
+              <td align="center">{{item.employeeNo}}</td>
+              <td>{{item.fullName}}</td>
+              <td align="center">{{item.territoryCode}}</td>
+              <td align="center">{{item.areaCode}}</td>
+              <td align="center">{{item.regionCode}}</td>
+              <td align="right">{{item.totalMarks}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+  </nb-card-body>
+  <nb-card-footer>
+
+  </nb-card-footer>
+</nb-card>
+
+<!-- PDF  -->
+<nb-card style="visibility: hidden;">
+  <nb-card-header>
+    <div id="reportHeader">
+      <ngx-rpt-header></ngx-rpt-header>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+
+      <table id="header_table_top" class="table" style="width: 550px;">
+        <tbody>
+          <tr>
+            <td> <strong>Exam Result For {{examSelected?.name}}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="row" style="padding: 0px 15px 0px 15px;">
+        <table id="body_table" class="table table-bordered">
+          <thead>
+            <tr>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Employee No</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Employee Name</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Territory</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Area</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Region</th>
+              <th style="text-align:center;vertical-align: middle; background-color:lightgray;border-bottom:groove;">Marks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of bodyData;">
+              <td align="center">{{item.employeeNo}}</td>
+              <td>{{item.fullName}}</td>
+              <td align="center">{{item.territoryCode}}</td>
+              <td align="center">{{item.areaCode}}</td>
+              <td align="center">{{item.regionCode}}</td>
+              <td align="right">{{item.totalMarks}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <ngx-rpt-footer></ngx-rpt-footer>
+  </nb-card-footer>
+</nb-card>

@@ -1,0 +1,303 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="FromDate">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadFromDateShow" name="loadFromDateShow" id="loadFromDateShow"
+                            [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="ToDate">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row !important">
+                    <button class="btn btn-info" (click)="GetGridData();">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true' nbInput>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="receiveNo">Receive No. <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" [(ngModel)]="master.receiveNo" id="receiveNo"
+                                    name="receiveNo" placeholder="Receive No." required nbInput fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="receiveDate">Receive
+                                Date <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.receiveDate" name="receiveDate" id="receiveDate"
+                                    [nbDatepicker]="receiveDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #receiveDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="receiveRemarks"> Remarks<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.receiveRemarks"
+                                    id="receiveRemarks" name="receiveRemarks" placeholder="Remarks for Receive" nbInput
+                                    fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="productIssueMasterId">Issue
+                                No<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect
+                                    (change)="(master.productIssueMasterId = this.$event.id);  getIssueDataById(this.$event.id);"
+                                    [items]="issueList" name="productIssueMasterId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productIssueMasterId"
+                                    placeholder="Select Issue No" appendTo="body" [(ngModel)]="issueSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="issueDate">Issue
+                                Date <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.issueDate" name="issueDate" id="reqDate"
+                                    [nbDatepicker]="issueDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #issueDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="issueQty">Issue Quantity<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="number" class="form-control" required [(ngModel)]="master.issueQty"
+                                    id="issueQty" name="issueQty" placeholder="Issue Quantity" nbInput fullWidth
+                                    readonly>
+                            </div>
+                        </div>
+                    </div> -->
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="issueRemarks">Issue
+                                Remarks<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.issueRemarks"
+                                    id="remarks" name="issueRemarks" placeholder="Issue Remarks" nbInput fullWidth
+                                    disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Materials Details" class="btn-tab">
+
+
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Details Product Name</th>
+                                    <th>Issue Qty</th>
+                                    <th>Received Qty</th>
+                                    <th>UOM</th>
+                                    <th>Waste(%)</th>
+                                    <th style="width: 140px;">Total</th>
+
+                                </tr>
+
+                                <tr *ngFor="let details of listData; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <div>{{details.productName}}</div>
+                                    </td>
+
+                                    <td>
+                                        {{details.qty}}
+                                    </td>
+                                    <td>
+                                        {{details.qty}}
+                                    </td>
+                                    <td>
+                                        {{details.uomName}}
+                                    </td>
+
+                                    <td>
+                                        {{details.wastage}}
+                                    </td>
+                                    <td>
+                                        {{details.totalQty}}
+                                    </td>
+
+
+                                </tr>
+                                <!-- <tr>
+                                    <td colspan="4">
+                                    </td>
+                                    <td class="text-right">Gross Total :</td>
+                                    <td>
+                                        <input type="number" class="form-control text-right" readonly
+                                            [(ngModel)]="grandTotalQty" id="grandTotalQty" name="grandTotalQty" nbInput
+                                            fullWidth placeholder="Grand Total Qty.">
+                                        <input hidden type="number" class="form-control text-right" required readonly
+                                            [(ngModel)]="master.bomTotalCost" id="bomTotalCost" name="bomTotalCost"
+                                            nbInput fullWidth placeholder="Net Total">
+                                    </td>
+                                    <td></td>
+                                </tr> -->
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+<!-- Start HTML Report  -->
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Product Receive</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <b>Receive Type:</b></td>
+                        <td>{{issueType}}</td>
+                        <td><b>Receive For:</b></td>
+                        <td>{{bomForType}}</td>
+                    </tr>
+                    <tr>
+                        <td> <b>Receive No:</b></td>
+                        <td>{{receiveNo}}</td>
+                        <td><strong>Receive Date:</strong></td>
+                        <td>{{issueDate}}</td>
+                    </tr>
+                    <tr>
+                        <td> <b>Requisition No:</b></td>
+                        <td>{{requisitionNo}}</td>
+                        <td><strong>Requisition Date:</strong></td>
+                        <td>{{reuisitionDate}}</td>
+                    </tr>
+                    <tr>
+                        <td> <b>Batch No:</b></td>
+                        <td>{{batchNo}}</td>
+                        <td><b>Bom Product Name:</b></td>
+                        <td>{{pmProductName}}</td>
+                    </tr>
+                    <tr>
+                        <td> <b>Batch Qty:</b></td>
+                        <td>{{quantity}}</td>
+                        <td> <b>Receive By:</b></td>
+                        <td>{{ReceivedBy}}</td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <table id="body_table1" class="table">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Product Name</th>
+                        <th>Total Item</th>
+                        <th>Waste(%)</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of pmRequisitinDetailsData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.qty}}</td>
+                        <td>{{item.wastage}}</td>
+                        <td>{{item.totalQty}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>
+
+<!-- End HTML Report  -->

@@ -1,0 +1,185 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true' nbInput>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="RmPmMiscReqDate">Issue Date
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.RmPmMiscReqDate" name="RmPmMiscReqDate"
+                                    id="RmPmMiscReqDate" [nbDatepicker]="idatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label for="chargeTypeId" class="col-sm-12 col-form-label">Misc Req. No.
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect
+                                    (change)="(master.RmPmMiscReqId  = this.$event.id); GetReqDetails(this.$event.id);"
+                                    [items]="RmPmMiscReqList" name="RmPmMiscReqId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="RmPmMiscReqId" placeholder="Select a req."
+                                    appendTo="body" [(ngModel)]="RmPmMiscReqListSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label for="miscReqTypeId" class="col-sm-12 col-form-label">Req. For<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" [(ngModel)]="master.miscReqTypeName"
+                                    id="miscReqTypeName" name="miscReqTypeName" placeholder="miscReqTypeName" required
+                                    nbInput fullWidth readonly>
+                                <!-- <label for="miscReqTypeId" class="col-sm-12 col-form-label">{{master.miscReqTypeName}}</label> -->
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="reqFrom">Issue To<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" [(ngModel)]="master.reqFrom" id="reqFrom"
+                                    name="reqFrom" placeholder="reqFrom" required nbInput fullWidth readonly>
+                                <!-- <label for="miscReqTypeId" class="col-sm-12 col-form-label">{{master.reqFrom}}</label> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="gatePassNo">Gate Pass No<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" [(ngModel)]="master.gatePassNo" id="gatePassNo"
+                                    name="gatePassNo" placeholder="gatePassNo" required nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="RmPmMiscReqDate">Gate pass date
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.gatePassDate" name="gatePassDate"
+                                    id="RmPmMiscReqDate" [nbDatepicker]="idatepickerGP" nbInput fullWidth
+                                    placeholder="gatePassDate" [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #idatepickerGP></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="issuePurpose">Purpose<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" [(ngModel)]="master.issuePurpose"
+                                    id="issuePurpose" name="issuePurpose" placeholder="issuePurpose" required nbInput
+                                    fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Details" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Material Name</th>
+                                    <th>GRN No.</th>
+                                    <th>Batch No.</th>
+                                    <th>Current Stock</th>
+                                    <th>Req. Qty.</th>
+                                    <th>Issue Qty.</th>
+                                    <th>UOM</th>
+                                    <th>Remarks</th>
+                                    <th>Action</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.lstDetail; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <div>{{details.productName}}</div>
+                                    </td>
+                                    <td>
+                                        {{details.grnNo}}
+                                    </td>
+                                    <td>
+                                        <!-- {{details.batchNo}} -->
+                                        <input [(ngModel)]="details.batchNo" type="text" class="form-control"
+                                            id="batchNo" required name="batchNo" nbInput fullWidth
+                                            placeholder="batchNo">
+                                    </td>
+                                    <td>
+                                        {{details.currentStock}}
+                                    </td>
+                                    <td>
+                                        {{details.reqQty}}
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="details.issueQty" type="number"
+                                            class="form-control text-left" id="reqQty" name="reqQty" nbInput fullWidth
+                                            placeholder="issue Qty." (input)="checkStockQty(rowIndex);">
+                                    </td>
+                                    <td>
+                                        {{details.uomName}}
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="details.remarks" type="text" class="form-control"
+                                            id="remarks" required name="remarks" nbInput fullWidth
+                                            placeholder="remarks">
+                                    </td>
+                                    <td>
+                                        <button (click)="deleteDetails(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

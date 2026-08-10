@@ -1,0 +1,671 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="productCode">Material Code<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.productCode"
+                                    id="productCode" name="productCode" nbInput fullWidth placeholder="Product Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="productName">Material Name<span
+                                    style="color: red;">*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.productName"
+                                    id="productName" name="productName" nbInput fullWidth placeholder="Product Name">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="productTypeId" class="col-sm-12 col-form-label">Material
+                                Type<span style="color: red;">*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.productTypeId = this.$event.id);"
+                                    [items]="productTypeList" name="productTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productSubCategoryId"
+                                    placeholder="Select Product Sub Category" appendTo="body"
+                                    [(ngModel)]="master.productTypeSelected" [disabled]="disabled ? 'disabled' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="productCategoryId" class="col-sm-12 col-form-label">Material
+                                Category<span style="color: red;">*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect
+                                    (change)="(master.productCategoryId = this.$event.id);getProductSubCategorybyCatId()"
+                                    [items]="productCategoryList" name="productCategoryId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productCategoryId"
+                                    placeholder="Select Product Category" appendTo="body"
+                                    [(ngModel)]="master.productCategorySelected"
+                                    [disabled]="disabled ? 'disabled' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="productSubCategoryId" class="col-sm-12 col-form-label">Material
+                                Sub Category<span style="color: red;">*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.productSubCategoryId = this.$event.id);"
+                                    [items]="productSubCategoryList" name="productSubCategoryId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productSubCategoryId"
+                                    placeholder="Select Product Sub Category" appendTo="body"
+                                    [(ngModel)]="master.productSubCategorySelected"
+                                    [disabled]="disabled ? 'disabled' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                 
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="width">Width</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.width" id="width"
+                                    name="width" nbInput fullWidth placeholder="width">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="Height">Height</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.height" id="height"
+                                    name="height" nbInput fullWidth placeholder="height">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="weight">Weight</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.weight" id="weight"
+                                    name="weight" nbInput fullWidth placeholder="weight">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="warrantyDuration">Warranty Duration (In
+                                Month)</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.warrantyDuration"
+                                    id="warrantyDuration" name="warrantyDuration" nbInput fullWidth
+                                    placeholder="warranty Duration">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="hsCODE">HS CODE</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.hsCODE" id="hsCODE"
+                                    name="hsCODE" nbInput fullWidth placeholder="hs CODE">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="description">Description</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.description"
+                                    id="description" name="description" nbInput fullWidth placeholder="description">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="gradeId" class="col-sm-12 col-form-label">Grade </label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.gradeId = this.$event.id);" [items]="productGradeList" name="gradeId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="gradeId" placeholder="Select Grade" appendTo="body" [(ngModel)]="master.gradeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <!-- <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="modelId" class="col-sm-12 col-form-label">Model </label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.modelId = this.$event.id);" [items]="productModelList" name="modelId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="modelId" placeholder="Select Model" appendTo="body" [(ngModel)]="master.modelSelected">
+                                </ng-select >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="brandId" class="col-sm-12 col-form-label">Brand</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.brandId = this.$event.id);" [items]="productBrandList" name="brandId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="brandId" placeholder="Select Brand" appendTo="body" [(ngModel)]="master.brandSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="uomId" class="col-sm-12 col-form-label">UOM <span
+                                    style="color: red;">*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.uomId = this.$event.id);" [items]="productUOMList"
+                                    name="uomId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="uomId"
+                                    placeholder="Select UOM" appendTo="body" [(ngModel)]="master.uomSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="expiryDate">Expiry Date</label>
+                            <div class="col-sm-12">
+                                <!-- <input type="text" class="form-control" required [(ngModel)]="master.expiryDate" id="expiryDate" name="Expiry Date" nbInput fullWidth placeholder="notification Day"> -->
+                                <input required [(ngModel)]="master.expiryDate" [nbDatepicker]="fdatepicker" nbInput
+                                    fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #fdatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="notificationDay">Notification(Day)</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.notificationDay"
+                                    id="notificationDay" name="notification Day" nbInput fullWidth
+                                    placeholder="notification Day">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="originCountryId" class="col-sm-12 col-form-label">Origin</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.originCountryId = this.$event.id);"
+                                    [items]="OriginCountryList" name="originCountryId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="originCountryId"
+                                    placeholder="Select Origin" appendTo="body"
+                                    [(ngModel)]="master.originCountrySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-sm-12 col-form-label">Company</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.companyId = this.$event.id);"
+                                    [items]="companyList" name="companyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="companyId" placeholder="Select Company"
+                                    appendTo="body" [(ngModel)]="master.companySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isQCRequired" name="isQCRequired" status="success">
+                                    <b>QCRequired?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+
+                    <nb-tab tabTitle="Color" class="btn-tab" *ngIf="show">
+                        <ul class="list-inline text-right">
+                            <li> <button (click)="addColor()" [hidden]="master.productId == 0"
+                                    class="btn btn-success btn-sm m-3"> <i class="fa fa-save"
+                                        aria-hidden="true"></i>{{ColorButton}}</button></li>
+                        </ul>
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>Color Name</th>
+                                    <th>Color Code</th>
+                                    <th>Active</th>
+                                    <th>Default</th>
+                                </tr>
+                                <tr *ngFor="let colordetail of colorModel; let rowIndex = index">
+                                    <td>
+                                        <input [(ngModel)]="colordetail.colorName" type="text" class="form-control"
+                                            id="colorName" required name="colorName" nbInput fullWidth
+                                            placeholder="Text">
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="colordetail.colorCode" type="text" class="form-control"
+                                            id="colorCode" required name="colorCode" readonly nbInput fullWidth
+                                            placeholder="Text">
+                                    </td>
+                                    <td>
+                                        <nb-checkbox [(ngModel)]="colordetail.Active" id="Active" name="Active"
+                                            status="success">
+                                        </nb-checkbox>
+                                    </td>
+                                    <td>
+                                        <nb-checkbox [(ngModel)]="colordetail.isDefault" id="isDefault" name="isDefault"
+                                            status="success">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </nb-tab>
+
+                    <nb-tab tabTitle="Size" class="btn-tab" *ngIf="show">
+                        <ul class="list-inline text-right">
+                            <li> <button (click)="addSize()" [hidden]="master.productId == 0"
+                                    class="btn btn-success btn-sm m-3"> <i class="fa fa-save"
+                                        aria-hidden="true"></i>{{SizeButton}}</button></li>
+                        </ul>
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>size</th>
+                                    <th>Active</th>
+                                    <th>Default</th>
+                                </tr>
+                                <tr *ngFor="let sizedetail of sizeModel; let rowIndex = index">
+                                    <td>
+                                        <input [(ngModel)]="sizedetail.size" type="text" class="form-control" id="size"
+                                            required name="size" readonly nbInput fullWidth placeholder="Text">
+                                    </td>
+                                    <td>
+                                        <nb-checkbox [(ngModel)]="sizedetail.Active" id="Active" name="Active"
+                                            status="success">
+                                        </nb-checkbox>
+                                    </td>
+                                    <td>
+                                        <nb-checkbox [(ngModel)]="sizedetail.isDefault" id="isDefault" name="Default"
+                                            status="success">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+
+                    <nb-tab tabTitle="Bar Code And Price" class="btn-tab" *ngIf="show">
+
+                        <ul class="list-inline text-right">
+                            <li> <button (click)="generatBarcode()" [hidden]="master.productId == 0"
+                                    class="btn btn-success btn-sm m-3"> <i class="fa fa-plus"
+                                        aria-hidden="true"></i>{{generatCodeButton}}</button>
+                                <button (click)="addPricing()" [hidden]="master.productId == 0"
+                                    class="btn btn-success btn-sm m-3"> <i class="fa fa-save"
+                                        aria-hidden="true"></i>{{SaveSizeButton}}</button>
+                            </li>
+                        </ul>
+
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>BarCode</th>
+                                    <th>Color</th>
+                                    <th>Size</th>
+                                    <th>Price</th>
+                                    <th>Effective Date</th>
+                                </tr>
+                                <tr *ngFor="let BarCodedetail of BarCodeModel; let rowIndex = index">
+                                    <td>
+                                        <input [(ngModel)]="BarCodedetail.BarCode" type="text" class="form-control"
+                                            id="BarCode" required name="BarCode" nbInput fullWidth placeholder="Text">
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="BarCodedetail.colorId" type="text" class="form-control"
+                                            id="colorId" required name="colorId" nbInput fullWidth placeholder="Text">
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="BarCodedetail.sizeId" type="text" class="form-control"
+                                            id="sizeId" required name="sizeId" nbInput fullWidth placeholder="Text">
+                                    </td>
+                                    <td>
+                                        <input (change)="( BarCodedetail.price = this.$event.target.value)"
+                                            [(ngModel)]="BarCodedetail.price" type="number" class="form-control"
+                                            id="price" required name="price" nbInput fullWidth placeholder="Price">
+                                    </td>
+                                    <td>
+                                        <input nbInput placeholder="Form Picker"
+                                            (change)="( BarCodedetail.effectiveDate = this.$event.target.value)"
+                                            [(ngModel)]="BarCodedetail.effectiveDate" [nbDatepicker]="formpicker"
+                                            fullWidth [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #formpicker></nb-datepicker>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+
+                    <nb-tab tabTitle="Supplier" class="btn-tab" *ngIf="show">
+
+                        <div class="text-right">
+                            <button (click)="refesh()" class="btn btn-warning btn-sm"> <i class="fa fa-refresh"
+                                    aria-hidden="true"></i> Refesh </button>
+                            <button (click)="addDetails(dialog)" class="btn btn-success btn-sm m-3"> <i
+                                    class="fa fa-plus" aria-hidden="true"></i> Add </button>
+                            <button (click)="SaveSupplier()" class="btn btn-success btn-sm m-3"> <i class="fa fa-save"
+                                    aria-hidden="true"></i>Save</button>
+                        </div>
+
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Supplier Name</th>
+                                    <th>Supplier Addres</th>
+                                    <th>Supplier Contact Number</th>
+                                    <th>Email</th>
+                                    <td>Action</td>
+                                </tr>
+
+                                <tr *ngFor="let detail of lstdetailmodel; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <ng-select
+                                            (change)="onOptionsSelected( detail.supplierId = this.$event.id,rowIndex)"
+                                            [items]="supplierList" name="dropdown" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="dropdown"
+                                            placeholder="Select Supplier" appendTo="body"
+                                            [(ngModel)]="detail.supplierSelected">
+                                        </ng-select>
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.supplierAddress"
+                                            (change)="( detail.supplierAddress = this.$event.target.value)" type="text"
+                                            readonly class="form-control" id="text" readonly required name="text"
+                                            nbInput fullWidth placeholder="Text">
+                                    </td>
+
+                                    <td>
+                                        <input [(ngModel)]="detail.supplierContact"
+                                            (change)="( detail.supplierContact = this.$event.target.value)" type="text"
+                                            readonly class="form-control" id="text" readonly required name="text"
+                                            nbInput fullWidth placeholder="Text">
+                                    </td>
+
+                                    <td>
+                                        <input [(ngModel)]="detail.supplierEmail"
+                                            (change)="( detail.supplierEmail = this.$event.target.value)" type="text"
+                                            readonly class="form-control" id="text" readonly required name="text"
+                                            nbInput fullWidth placeholder="Text">
+                                    </td>
+
+                                    <td>
+                                        <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+                    </nb-tab>
+
+                    <nb-tab tabTitle="Discount" class="btn-tab" *ngIf="show">
+
+                        <ul class="list-inline text-right">
+                            <li> <button (click)="addDiscount()" [hidden]="master.productId == 0"
+                                    class="btn btn-success btn-sm m-3"> <i class="fa fa-save"
+                                        aria-hidden="true"></i>{{DiscountButton}}</button>
+                                <button (click)="ClearDiscount()" [hidden]="master.productId == 0"
+                                    class="btn btn-success btn-sm m-3"> <i class="fa fa-save"
+                                        aria-hidden="true"></i>Clear</button>
+                            </li>
+                        </ul>
+
+                        <div class="row">
+
+                            <div class="col-4">
+                                <div class="form-group row">
+                                    <label for="discountTypeId" class="col-4 col-form-label">Discount
+                                        Type<span>*</span></label>
+                                    <div class="col-sm-7">
+                                        <ng-select nbselect (change)="(Discountdetail.discountTypeId = this.$event.id);"
+                                            [items]="productDiscountList" name="discountTypeId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="discountTypeId"
+                                            placeholder="Select Product Category" appendTo="body"
+                                            [(ngModel)]="Discountdetail.discountTypeIdSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="form-group row">
+                                    <label for="fromDate" class="col-4 col-form-label">From Date
+                                        <span>*</span></label>
+                                    <div class="col-sm-7">
+                                        <input required [(ngModel)]="Discountdetail.fromDate"
+                                            [nbDatepicker]="fdatepicker" nbInput fullWidth placeholder="From Date"
+                                            [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #fdatepicker></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="form-group row">
+                                    <label for="toDate" class="col-4 col-form-label">To Date
+                                        <span>*</span></label>
+                                    <div class="col-sm-7">
+                                        <input required [(ngModel)]="Discountdetail.toDate" [nbDatepicker]="tdatepicker"
+                                            nbInput fullWidth placeholder="To Date"
+                                            [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #tdatepicker></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-3">
+                                <div class="form-group row">
+                                    <div class="col-sm-12 validation-checkboxes">
+                                        <nb-checkbox [(ngModel)]="Discountdetail.isAmount" name="isAmount"
+                                            status="success">
+                                            <b>Is Amount?</b>
+                                        </nb-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label" for="discountAmountOrPercentage">Discount
+                                        Amount/Percentage<span>*</span></label>
+                                    <div class="col-sm-6">
+                                        <input type="number" class="form-control" required
+                                            [(ngModel)]="Discountdetail.discountAmountOrPercentage"
+                                            id="discountAmountOrPercentage" name="discountAmountOrPercentage" nbInput
+                                            fullWidth placeholder="Discount Amount/Percentage">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Discount Type</th>
+                                    <th>From Date</th>
+                                    <th>To Date</th>
+                                    <th>Is Amount</th>
+                                    <th>Discount Amount/Percentage</th>
+
+                                    <td>Action</td>
+                                </tr>
+
+                                <tr *ngFor="let detail of DiscountDetailsmodel; let rowDiscountIndex = index">
+                                    <td>{{rowDiscountIndex+1}}</td>
+                                    <td>
+                                        <input [(ngModel)]="detail.discountTypeName" type="text" readonly
+                                            class="form-control" id="text" name="text" nbInput fullWidth>
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.fromDate" type="text" readonly class="form-control"
+                                            id="text" required name="text" nbInput fullWidth placeholder="Text">
+                                    </td>
+
+                                    <td>
+                                        <input [(ngModel)]="detail.toDate" type="text" readonly class="form-control"
+                                            id="text" required name="text" nbInput fullWidth placeholder="Text">
+                                    </td>
+
+                                    <td>
+                                        <input [(ngModel)]="detail.Amount" type="text" readonly class="form-control"
+                                            id="text" readonly required name="text" nbInput fullWidth
+                                            placeholder="Text">
+                                    </td>
+
+                                    <td>
+                                        <input [(ngModel)]="detail.discountAmountOrPercentage" type="text" readonly
+                                            class="form-control" id="text" readonly required name="text" nbInput
+                                            fullWidth placeholder="Text">
+                                    </td>
+
+                                    <td>
+                                        <button (click)="DeleteDiscount(rowDiscountIndex)"
+                                            class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                        <button (click)="editdiscount(rowDiscountIndex)"
+                                            class="btn btn-primary btn-sm m-1">
+                                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+                    </nb-tab>
+
+                    <nb-tab tabTitle="Specification " class="btn-tab">
+                        <ul class="list-inline text-right">
+                            <li> <button (click)="addSpecificationDetails()" [hidden]="!master.productCategoryId"
+                                    class="btn btn-success btn-sm m-3"> <i class="fa fa-plus"
+                                        aria-hidden="true"></i>Add</button>
+                                <button (click)="clearSpecificationDetails()" [hidden]="!master.productCategoryId"
+                                    class="btn btn-success btn-sm m-3"> <i class="fa fa-clear"
+                                        aria-hidden="true"></i>Clear</button>
+                                <!-- <button (click)="SaveOtherSpecification()" [hidden]="!master.productCategoryId" class="btn btn-success btn-sm m-3"> <i class="fa fa-save"
+                                        aria-hidden="true"></i>Save</button> -->
+                            </li>
+                        </ul>
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SKU Name</th>
+                                    <th>SKU Code</th>
+                                    <th>Image</th>
+                                    <th>specification Type</th>
+                                    <th>Value</th>
+                                </tr>
+                                <tr *ngFor="let detail of master.Specificationdetail; let rowIndex = index">
+                                    <td [attr.rowspan]="detail.rowMerge" *ngIf="!detail.isHide">
+                                        <input [(ngModel)]="detail.skuName"
+                                            (change)="(detail.skuName = this.$event.target.value)" type="text"
+                                            class="form-control" id="text" required name="text" nbInput fullWidth
+                                            placeholder="Text">
+                                    </td>
+                                    <td [attr.rowspan]="detail.rowMerge" *ngIf="!detail.isHide">
+                                        <input [(ngModel)]="detail.skuNumber"
+                                            (change)="( detail.skuNumber = this.$event.target.value)" type="text"
+                                            class="form-control" id="text" name="SKUCode" nbInput fullWidth
+                                            placeholder="skuNumber">
+                                    </td>
+                                    <td [attr.rowspan]="detail.rowMerge" *ngIf="!detail.isHide">
+                                        <input type="file" id="file"
+                                            (change)="uploadFileDetail($event.target.files, rowIndex)">
+                                        <img [src]="detail.imageFile" style="height: 100px;">
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.specificationType"
+                                            (change)="( detail.specificationType = this.$event.target.value)"
+                                            type="text" class="form-control" readonly id="text" name="text" nbInput
+                                            fullWidth placeholder="Text">
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.value"
+                                            (change)="( detail.value = this.$event.target.value)" type="text"
+                                            class="form-control" id="Value" required name="Value" nbInput fullWidth
+                                            placeholder="Value">
+                                    </td>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

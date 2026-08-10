@@ -1,0 +1,65 @@
+<div class="header-container">
+    <div class="logo-container">
+        <a (click)="toggleSidebar()" href="#" class="sidebar-toggle">
+            <nb-icon icon="menu-2-outline"></nb-icon>
+        </a>
+        <a (click)="navigateHome()" href="#" class="logo">One-<span>ERP</span></a>
+        <!-- <div class="col-lg-12 col-md-6 col-sm-2">
+            <nb-select [selected]="currentModule" (selectedChange)="setModuleRouting(currentModule)" status="primary">
+                <nb-option *ngFor="let theme of modules" [value]="theme.value"> {{ theme.name }}</nb-option>
+            </nb-select>           
+        </div> -->
+
+    </div>
+</div>
+
+<div class="header-container">
+    <nb-select [selected]="currentCompany" (selectedChange)="changeCompany($event)" status="success" class="m-1">
+        <nb-option *ngFor="let company of companies" [value]="company.companyId.toString()"> {{ company.aliasName
+            }}</nb-option>
+    </nb-select>
+    <nb-select [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
+        <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
+    </nb-select>
+
+    <nb-actions>
+        <!-- <nb-action class="control-item"> <nb-search type="rotate-layout"></nb-search> </nb-action>
+        <nb-action class="control-item" icon="email-outline"></nb-action>
+        <nb-action class="control-item" icon="bell-outline"></nb-action> -->
+
+        <!-- <nb-action class="user-action" *nbIsGranted="['view', 'user']" >
+      <nb-user [nbContextMenu]="userMenu"
+               [nbContextMenuTag]="onMenuItemClick"
+               [onlyPicture]="userPictureOnly"
+               [name]="user?.name"
+               [picture]="user?.picture">
+      </nb-user>
+    </nb-action> -->
+        <nb-action *nbIsGranted="['view', 'user']">
+            <nb-user [nbContextMenu]="userMenu" [nbContextMenuTag]="tag" [name]="user?.name" [picture]="user?.picture">
+            </nb-user>
+        </nb-action>
+    </nb-actions>
+</div>
+
+
+
+<!-- 
+<div class="section middle">
+  <div class="first-section">
+    <nb-menu>
+      <ul class="menu-items">
+        <li  nbmenuitem="" class="menu-item ng-tns-c46-1 ng-star-inserted">
+         <a class="ng-tns-c46-1 ng-star-inserted" title="Docs" href="/ngx-admin/docs">
+           <span class="menu-title ng-tns-c46-1">Docs</span></a>        
+        </li>       
+        <li  nbmenuitem="" class="menu-item ng-tns-c46-2 ng-star-inserted">
+        <a class="ng-tns-c46-2 ng-star-inserted"
+            href="https://www.akveo.com/ngx-admin?utm_campaign=ngx_admin%20-%20demo%20-%20ngx_admin%20docs&amp;utm_source=ngx_admin&amp;utm_medium=referral&amp;utm_content=landing_main_section&amp;__hstc=251808470.23a9b1fa64b5ab7851d3f97c7d8382f5.1612079730589.1612079730589.1612079730589.1&amp;__hssc=251808470.1.1612079730589&amp;__hsfp=2264860314"
+            title="Demo">
+            <span class="menu-title ng-tns-c46-2">Demo</span></a>         
+        </li>        
+      </ul>
+    </nb-menu>
+    
+</div> -->

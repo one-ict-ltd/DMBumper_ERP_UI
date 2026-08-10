@@ -1,0 +1,82 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="depotCode = this.$event.id;" [items]="depotList" name="depotCode"
+                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                            placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-sm-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card>
+    <nb-card-header>
+        <div class="row">
+            <div class="col-12 text-center">
+                <h5>Product Wise Gross Return Report</h5>
+            </div>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product Name</th>
+                        <th>Pack Size</th>
+                        <th style="text-align: right;">TP Value</th>
+                        <th style="text-align: right;">VAT Value</th>
+                        <th style="text-align: right;">Discount Value</th>
+                        <th style="text-align: right;">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.ProductName}}</td>
+                        <td>{{item.PackSize}}</td>
+                        <td align="right">{{this.currencyFormatter(item.TPValue)}}</td>
+                        <td align="right">{{this.currencyFormatter(item.VATValue)}}</td>
+                        <td align="right">{{this.currencyFormatter(item.DiscountValue)}}</td>
+                        <td align="right">{{this.currencyFormatter(item.TotalPrice)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

@@ -1,0 +1,220 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="packetingMasterDate">Transfer
+                                Date <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.packetingMasterDate"
+                                    (ngModelChange)="getPacketTransferNo();" name="packetingMasterDate"
+                                    id="packetingMasterDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #fdatepicker [min]="minDate" [max]="maxDate"></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="packetingMasterNo">Promo Packeting
+                                No. <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.packetingMasterNo"
+                                    id="packetingMasterNo" name="packetingMasterNo" nbInput fullWidth
+                                    placeholder="Promo Received No." readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="promoRequisitionId">Promo Requisition
+                                No. <span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect [items]="RequisitionList"
+                                    (change)="GetPromoTerritotiesForBulkPacketing();getAllPacketByRequisitionMasterId();"
+                                    name="promoRequisitionId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="promoRequisitionId" placeholder="Select Req. No." appendTo="body"
+                                    [(ngModel)]="master.productTransferNoSelected"
+                                    [disabled]="disabledDdl ? 'disabled' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="grid-wrapper table-wrapper-scroll-y my-custom-scrollbar" *ngIf="!show" style="height: 400px;">
+    <table class=" table table-bordered table-striped">
+        <tr>
+            <th style="width: 5%;">#</th>
+            <th style="width: 25%;">Location Name</th>
+            <th style="width: 15%;">Requisition Qty.</th>
+            <th style="width: 15%;">View</th>
+
+        </tr>
+        <tr *ngFor="let detail of master.lstDetailsViewModelForModal; let rowIndex = index">
+            <td>{{rowIndex+1}}</td>
+            <td>
+                <div style="margin-left: 5px;">{{detail.locationName}}</div>
+            </td>
+            <td>
+                <div style="margin-left: 5px;">{{detail.quantity}}</div>
+            </td>
+            <td>
+                <div style="margin-left: 5px;">
+                    <button type="button" (click)="viewPacketDetails(detail.locationCode);OpenModal(promoPacket)"
+                        class="btn btn-primary">View
+                        Details</button>
+                </div>
+            </td>
+
+        </tr>
+        <tr style="background-color: rgb(60, 173, 218); width: 80px; font-weight: bold;">
+
+            <td colspan="2">
+                <div style="margin-left: 5px;">Total</div>
+            </td>
+            <td>
+                <div style="margin-left: 5px;">{{totalRequQty}}</div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+
+
+<ng-template #promoPacket let-data let-ref="dialogRef">
+
+    <div class="col-sm-12 col-md-12 col-lg-12" style="width: 880px;">
+        <nb-card class="min-height">
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-lg-11 col-md-11 col-sm-11">
+                        <h4>Details of {{currentTerritory}}</h4>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1">
+                        <button style="text-align: right;" nbButton (click)="ref.close();"><span>X</span></button>
+                    </div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="grid-wrapper table-wrapper-scroll-y my-custom-scrollbar" *ngIf="!show"
+                    style="height: 300px;">
+                    <table class=" table table-bordered table-striped">
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 25%;">Product Name</th>
+                            <th style="width: 15%;">Requisition Qty.</th>
+                            <th style="width: 15%;">Packed Qty.</th>
+                            <th style="width: 15%;">Rest Qty.</th>
+                            <th style="width: 15%;">Number of Qty.</th>
+                        </tr>
+                        <tr *ngFor="let detail of master.lstDetailsViewModelTemp; let rowIndex = index">
+                            <td>{{rowIndex+1}}</td>
+                            <td>
+                                <div style="margin-left: 5px;">{{detail.productName}}</div>
+                            </td>
+                            <td>
+                                <div style="margin-left: 5px;">{{detail.quantity}}</div>
+                            </td>
+                            <td>
+                                <div style="margin-left: 5px;">{{detail.transferedQty}}</div>
+                            </td>
+                            <td>
+                                <div style="margin-left: 5px;">{{detail.restQty}}</div>
+                            </td>
+                            <td>
+                                <input style="height: 25px;" [(ngModel)]="detail.transferQty"
+                                    (change)="( detail.transferQty = this.$event.target.value);"
+                                    (input)="getTotalOfTable();" type="number" class="form-control" id="text" required
+                                    name="text" nbInput fullWidth placeholder="transfer Qty." min="0"
+                                    [disabled]="detail.restQty===0">
+                            </td>
+                        </tr>
+                        <tr style="background-color: rgb(60, 173, 218); width: 80px; font-weight: bold;">
+
+                            <td colspan="2">
+                                <div style="margin-left: 5px;">Total</div>
+                            </td>
+                            <td>
+                                <div style="margin-left: 5px;"></div>
+                            </td>
+                            <td>
+                                <div style="margin-left: 5px;"></div>
+                            </td>
+                            <td>
+                                <div style="margin-left: 5px;"></div>
+                            </td>
+                            <td>
+                                <div style="margin-left: 5px;">{{totalNumberOfPacks}}</div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-lg-12 text-right text-danger" style="font-weight: bold;" *ngIf="!show">Total Qty.:
+                    {{totalNumberOfPacks}}</div>
+
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-lg-11 col-md-11 col-sm-11">
+                        <span>{{msg}}</span>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: -45px;">
+                        <div style="text-align: center;">
+                            <button class="btn btn-danger m-0 !important"
+                                (click)="addToChangeList(master.lstDetailsViewModelTemp);">Change</button>
+                            <button class="btn btn-primary m-0 !important" (click)="ref.close()">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+
+</ng-template>
+<div class="row" *ngIf="!show && !spinner">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+            <div class="col-sm-12 text-center">
+                <button class="btn btn-success" (click)="finilizePackets()" type="button">Finilize packets</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12" style="text-align: center;" *ngIf="!show && spinner">
+    <div>
+        <div class="spinner-border text-success" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>

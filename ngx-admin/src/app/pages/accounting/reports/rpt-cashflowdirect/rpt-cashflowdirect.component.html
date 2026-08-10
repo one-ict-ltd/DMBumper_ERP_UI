@@ -1,0 +1,316 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="companyId" class="col-4 col-form-label">Company Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect (change)="getBranch(this.$event.id);" [items]="companies" name="companyId"
+                            bindLabel="name" id="companyId" [(ngModel)]="companySelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="BranchId" class="col-4 col-form-label">Branch Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="branchs" name="BranchId" bindLabel="name" id="BranchId"
+                            [(ngModel)]="branchSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Branch" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="fromdateSelected" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker (dateChange)="getYearName($event);"></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="todateSelected" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table" class="table table-bordered">
+                <thead style="background-color:lightgray;border-bottom:groove;">
+                    <tr>
+                        <th style="text-align:center;vertical-align: middle;">Particulars</th>
+                        <th style="text-align:center;">Tk.</th>
+                        <th style="text-align:center;">Tk.</th>
+                    </tr>
+                </thead>
+                <thead>
+                    <tr>
+                        <th colspan="3" width="100%">CASH FLOWS FROM OPERATING ACTIVITIES :</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData;">
+                        <td style="width:50%;">{{item.noteName}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(item.currentAmount)}}</td>
+                        <td style="width:25%;" align="right"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table1" class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td style="width:50%;font-weight:bold;">NET CASH FLOWS FROM OPERATING ACTIVITIES </td>
+                        <td style="width:25%;font-weight:bold;" align="right"></td>
+                        <td style="width:25%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCFO)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Investing -->
+
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table2" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="3" width="100%">CASH FLOWS FROM INVESTING ACTIVITIES :</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyDataCFI;">
+                        <td style="width:50%;">{{item.noteName}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(item.currentAmount)}}</td>
+                        <td style="width:25%;" align="right"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table3" class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td style="width:50%;font-weight:bold;">NET CASH FLOWS FROM INVESTING ACTIVITIES</td>
+                        <td style="width:25%;font-weight:bold;" align="right"></td>
+                        <td style="width:25%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCFI)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Financing -->
+
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table4" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th colspan="3" width="100%">CASH FLOWS FROM FINANCING ACTIVITIES :</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyDataCFF;">
+                        <td style="width:50%;">{{item.noteName}}</td>
+                        <td style="width:25%;" align="right">{{this.currencyFormatter(item.currentAmount)}}</td>
+                        <td style="width:25%;" align="right"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table5" class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td style="width:50%;font-weight:bold;">NET CASH FLOW FROM FINANCING ACTIVITIES</td>
+                        <td style="width:25%;font-weight:bold;" align="right"></td>
+                        <td style="width:25%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCFF)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table6" class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td style="width:50%;font-weight:bold;">NET INCREASE (DECREASE) IN CASH FOR THE PERIOD</td>
+                        <td style="width:25%;font-weight:bold;" align="right"></td>
+                        <td style="width:25%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCFIncrDecr)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table7" class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td style="width:50%;font-weight:bold;">CASH AND CASH EQUIVALENTS AT THE BEGINNING OF THE PERIOD
+                        </td>
+                        <td style="width:25%;font-weight:bold;" align="right"></td>
+                        <td style="width:25%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalOB)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table8" class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td style="width:50%;font-weight:bold;">CASH AND CASH EQUIVALENTS AT THE END OF THE PERIOD</td>
+                        <td style="width:25%;font-weight:bold;" align="right"></td>
+                        <td style="width:25%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCFEnd)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+
+    </nb-card-footer>
+</nb-card>
+
+<!-- PDF  -->
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Cash Flow Statement (Direct)</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue }}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row" style="padding: 0px 15px 0px 15px;">
+                <table id="body_table" class="table table-bordered">
+                    <thead style="background-color:lightgray;border-bottom:groove;">
+                        <tr>
+                            <th style="text-align:center;vertical-align: middle;">Particulars</th>
+                            <th style="text-align:center;">Tk.</th>
+                            <th style="text-align:center;">Tk.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th colspan="3" style="width:100%;">CASH FLOWS FROM OPERATING ACTIVITIES :</th>
+                        </tr>
+                        <tr *ngFor="let item of bodyData;">
+                            <td style="width:50%;">{{item.noteName}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(item.currentAmount)}}</td>
+                            <td style="width:25%;" align="right"></td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%;font-weight:bold;text-align: right;">NET CASH FLOWS FROM OPERATING
+                                ACTIVITIES</td>
+                            <td style="width:25%;font-weight:bold;" align="right"></td>
+                            <td style="width:25%;font-weight:bold;" align="right">
+                                {{this.currencyFormatter(TotalCFO)}}</td>
+                        </tr>
+
+                        <!-- Investing -->
+
+                        <tr>
+                            <th colspan="3" style="width:100%;">CASH FLOWS FROM INVESTING ACTIVITIES :</th>
+                        </tr>
+                        <tr *ngFor="let item of bodyDataCFI;">
+                            <td style="width:50%;">{{item.noteName}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(item.currentAmount)}}</td>
+                            <td style="width:25%;" align="right"></td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%;font-weight:bold;text-align: right;">NET CASH FLOWS FROM INVESTING
+                                ACTIVITIES</td>
+                            <td style="width:25%;font-weight:bold;" align="right"></td>
+                            <td style="width:25%;font-weight:bold;" align="right">
+                                {{this.currencyFormatter(TotalCFI)}}</td>
+                        </tr>
+
+                        <!-- Financing -->
+
+                        <tr>
+                            <th colspan="3" style="width:100%;">CASH FLOWS FROM FINANCING ACTIVITIES :</th>
+                        </tr>
+                        <tr *ngFor="let item of bodyDataCFF;">
+                            <td style="width:50%;">{{item.noteName}}</td>
+                            <td style="width:25%;" align="right">{{this.currencyFormatter(item.currentAmount)}}</td>
+                            <td style="width:25%;" align="right"></td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%;font-weight:bold;text-align: right;">NET CASH FLOWS FROM FINANCING
+                                ACTIVITIES</td>
+                            <td style="width:25%;font-weight:bold;" align="right"></td>
+                            <td style="width:25%;font-weight:bold;" align="right">
+                                {{this.currencyFormatter(TotalCFF)}}</td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%;font-weight:bold;text-align: right;">NET INCREASE (DECREASE) IN CASH
+                                FOR THE PERIOD</td>
+                            <td style="width:25%;font-weight:bold;" align="right"></td>
+                            <td style="width:25%;font-weight:bold;" align="right">
+                                {{this.currencyFormatter(TotalCFIncrDecr)}}</td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%;font-weight:bold;text-align: right;">CASH AND CASH EQUIVALENTS AT THE
+                                BEGINNING OF THE PERIOD</td>
+                            <td style="width:25%;font-weight:bold;" align="right"></td>
+                            <td style="width:25%;font-weight:bold;" align="right">
+                                {{this.currencyFormatter(TotalOB)}}</td>
+                        </tr>
+                        <tr>
+                            <td style="width:50%;font-weight:bold;text-align: right;">CASH AND CASH EQUIVALENTS AT THE
+                                END OF THE PERIOD</td>
+                            <td style="width:25%;font-weight:bold;" align="right"></td>
+                            <td style="width:25%;font-weight:bold;" align="right">
+                                {{this.currencyFormatter(TotalCFEnd)}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

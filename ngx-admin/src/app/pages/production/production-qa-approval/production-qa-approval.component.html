@@ -1,0 +1,339 @@
+<nb-card class="actions-card">
+    <nb-card-header><b style="color: blue;">{{pageNavigation}}</b>
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="FromDate">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadFromDateShow" name="loadFromDateShow" id="loadFromDateShow"
+                            [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="ToDate">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row !important">
+                    <button class="btn btn-info" (click)="GetGridData();">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+<nb-card *ngIf="!show" style="margin-bottom: 0.2rem;">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label" for="productionPlanId">Batch No
+                                <span>*</span></label>
+                            <div class="col-sm-10">
+                                <ng-select nbselect
+                                    (change)="(master.productionPlanId = this.$event.id); getProcessDetails($event);"
+                                    [items]="productionPlanList" id="productionPlanId" name="productionPlanId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Select Batch Name" appendTo="body"
+                                    [(ngModel)]="master.productionPlanSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="QCDate">QC Approve Date</label>
+                            <div class="col-sm-8">
+                                <input required name="qcDatepicker" id="qcDatepicker" [nbDatepicker]="qcDatepicker"
+                                    nbInput fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}"
+                                    [(ngModel)]="master.QCDate">
+                                <nb-datepicker #qcDatepicker aria-disabled="true"></nb-datepicker>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-4"></div>
+
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productName">Product Name </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.productName"
+                                    id="productName" name="productName" nbInput fullWidth placeholder="productName"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="stdBatchSize">Batch Size</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.stdBatchSize"
+                                    id="stdBatchSize" name="stdBatchSize" nbInput fullWidth placeholder="stdBatchSize"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchDate">Plan Date</label>
+                            <div class="col-sm-8">
+                                <input required name="bDatepicker" id="bDatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" [(ngModel)]="master.batchDate" readonly>
+                                <!-- [nbDatepicker]="bDatepicker" -->
+                                <!-- <nb-datepicker #bDatepicker aria-disabled="true"></nb-datepicker> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="ProcessStartDate">Process Start</label>
+                            <div class="col-sm-8">
+                                <input required name="sDatepicker" id="sDatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" [(ngModel)]="master.startDate" readonly>
+                                <!-- [nbDatepicker]="sDatepicker" -->
+                                <!-- <nb-datepicker #sDatepicker aria-disabled="true"></nb-datepicker> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="ProcessEndDate">Process End</label>
+                            <div class="col-sm-8">
+                                <input required name="eDatepicker" id="eDatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" [(ngModel)]="master.endDate" readonly>
+                                <!-- [nbDatepicker]="eDatepicker" -->
+                                <!-- <nb-datepicker #eDatepicker aria-disabled="true"></nb-datepicker> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productionPlanId">Remarks</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.remarks"
+                                    id="remarks" name="remarks" nbInput fullWidth placeholder="remarks">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="mfgDate">Mfg Date</label>
+                            <div class="col-sm-8">
+                                <input required name="mfgDate" id="mfgDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" [(ngModel)]="master.mfgDate" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="expDate">Exp Date</label>
+                            <div class="col-sm-8">
+                                <input required name="expDate" id="expDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" [(ngModel)]="master.expDate" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </fieldset>
+    </nb-card-header>
+
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <nb-card>
+                <nb-card-header>
+                    <div class="row">
+                        <div class="col-2"><b style="color: green;">QC Process</b></div>
+                    </div>
+                </nb-card-header>
+                <nb-card-body>
+                    <fieldset [disabled]="disabled ? 'disabled' : null">
+                        <form #masterForm="ngForm">
+                            <div class="row">
+                                <div class="col-6" hidden>
+                                    <div class="form-group row">
+                                        <label for="testName" class="col-sm-3 col-form-label">Parameter</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" [(ngModel)]="master.testName"
+                                                id="testName" name="testName" nbInput fullWidth placeholder="Test Name">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label" for="Parameter">Parameter
+                                            <span>*</span></label>
+                                        <div class="col-sm-9">
+                                            <ng-select nbselect
+                                                (change)="(TestParameterId = this.$event.id); (master.testName = this.$event.name); (uom = this.$event.uom);"
+                                                [items]="ParameterList" id="Parameter" name="Parameter" bindLabel="name"
+                                                [ngModelOptions]="{standalone: true}" placeholder="Select a Parameter"
+                                                appendTo="body" [(ngModel)]="ParameterSelected">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group row">
+                                        <label for="value" class="col-sm-3 col-form-label">Value <span>*</span></label>
+                                        <div class="col-sm-9 input-group">
+                                            <input type="text" class="form-control" style="width: 50%;"
+                                                [(ngModel)]="master.value" id="value" name="value" nbInput fullWidth
+                                                placeholder="value" aria-describedby="uomName">
+                                            <!-- <span>{{uom}}</span> -->
+                                            <div class="input-group-append">
+                                                <span class="input-group-text" id="uomName">{{uom}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3"></div>
+                                <div class="col-6">
+                                    <div class="form-group row">
+                                        <label for="Description" class="col-sm-3 col-form-label">Description</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control " [(ngModel)]="master.description"
+                                                id="Description" name="Description" nbInput fullWidth
+                                                placeholder="Description">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="form-group row">
+                                        <label for="result" class="col-sm-3 col-form-label">Result<span>*</span></label>
+                                        <div class="col-sm-9">
+                                            <ng-select nbselect
+                                                (change)="(master.resultId = this.$event.id);(master.result=this.$event.name)"
+                                                [items]="resultList" name="resultId" bindLabel="name"
+                                                [ngModelOptions]="{standalone: true}" id="resultId"
+                                                placeholder="Select Result" [(ngModel)]="master.result" appendTo="body">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div style="text-align: left;">
+                                        <button class="btn btn-success btn-m" (click)="addToDetailsGrid(dialog)"
+                                            id="addToDetailsGrid" (keydown.enter)="moveToNext('addToDetailsGrid')"
+                                            tabindex="7"> <i class="fa fa-plus" aria-hidden="true"></i>
+                                            Add </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </fieldset>
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <hr>
+                        <label for="result" class="col-sm-3 col-form-label"><b>QC Process
+                                List</b></label>
+                        <!-- <nb-card class="min-height">
+                            <fieldset [disabled]="disabled ? 'disabled' : null">
+                                <nb-tabset>
+                                    <nb-tab tabTitle="QC Process List" class="btn-tab"> -->
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                            <div class="grid-wrapper" style="overflow-y:scroll; overflow-x: scroll; max-height: 250px">
+                                <table class=" table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Parameter Name</th>
+                                            <th>Value</th>
+                                            <th>Result</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let details of master.QCprocessList; let rowIndex = index">
+                                            <td>{{rowIndex+1}}</td>
+                                            <td>{{details.testName}}</td>
+                                            <td>{{details.value}}</td>
+                                            <td>{{details.result}}</td>
+                                            <td>{{details.description}}</td>
+                                            <td>
+                                                <button (click)="deleteDetails(rowIndex)" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- </nb-tab>
+                                </nb-tabset>
+                            </fieldset>
+                        </nb-card> -->
+                    </div>
+                </nb-card-body>
+                <nb-card-footer>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group row">
+                                <label for="isPosted" class="col-sm-4 col-form-label"> <b style="color: blue;">Approval
+                                        Status</b> </label>
+                                <div class="col-sm-8">
+                                    <nb-radio-group [(ngModel)]="master.approvalStatus" name="isPosted">
+                                        <nb-radio value=1>
+                                            Approve
+                                        </nb-radio>
+                                        <nb-radio value=2>
+                                            Reject
+                                        </nb-radio>
+                                    </nb-radio-group>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label" for="QCDate"><b style="color: blue;">QC
+                                        Date</b></label>
+                                <div class="col-sm-8">
+                                    <input required name="qcDatepicker" id="qcDatepicker" [nbDatepicker]="qcDatepicker"
+                                        nbInput fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}"
+                                        [(ngModel)]="master.QCDate" readonly>
+                                    <nb-datepicker #qcDatepicker aria-disabled="true"></nb-datepicker>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nb-card-footer>
+            </nb-card>
+        </div>
+
+
+    </div>
+</nb-card>

@@ -1,0 +1,226 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+
+      <div class="col-lg-4 col-md-8 col-sm-12">
+        <div class="form-group row">
+          <label for="ZoneCode" class="col-sm-12 col-form-label">Zone<span>*</span></label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetDepo(master.ZoneId = this.$event.id);" [items]="ZoneList" name="Zone Code"
+              bindLabel="name" [ngModelOptions]="{standalone: true}" id="ZoneCode" placeholder="Zone Code"
+              appendTo="body" [(ngModel)]="master.ZoneCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-8 col-sm-12" hidden>
+        <div class="form-group row">
+          <label for="DepotCode" class="col-sm-12 col-form-label">Depo</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetRegion(master.DepoId = this.$event.id);" [items]="DepoList"
+              name="Depo Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="DepotCode"
+              placeholder="Depo Code" appendTo="body" [(ngModel)]="master.DepoCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-8 col-sm-12">
+        <div class="form-group row">
+          <label for="RegionCode" class="col-sm-12 col-form-label">Region</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetArea(master.RegionId = this.$event.id);" [items]="RegionList"
+              name="Region Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="RegionCode"
+              placeholder="Region Code" appendTo="body" [(ngModel)]="master.RegionCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-8 col-sm-12">
+        <div class="form-group row">
+          <label for="Area Code" class="col-sm-12 col-form-label">Area</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetTerritory(master.AreaId = this.$event.id);" [items]="AreaList"
+              name="Area Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="Area Code"
+              placeholder="Area Code" appendTo="body" [(ngModel)]="master.AreaCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-8 col-sm-12">
+        <div class="form-group row">
+          <label for="Territory Code" class="col-sm-12 col-form-label">Territory</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="GetMIO(master.TerritoryID = this.$event.id);" [items]="TerritoryList"
+              name="Territory Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="Territory Code"
+              placeholder="Territory Code" appendTo="body" [(ngModel)]="master.TerritoryCodeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-8 col-sm-12">
+        <div class="form-group row">
+          <label for="MIO Name" class="col-sm-12 col-form-label">MIO Name</label>
+          <div class="col-sm-12">
+            <ng-select nbselect (change)="(master.MIOName = this.$event.id);" [items]="MIOList" name="MIO Code"
+              bindLabel="name" [ngModelOptions]="{standalone: true}" id="Territory Code" placeholder="MIO Code"
+              appendTo="body" [(ngModel)]="master.MIOSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-8 col-sm-12">
+        <div class="form-group row">
+          <label for="fromDate" class="col-sm-12 col-form-label">From Date
+            <span>*</span></label>
+          <div class="col-sm-12">
+            <input required [(ngModel)]="master.fromDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+              placeholder="From Date" [ngModelOptions]="{standalone: true}" id="fromDate">
+            <nb-datepicker #fdatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-8 col-sm-12">
+        <div class="form-group row">
+          <label for="toDate" class="col-sm-12 col-form-label">To Date
+            <span>*</span></label>
+          <div class="col-sm-12">
+            <input required [(ngModel)]="master.toDate" [nbDatepicker]="tdatepicker" nbInput fullWidth
+              placeholder="To Date" [ngModelOptions]="{standalone: true}" id="toDate">
+            <nb-datepicker #tdatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-responsive">
+      <table id="simple_table" class="table w-auto small" style="max-width: 98%;">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{item.Code}}</td>
+            <td>{{item.Name}}</td>
+            <td>{{item.ZoneCode}}</td>
+            <td>{{item.ZoneName}}</td>
+            <td>{{item.RegionCode}}</td>
+            <td>{{item.RegionName}}</td>
+            <td>{{item.AreaCode}}</td>
+            <td>{{item.AreaName}}</td>
+            <td>{{item.TerritoryCode}}</td>
+            <td>{{item.TerritoryName}}</td>
+            <td>{{item.DateTime}}</td>
+            <td>{{item.PunchIn}}</td>
+            <td>{{item.PunchOut}}</td>
+            <td>{{item.Duration}}</td>
+            <td>{{item.punchinLocation}}</td>
+            <td>{{item.punchoutLocation}}</td>
+            <td>{{item.Status}}</td>
+            <td>{{item.LateTime}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+  <nb-card-header>
+    <div id="reportHeader">
+      <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <table id="header_table_top" class="table" style="width: 550px;">
+        <tbody>
+          <tr>
+            <td> <strong>Attendance Report</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="header_table" class="table" style="width: 550px;">
+        <tbody>
+          <tr>
+            <td>Zone Name :</td>
+            <td>{{ZoneName}}</td>
+            <td>Depot Name :</td>
+            <td>{{DepotName}}</td>
+            <td>Region Name :</td>
+            <td>{{RegionName}}</td>
+          </tr>
+          <tr>
+            <td>Area Name :</td>
+            <td>{{AreaName}}</td>
+            <td>Territory Name :</td>
+            <td>{{TerritoryName}}</td>
+            <td>MIO Name :</td>
+            <td>{{MioName}}</td>
+          </tr>
+          <tr>
+            <td>From Date :</td>
+            <td>{{FromDate}}</td>
+            <td>To Date :</td>
+            <td>{{ToDate}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table id="body_table" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{item.Code}}</td>
+            <td>{{item.Name}}</td>
+            <td>{{item.ZoneCode}}</td>
+            <td>{{item.ZoneName}}</td>
+            <td>{{item.RegionCode}}</td>
+            <td>{{item.RegionName}}</td>
+            <td>{{item.AreaCode}}</td>
+            <td>{{item.AreaName}}</td>
+            <td>{{item.TerritoryCode}}</td>
+            <td>{{item.TerritoryName}}</td>
+            <td>{{item.DateTime}}</td>
+            <td>{{item.PunchIn}}</td>
+            <td>{{item.PunchOut}}</td>
+            <td>{{item.Duration}}</td>
+            <td>{{item.punchinLocation}}</td>
+            <td>{{item.punchoutLocation}}</td>
+            <td>{{item.Status}}</td>
+            <td>{{item.LateTime}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <ngx-rpt-footer></ngx-rpt-footer>
+  </nb-card-footer>
+</nb-card>

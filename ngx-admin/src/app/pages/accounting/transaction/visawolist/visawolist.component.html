@@ -1,0 +1,65 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Visa Group Details" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Title</th>
+                                    <th>Visa Number</th>
+                                    <th>Sponsor</th>
+                                    <th>Issue Date</th>
+                                    <th>Expire Date</th>
+                                    <th>Total_Visa</th>
+                                    <th>Visa Assigned</th>
+                                    <th>Visa Unassigned</th>
+                                    <th>Trade</th>
+                                    <th>Salary</th>
+                                    <th>License</th>
+                                </tr>
+                                <tr *ngFor="let detail of master.lstVisaGroup; let rowIndex = index">
+                                    <td style="width:50px;">{{rowIndex+1}}</td>
+                                    <td style="width:100px;">{{detail.group_title}}</td>
+                                    <td style="width:150px;">{{detail.visa_number}}</td>
+                                    <td style="width:150px;">{{detail.sponsor_id}}</td>
+                                    <td style="width:150px;">{{detail.issue_date}}</td>
+                                    <td style="width:150px;">{{detail.expire_date}}</td>
+                                    <td style="width:100px;" align="right">{{detail.total_visas}}</td>
+                                    <td style="width:100px;" align="right">{{detail.assigned_visas}}</td>
+                                    <td style="width:100px;" align="right">{{detail.unassigned_visas}}</td>
+                                    <td style="width:150px;">{{detail.trade}}</td>
+                                    <td style="width:100px;" align="right">{{detail.salary}}</td>
+                                    <td style="width:250px;">{{detail.license}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

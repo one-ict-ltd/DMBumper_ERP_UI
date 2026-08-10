@@ -1,0 +1,49 @@
+<nb-card class="actions-card">
+    <nb-card-header> <label class="col-form-label" for="">{{pageNavigation}}</label>
+        <!-- <ngx-common-button (click)="ButtonAction()" *ngIf="!isDisabled"></ngx-common-button> -->
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="loadFromDateShow">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadFromDateShow" name="loadFromDateShow" id="loadFromDateShow"
+                            [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="loadToDateShow">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row !important">
+                    <button class="btn btn-info" (click)="GetGridData();">Search</button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>

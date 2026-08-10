@@ -1,0 +1,52 @@
+<nb-card class="actions-card">
+    <nb-card-header>
+
+
+        <div style="text-align: center;">
+            <button (click)="SyncAll()" class="btn btn-success btn-sm">Sync All Agent</button>
+        </div>
+
+
+    </nb-card-header>
+</nb-card>
+
+<div class="row" hidden>
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset>
+                <nb-tabset>
+                    <nb-tab tabTitle="Agent Details" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Agent Id</th>
+                                    <th>Agent Name</th>
+                                    <th>Office Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Father Name</th>
+                                    <th>Mother Name</th>
+                                    <th>Birth Date</th>
+                                    <th>NID</th>
+                                    <th>Gender</th>
+                                </tr>
+                                <tr *ngFor="let detail of master.lstLocalAgent; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{detail.visaPartyId}}</td>
+                                    <td>{{detail.partyName}}</td>
+                                    <td>{{detail.officeName}}</td>
+                                    <td>{{detail.ownerName}}</td>
+                                    <td>{{detail.fatherName}}</td>
+                                    <td>{{detail.motherName}}</td>
+                                    <td>{{detail.birthdate}}</td>
+                                    <td>{{detail.nid}}</td>
+                                    <td>{{detail.gender}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

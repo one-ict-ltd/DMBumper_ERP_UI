@@ -1,0 +1,78 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <label class="col-sm-12 col-form-label" for="bomProductWiseSpecificationId">Product
+                        Name<span>*</span></label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect
+                            (change)="(master.bomProductWiseSpecificationId = this.$event.id); GetAllActiveInActiveBomListJson(this.$event.id);"
+                            [items]="bomProductSpecList" name="bomProductWiseSpecificationId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="bomProductWiseSpecificationId"
+                            placeholder="Select BOM Product Name" appendTo="body" [(ngModel)]="bomProductSpecSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="BOM" class="btn-tab">
+                        <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 300px">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product Spec Name</th>
+                                    <th>UOM</th>
+                                    <th>Batch Size</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.lstMasterViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>
+                                        {{details.bomName}}
+                                    </td>
+                                    <td>
+                                        {{details.uomName}}
+                                    </td>
+                                    <td>
+                                        {{details.bomQty}}
+                                    </td>
+                                    <td>
+                                        {{details.Status}}
+                                    </td>
+                                    <td>
+
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect"
+                                            (change)="ProcessNameSelect($event, rowIndex);">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

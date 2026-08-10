@@ -1,0 +1,261 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salaryTypeId" class="col-sm-3 col-form-label">Employee's Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.employeeId = this.$event.id);initEmployeeInfo(this.$event.id);"
+                                    [items]="employeeItems" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId" placeholder="Select Employee"
+                                    appendTo="body" [(ngModel)]="master.employeeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="previousDesignation" class="col-sm-3 col-form-label">Previous Designation
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="previousDesignation" required
+                                    [(ngModel)]="master.previousDesignation" name="previousDesignation" nbInput
+                                    fullWidth placeholder="Previous Designation" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="previousDepartment" class="col-sm-3 col-form-label">Previous Department
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="previousDepartment" required
+                                    [(ngModel)]="master.previousDepartment" name="previousDepartment" nbInput fullWidth
+                                    placeholder="Department" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="joiningDate" class="col-sm-3 col-form-label">Joining Date
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="joiningDate" required
+                                    [(ngModel)]="master.joiningDate" name="joiningDate" nbInput fullWidth
+                                    placeholder="joining date" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="PreviousGrossSalary" class="col-sm-3 col-form-label">Previous Gross Salary
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="PreviousGrossSalary" required
+                                    [(ngModel)]="master.PreviousGrossSalary" name="PreviousGrossSalary" nbInput
+                                    fullWidth placeholder="gross salary" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="prevSalaryLocation" class="col-sm-3 col-form-label">Previous Salary Location
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="prevSalaryLocation" required
+                                    [(ngModel)]="master.prevSalaryLocation" name="prevSalaryLocation" nbInput fullWidth
+                                    placeholder="Previous Salary Location" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="prevGrade" class="col-sm-3 col-form-label">Previous Grade
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="prevGrade" required
+                                    [(ngModel)]="master.prevGrade" name="prevGrade" nbInput fullWidth
+                                    placeholder="Previous Grade" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="prevSlab" class="col-sm-3 col-form-label">Previous Slab
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="prevSlab" required
+                                    [(ngModel)]="master.prevSlab" name="prevSlab" nbInput fullWidth placeholder="Slab"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="salaryLocation" class="col-sm-3 col-form-label">New Salary Location</label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.salaryLocation = this.$event.name);(master.HrmNewSalaryLocationId = this.$event.id)"
+                                    [items]="SalaryLocationList" name="salaryLocation" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="salaryLocation"
+                                    placeholder="Select New Salary Location" appendTo="body"
+                                    [(ngModel)]="master.salaryLocationSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="currentDesignation" class="col-sm-3 col-form-label">New Designation
+                                <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.currentDesignation = this.$event.name);"
+                                    [items]="DesignationList" name="currentDesignation" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="currentDesignation"
+                                    placeholder="Select Designation" appendTo="body"
+                                    [(ngModel)]="master.DesignationSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="currentDepartment" class="col-sm-3 col-form-label">New Department <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.currentDepartment = this.$event.name);"
+                                    [items]="DepartmentList" name="currentDepartment" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="currentDepartment"
+                                    placeholder="Select Department" appendTo="body"
+                                    [(ngModel)]="master.DepartmentSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="NewGradeId" class="col-sm-3 col-form-label">New Grade Name <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salaryGradeItems"
+                                    (change)="(master.NewGradeId = this.$event.id);LoadSalarySlab();" name="NewGradeId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="NewGradeId"
+                                    placeholder="Select Grade Name" appendTo="body"
+                                    [(ngModel)]="master.salaryGradeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="NewSalarySlabId" class="col-sm-3 col-form-label">New Slab Name <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salarySlabItems"
+                                    (change)="(master.NewSalarySlabId = this.$event.id);" name="NewSalarySlabId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="NewSalarySlabId"
+                                    placeholder="Select Slab Name" appendTo="body"
+                                    [(ngModel)]="master.salarySlabSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="NewGrossSalary" class="col-sm-3 col-form-label">New Gross Salary
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="NewGrossSalary" required
+                                    [(ngModel)]="master.NewGrossSalary" name="NewGrossSalary"
+                                    (keyup)="getIncrementSalary();" nbInput fullWidth placeholder="new gross salary">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="incrementSalary" class="col-sm-3 col-form-label">Increment Salary
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="incrementSalary" required
+                                    [(ngModel)]="master.incrementSalary" name="incrementSalary" nbInput fullWidth
+                                    placeholder="incrementSalary" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="promotionDate">Confirmation Date</label>
+                            <div class="col-sm-9">
+                                <input required [(ngModel)]="master.promotionDate" [nbDatepicker]="promotionDate"
+                                    nbInput fullWidth placeholder="Promotion Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #promotionDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="remarks">Remarks</label>
+                            <div class="col-sm-9">
+                                <textarea type="text" class="form-control" id="remarks" required
+                                    [(ngModel)]="master.remarks" name="remarks" nbInput fullWidth></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

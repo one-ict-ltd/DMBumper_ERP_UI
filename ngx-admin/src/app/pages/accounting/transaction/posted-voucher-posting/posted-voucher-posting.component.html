@@ -1,0 +1,176 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <!-- "!show"> -->
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <!-- <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label for="leaveStatus" class="col-sm-12 col-form-label">Approval
+                                Status<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect [items]="ApprovalStatusList"
+                                    (change)="(master.isPosted = this.$event.id);" name="isPosted" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="isPosted" placeholder="select one"
+                                    appendTo="body" [(ngModel)]="ApprovalStatusSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label for="isPosted" class="col-sm-4 col-form-label">Approval Status </label>
+                            <div class="col-sm-8">
+                                <nb-radio-group [(ngModel)]="master.isPosted" name="isPosted">
+                                    <nb-radio value=1>
+                                        Approve
+                                    </nb-radio>
+                                    <nb-radio value=0>
+                                        Reject
+                                    </nb-radio>
+                                </nb-radio-group>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Voucher Posting" class="btn-tab">
+                        <div class="grid-wrapper table-wrapper-scroll-y my-custom-scrollbar">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Voucher No</th>
+                                    <th>Voucher Date</th>
+                                    <th>Amount</th>
+                                    <th>Updated By</th>
+                                    <th>Description</th>
+                                    <th>Dr</th>
+                                    <th>Cr</th>
+                                    <th>Previous Dr</th>
+                                    <th>Previous Cr</th>
+                                    <th>Edit Reason</th>
+                                    <th>Check</th>
+                                    <th>Action</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.lstMasterViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>
+                                        {{details.voucherNo}}
+                                    </td>
+                                    <td>
+                                        {{details.voucherDate}}
+                                    </td>
+                                    <td>
+                                        {{this.currencyFormatter(details.voucherAmount)}}
+                                    </td>
+                                    <td>
+                                        {{details.updatedEmpName}}
+                                    </td>
+                                    <td>
+                                        {{details.remarks}}
+                                    </td>
+                                    <td [innerHTML]="details.Drhistory">
+                                    </td>
+                                    <td [innerHTML]="details.Crhistory">
+                                    </td>
+                                    <td [innerHTML]="details.pDrhistory">
+                                    </td>
+                                    <td [innerHTML]="details.pCrhistory">
+                                    </td>
+                                    <td>
+                                        {{details.editRemarks}}
+                                    </td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect">
+                                        </nb-checkbox>
+                                    </td>
+                                    <td>
+                                        <button (click)="getCrReport(details.voucherMasterId);"
+                                            class="btn btn-success btn-sm"><i class="fa fa-print"></i></button>
+                                        <button (click)="this.showFileModal(details.voucherMasterId);"
+                                            class="btn btn-primary btn-sm"><i class="fa fa-file"></i></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+<ng-template #dialogFiles let-data let-ref="dialogRef">
+    <div class="col-md-12 col-lg-12" style="overflow-y: auto; max-height: 600px;">
+        <nb-card class="min-height">
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-11">Voucher Attachments</div>
+                    <div class="col-1">
+                        <button class="btn btn-default btn-sm float-right ml-1" (click)="ref.close()"><i
+                                class="fa fa-times text-danger" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="grid-wrapper">
+                    <table class=" table table-bordered table-striped" style="min-width: 400px;">
+                        <tr>
+                            <th>File Name</th>
+                            <th>Remarks</th>
+                            <th>Action</th>
+                        </tr>
+                        <tr *ngFor="let detail of voucherModalData; let fIndex = index;">
+                            <td>
+                                <input [(ngModel)]="detail.fileName" readonly type="text" class="form-control" id="text"
+                                    required name="text" nbInput fullWidth placeholder="Text">
+                            </td>
+                            <td>
+                                <input [(ngModel)]="detail.remarks" readonly type="text" class="form-control" id="text"
+                                    name="text" nbInput fullWidth placeholder="Text">
+                            </td>
+                            <td class="text-center">
+                                <button (click)="downloadFile(detail.voucherAttachmentId)"
+                                    *ngIf="detail.voucherAttachmentId" class="btn btn-success btn-sm m-1">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                    </table>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-11">
+
+                    </div>
+                    <div class="col-1">
+
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</ng-template>

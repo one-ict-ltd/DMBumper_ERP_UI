@@ -1,0 +1,162 @@
+<div class="row">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Promo Requisition File Upload" class="btn-tab">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="salaryHeadId" class="col-sm-4 col-form-label">Upload Data Format</label>
+                                    <div class="col-sm-8">
+                                        <a href="./../../../../assets/DocFormat/Promo Requisition File.xlsx"
+                                            download="Promo Requisition File.xlsx"
+                                            class="form-control btn btn-warning btn-sm">
+                                            Download Promo Requisition Data Upload Format
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="sbuId">Allocation
+                                        To<span>*</span></label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="setAllocationType($event)"
+                                            [items]="allocationTypeList" name="allocationTypeId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="allocationTypeId"
+                                            placeholder="Select a allocation to type" appendTo="body"
+                                            [(ngModel)]="master.allocationTypeSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="structureAmount">Upload Promo
+                                        Requisition file
+                                        <span>*</span></label>
+                                    <div class="col-sm-8">
+                                        <input type="file" #fileInput (change)="onFileChange($event)" multiple="false"
+                                            class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="promoDistributionNo">Program Name
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" class="form-control" required [(ngModel)]="master.program"
+                                            id="program" name="program" nbInput fullWidth placeholder="Program Name">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+<nb-card>
+    <nb-card-header>
+        <div class="col-12" style="text-align: center;">
+            <div *ngIf="spinner">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <button (click)="VerifyData()" class="btn btn-success btn-md m-3" [disabled]="spinner"> Verify Data <i
+                    class="fa fa-check" aria-hidden="true"></i></button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div *ngIf="hasErrorInFile">
+            <h6><span>{{errorInFile}}</span></h6>
+        </div>
+        <div class="row">
+            <div class="col-5">
+                <h6> Total <span>{{totalData}}</span> record(s) found</h6>
+            </div>
+            <div class="col-7">
+                <h6> Verification Status: <span>{{verifyStatus}}</span></h6>
+            </div>
+            <!-- <div class="col-4">
+                <h6> Invalid SKU: <span>{{invalidSKUNumbers}}</span></h6>
+            </div> -->
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <div class="grid-wrapper" style="overflow-y:scroll; overflow-x: scroll; max-height: 500px">
+                <table class=" table table-bordered table-striped">
+                    <tr>
+                        <th>#</th>
+                        <th>Depot Code</th>
+                        <th *ngIf="master.allocationTypeId == 'T'">Territory Code</th>
+                        <th *ngIf="master.allocationTypeId == 'A'">Area Code</th>
+                        <th *ngIf="master.allocationTypeId == 'R'">Region Code</th>
+                        <th>Product Code</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th hidden>Action</th>
+                    </tr>
+                    <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index" class="hoverable-row">
+                        <td>{{rowIndex+1}}</td>
+                        <td>
+                            <!-- <input type="text" class="form-control" required
+                                [(ngModel)]="details.depotCode" id="depotCode" name="depotCode" nbInput fullWidth
+                                placeholder="depotCode" min="0"> -->
+                            {{details.depotCode}}
+                        </td>
+                        <!-- <td>{{details.depotCode}}</td> -->
+                        <td>
+                            <!-- <input type="text" class="form-control" required
+                                [(ngModel)]="details.territoryCode" id="territoryCode" name="territoryCode" nbInput
+                                fullWidth placeholder="territoryCode" min="0"> -->
+                            {{details.territoryCode}}
+                        </td>
+                        <!-- <td>{{details.territoryCode}}</td> -->
+                        <td>
+                            <!-- <input type="text"  class="form-control" required
+                                [(ngModel)]="details.productCode" id="productCode" name="productCode" nbInput fullWidth
+                                placeholder="productCode" min="0"> -->
+                            {{details.productCode}}
+                        </td>
+                        <!-- <td>{{details.productCode}}</td> -->
+                        <td>
+                            <!-- <input type="number" class="form-control" required
+                                [(ngModel)]="details.quantity" id="quantity" name="quantity" nbInput fullWidth
+                                placeholder="Quantity" min="0" oninput="this.value = Math.abs(this.value)"> -->
+                            {{details.quantity}}
+                        </td>
+                        <td>{{details.status}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+
+        <div class="col-12" style="text-align: center;">
+            <span>
+                <div *ngIf="spinnerForSave">
+                    <!-- <div class="spinner-border text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div> -->
+                    <!-- <div class="spinner-grow" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div> -->
+                    <button class="btn btn-primary" type="button" disabled>
+                        <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                        Data is Saving!...Please wait!
+                    </button>
+                </div>
+            </span>
+            <button [disabled]="!allStatusOk || spinnerForSave" (click)="UploadData()"
+                class="btn btn-success btn-md m-3">
+                Upload Data <i class="fa fa-check" aria-hidden="true"></i>
+            </button>
+        </div>
+    </nb-card-footer>
+</nb-card>

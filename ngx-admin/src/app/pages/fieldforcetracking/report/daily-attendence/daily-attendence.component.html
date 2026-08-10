@@ -1,0 +1,104 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+      <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+     
+    </nb-card-body>
+  </nb-card>
+  
+  <nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="table-responsive">
+        <table id="simple_table" class="table w-auto small" style="max-width: 98%;">
+          <thead>
+            <tr>
+              <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of bodyData; let i = index;">
+              <td>{{i+1}}</td>
+              <td>{{item.Zone_Code}}</td>
+              <td>{{item.REGION_CODE}}</td>
+              <td>{{item.MIOLogin}}</td>
+              <td>{{item.MIOCheckIn}}</td>
+              <td>{{item.MIODocPlan}}</td>
+              <td>{{item.MIOTotalDocPlan}}</td>
+              <td>{{item.MIODocPlanExecution}}</td>
+              <td>{{item.MIOChemPlan}}</td>
+              <td>{{item.MIOTotalPlanChem}}</td>
+              <td>{{item.MIOChemExecution}}</td>
+              <td>{{item.AMLogin}}</td>
+              <td>{{item.AMCheckIn}}</td>
+              <td>{{item.AMDocPlan}}</td>
+              <td>{{item.AMTotalDocPlan}}</td>
+              <td>{{item.AMDocPlanExecute}}</td>
+              <td>{{item.AMChemPlan}}</td>
+              <td>{{item.AMTotalPlanChem}}</td>
+              <td>{{item.AMChemPlanExecute}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+  </nb-card>
+  
+  <nb-card style="visibility: hidden;">
+    <nb-card-header>
+      <div id="reportHeader">
+        <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="grid-wrapper">
+        <table id="header_table_top" class="table" style="width: 550px;">
+          <tbody>
+            <tr>
+              <td> <strong>Attendance Report</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      
+  
+        <table id="body_table" class="table" style="width: 550px;">
+          <thead>
+            <tr>
+              <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of bodyData; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{item.Zone_Code}}</td>
+                <td>{{item.REGION_CODE}}</td>
+                <td>{{item.MIOLogin}}</td>
+                <td>{{item.MIOCheckIn}}</td>
+                <td>{{item.MIODocPlan}}</td>
+                <td>{{item.MIOTotalDocPlan}}</td>
+                <td>{{item.MIODocPlanExecution}}</td>
+                <td>{{item.MIOChemPlan}}</td>
+                <td>{{item.MIOTotalPlanChem}}</td>
+                <td>{{item.MIOChemExecution}}</td>
+                <td>{{item.AMLogin}}</td>
+                <td>{{item.AMCheckIn}}</td>
+                <td>{{item.AMDocPlan}}</td>
+                <td>{{item.AMTotalDocPlan}}</td>
+                <td>{{item.AMDocPlanExecute}}</td>
+                <td>{{item.AMChemPlan}}</td>
+                <td>{{item.AMTotalPlanChem}}</td>
+                <td>{{item.AMChemPlanExecute}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+  </nb-card>
+  

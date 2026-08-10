@@ -1,0 +1,152 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <label for="salaryHeadName" class="col-sm-3 col-form-label">Head Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" (keyup)="getDuplicate();" class="form-control" id="salaryHeadName"
+                                    required [(ngModel)]="master.salaryHeadName" name="salaryHeadName" nbInput fullWidth
+                                    placeholder="Head Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <label for="headShortName" class="col-sm-3 col-form-label">Short Name
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="headShortName" required
+                                    [(ngModel)]="master.headShortName" name="headShortName" nbInput fullWidth
+                                    placeholder="Short Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isIncomeTax" name="isIncomeTax" status="success">
+                                        <b>Income Tax</b>
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isInvestments" name="isInvestments"
+                                        status="success">
+                                        <b>Investment</b>
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isMonthlyAllowance" name="isMonthlyAllowance"
+                                        status="success">
+                                        <b>Allowance</b>
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <label for="salaryHeadType" class="col-sm-3 col-form-label">Head Type
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salaryHeadTypeItems"
+                                    (change)="(master.salaryHeadType = this.$event.id);" name="salaryHeadType"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="salaryHeadType"
+                                    placeholder="Select Head Type" appendTo="body"
+                                    [(ngModel)]="master.salaryHeadTypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <label for="sortOrder" class="col-sm-3 col-form-label">Sort Order
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="sortOrder" required
+                                    [(ngModel)]="master.sortOrder" name="sortOrder" nbInput fullWidth
+                                    placeholder="Sort Order">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isAdvance" name="isAdvance" status="success">
+                                        <b>Advance</b>
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isArrear" name="isArrear" status="success">
+                                        <b>Arrear</b>
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isLoan" name="isLoan" status="success">
+                                        <b>Loan</b>
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isBonus" name="isBonus" status="success">
+                                        <b>Bonus</b>
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                        <b>Is Active?</b>
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

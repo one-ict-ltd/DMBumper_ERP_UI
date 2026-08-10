@@ -1,0 +1,316 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="From Date">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadFromDateShow" name="loadFromDateShow" id="loadFromDateShow"
+                            [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="To Date ">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row !important">
+                    <button class="btn btn-info" (click)="getGridData();">Search</button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show" style="margin-bottom: 0.2rem;">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="planNo"> Plan No <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.planNo" id="planNo"
+                                    name="planNo" nbInput fullWidth placeholder=" Plan No." readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="planDate">Plan
+                                Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.planDate"
+                                    (ngModelChange)="getplanNo();getBatchNo();" name="planDate" id="planDate"
+                                    [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productName">Product
+                                Type<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.productTypeId = this.$event.id);getTypeWiseProducts(0,this.$event.id)"
+                                    [items]="productTypeList" name="productTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productSubCategoryId"
+                                    placeholder="Select Product Type" appendTo="body"
+                                    [(ngModel)]="master.productTypeSelected" [disabled]="disabled ? 'disabled' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label" for="planTypeId"> Product <span>*</span></label>
+                            <div class="col-sm-10">
+                                <ng-select nbselect
+                                    (change)="(master.productWiseSpecificationId = this.$event.id);getProductById(this.$event.id);"
+                                    [items]="productList" name="productWiseSpecificationId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productWiseSpecificationId"
+                                    placeholder="Select product" appendTo="body" [(ngModel)]="master.productSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="packSize"> Pack Size</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.packSize"
+                                    id="packSize" name="packSize" nbInput fullWidth placeholder="packSize" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchNo"> Batch No<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.batchNo"
+                                    id="batchNo" name="batchNo" nbInput fullWidth placeholder="batchNo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="manufacturingDate">Manuf.
+                                Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.manufacturingDate" name="manufacturingDate"
+                                    (ngModelChange)="calculateExpiryDate();" id="manufacturingDate"
+                                    [nbDatepicker]="manufacturingDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #manufacturingDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="ExpireDate">Expire
+                                Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.ExpireDate" name="ExpireDate" id="ExpireDate"
+                                    [nbDatepicker]="ExpireDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #ExpireDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchWeight"> Batch Weight</label>
+                            <div class="col-sm-8 input-group" id="batchWeight">
+                                <input type="number" class="form-control" required [(ngModel)]="master.batchWeight"
+                                    min="0" id="batchWeight" name="batchWeight" fullWidth style="width: 70%;" nbInput
+                                    placeholder="batchWeight." aria-describedby="batchWeightUOMname">
+                                <div class="input-group-append">
+                                    <div class="input-group-text" id="uomName">{{master.batchWeightUOMname}}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchTypeId"> Batch Type</label>
+                            <div class="col-sm-8">
+                                <!-- <ng-select nbselect (change)="(master.batchTypeId = this.$event.id)"
+                                    [items]="batchTypeList" name="batchTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="batchTypeId"
+                                    placeholder="Select Batch Type" [(ngModel)]="master.batchTypeSelected"
+                                    (ngModelChange)="batchTypeChange(this.$event)" appendTo="body">
+                                </ng-select> -->
+                                <input type="text" class="form-control" required [(ngModel)]="master.bomType"
+                                    id="bomType" name="bomType" nbInput fullWidth placeholder="bomType">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="chargeNo"> Charge No</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.chargeNo"
+                                    id="chargeNo" name="chargeNo" nbInput fullWidth placeholder="chargeNo">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchStatusId">Batch Status</label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.batchStatusId = this.$event.id)"
+                                    [items]="batchStatusList" name="batchStatusId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="batchStatusId"
+                                    placeholder="Select Batch Status" [(ngModel)]="master.batchStatusSelected"
+                                    (ngModelChange)="batchStatusChange(this.$event)" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchRatio"> Batch Ratio</label>
+                            <div class="col-sm-8">
+                                <input type="number" min="0" class="form-control" required
+                                    [(ngModel)]="master.batchRatio" (ngModelChange)="CalculateBatchWeight()"
+                                    id="batchRatio" name="batchRatio" nbInput fullWidth placeholder="batchRatio">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="stdBatchSize">Std. Batch Size</label>
+                            <div class="col-sm-8">
+                                <input type="number" min="0" class="form-control" required
+                                    [(ngModel)]="master.stdBatchSize" id="stdBatchSize" name="stdBatchSize" nbInput
+                                    fullWidth placeholder="stdBatchSize">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="bomMasterId">BOM</label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.bomMasterId = this.$event.id)" [items]="bomList"
+                                    name="bomMasterId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="bomMasterId" placeholder="Select BOM" [(ngModel)]="master.bomSelected"
+                                    (ngModelChange)="bomChange(this.$event)" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="thirdPartyStatusId">Mfg. Third Party
+                                Status</label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.thirdPartyStatusId = this.$event.id)"
+                                    [items]="thirdPartyStatusList" name="thirdPartyStatusId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="thirdPartyStatusId"
+                                    placeholder="Select Mfg. Third Party Status"
+                                    [(ngModel)]="master.thirdPartyStatusSelected"
+                                    (ngModelChange)="thirdPartyStatusChange(this.$event)" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="packingTypeId">Packing Type</label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.packingTypeId = this.$event.id)"
+                                    [items]="packingTypeList" name="packingTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="packingTypeId"
+                                    placeholder="Select Packing Type" [(ngModel)]="master.packingTypeSelected"
+                                    (ngModelChange)="packingTypeChange(this.$event)" appendTo="body">
+                                </ng-select>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label"> Remarks</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" [(ngModel)]="master.remarksForPlan"
+                                    id="remarksForPlan" name="remarksForPlan" placeholder="remarksForPlan" required
+                                    nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="flagStatus">Flag</label>
+                            <div class="col-sm-8">
+                                <nb-checkbox name="flagStatus" id="flagStatus" status="success"
+                                    [(ngModel)]="master.flagStatus" (change)="checkChange($event,rowIndex)">
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="netAmount"> Bill Amount</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-right" required [(ngModel)]="master.netAmount"
+                                    id="netAmount" name="netAmount" nbInput fullWidth
+                                    placeholder=" Billing  Amount." readonly>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

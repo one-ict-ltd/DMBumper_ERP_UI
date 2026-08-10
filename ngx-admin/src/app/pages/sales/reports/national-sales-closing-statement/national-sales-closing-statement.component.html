@@ -1,0 +1,256 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-sm-4 col-form-label"> From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-sm-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="tdatepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #tdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"
+                        for="productWiseSpecificationId">Product<span>*</span></label>
+                    <div class="col-sm-10">
+                        <ng-select nbselect [items]="productSpecList" name="productName" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="productWiseSpecificationId"
+                            placeholder="Select product" appendTo="body" [(ngModel)]="productSpecSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+
+
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" #simple_table #table class="table table-bordered mb-0">
+                <thead>
+                    <!-- <tr>
+                        <th colspan="33" class="reportHeaderClass" style="font: bold; text-align: center;">
+                            <h4>{{companyName}}</h4>
+                        </th>
+                    </tr>  -->
+                    <!-- <tr>
+                        <th class="reportHeaderClass">{{reportTitleName}}</th>
+                    </tr> 
+                    <tr>
+                        <th  class="reportHeaderClass">{{dateRange}}</th>
+                    </tr> -->
+
+                    <!-- <tr>
+                        <th colspan="33" class="reportHeaderClass"></th>
+                    </tr> -->
+
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th colspan="1">Factory</th>
+                        <th colspan="2">Bogura Depot</th>
+                        <th colspan="2">Rangpur Depot</th>
+                        <th colspan="2">Rajshahi Depot</th>
+                        <th colspan="2">Faridpur Depot</th>
+                        <th colspan="2">Jessore Depot</th>
+                        <th colspan="2">Khulna Depot</th>
+                        <th colspan="2">Barisal Depot</th>
+                        <th colspan="2">Mymensingh Depot </th>
+                        <th colspan="2">Dhaka Depot </th>
+                        <th colspan="2">Sylhet Depot </th>
+                        <th colspan="2">Comilla Depot </th>
+                        <th colspan="2">Chattogram Depot </th>
+                        <th colspan="2">Kushtia Depot </th>
+                        <th colspan="2">B.Baria Depot </th>
+                        <th colspan="2">Total</th>
+                    </tr>
+                    <tr>
+                        <th>Sl</th>
+                        <th>Code</th>
+                        <th>Particulars</th>
+                        <th>Pack Size</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                        <th>Sale</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr *ngFor="let item of bodyData; let i = index;"
+                        [ngClass]="{'highlighted-row-sl-1': item.SL === 1,'highlighted-row-sl-2': item.SL ===2,'highlighted-row-sl-3': item.SL === 3,'highlighted-row-sl-4': item.SL === 4}">
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td>
+                    </tr> -->
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{ i + 1 }}</td>
+                        <td> {{item.productCode}}</td>
+                        <td> {{item.productName}}</td>
+                        <td> {{item.packSize}}</td>
+                        <td> {{item.FactoryClosing}}</td>
+                        <td> {{item.BoguraSal}}</td>
+                        <td> {{item.BoguraClosing}}</td>
+
+                        <td> {{item.RangpurSal}}</td>
+                        <td> {{item.RangpurClosing}}</td>
+
+                        <td> {{item.RajshahiSal}}</td>
+                        <td> {{item.RajshahiClosing}}</td>
+
+                        <td> {{item.FaridpurSal}}</td>
+                        <td> {{item.FaridpurClosing}}</td>
+
+                        <td> {{item.JessoreSal}}</td>
+                        <td> {{item.JessoreClosing}}</td>
+
+                        <td> {{item.KhulnaSal}}</td>
+                        <td> {{item.KhulnaClosing}}</td>
+
+                        <td> {{item.BarisalSal}}</td>
+                        <td> {{item.BarisalClosing}}</td>
+
+                        <td> {{item.MymensinghSal}}</td>
+                        <td> {{item.MymensinghClosing}}</td>
+
+                        <td> {{item.DhakaSal}}</td>
+                        <td> {{item.DhakaClosing}}</td>
+
+                        <td> {{item.SylhetSal}}</td>
+                        <td> {{item.SylhetClosing}}</td>
+
+                        <td> {{item.ComillaSal}}</td>
+                        <td> {{item.ComillaClosing}}</td>
+
+                        <td> {{item.ChattogramSal}}</td>
+                        <td> {{item.ChattogramClosing}}</td>
+
+                        <td> {{item.kushtiaSal}}</td>
+                        <td> {{item.kushtiaClosing}}</td>
+
+                        <td> {{item.bbariaSal}}</td>
+                        <td> {{item.bbariaClosing}}</td>
+
+                        <td> {{item.TotalSal}}</td>
+                        <td> {{item.TotalClosing}}</td>
+
+
+
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                        <td colspan="" class="numeric"> Grand Total </td>
+                        <td class="numeric"> {{totalFactoryClosing}}</td>
+                        <td colspan="2" class="numeric"> {{ totalBoguraClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalRangpurClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalRajshahiClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalFaridpurClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalJessoreClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalKhulnaClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalBarisalClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalMymensinghClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalDhakaClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalSylhetClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalComillaClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalChattogramClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalkushtiaClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalbbariaClosing}}</td>
+                        <td colspan="2" class="numeric"> {{totalTotalClosing}}</td>
+                    </tr>
+
+                    <tr>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                        <td class="numeric"> Grand Total Amount</td>
+                        <td class="numeric"> {{totalFactoryClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{ totalBoguraClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalRangpurClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalRajshahiClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalFaridpurClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalJessoreClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalKhulnaClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalBarisalClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalMymensinghClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalDhakaClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalSylhetClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalComillaClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalChattogramClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalkushtiaClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalbbariaClosingAmount}}</td>
+                        <td colspan="2" class="numeric"> {{totalTotalClosingAmount}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+
+
+
+
+<nb-card hidden>
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <iframe id="pdfPreview" [src]="base64Pdf" frameborder="0" width="100%" height="480px">
+            </iframe>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

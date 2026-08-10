@@ -1,0 +1,151 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="GRNid" class="col-sm-3 col-form-label">GRN No
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect [items]="GRNList"
+                                    (change)="(master.ImpgrnMasterId = this.$event.ImpgrnMasterId); getGrnDetails(this.$event.ImpgrnMasterId);"
+                                    name="grnNo" bindLabel="grnNo" id="grnNo" [(ngModel)]="master.grnNo"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select GRN" appendTo="body">
+                                </ng-select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="supplierName" class="col-sm-3 col-form-label">Supplier Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" [(ngModel)]="master.supplierName"
+                                    id="supplierName" name="supplierName" nbInput fullWidth placeholder="Supplier Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="purOrderNo" class="col-sm-3 col-form-label">PO No.</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" [(ngModel)]="master.purOrderNo" id="purOrderNo"
+                                    name="purOrderNo" nbInput fullWidth placeholder="PO No">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="supplierChallanNo" class="col-sm-3 col-form-label">RMR No.</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" [(ngModel)]="master.RMRNo" id="RMRNo"
+                                    name="RMRNo" nbInput fullWidth placeholder="RMR No">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="MRRNo" class="col-sm-3 col-form-label">MRR No.</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" [(ngModel)]="master.MRRNo" id="MRRNo"
+                                    name="MRRNo" nbInput fullWidth placeholder="MRR No">
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="RetestDate" class="col-sm-3 col-form-label">Re Test
+                                Date</label>
+                            <div class="col-sm-9">
+                                <input required [(ngModel)]="master.RetestDate" name="RetestDate" id="RetestDate"
+                                    [nbDatepicker]="rtdatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #rtdatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="isPosted" class="col-sm-3 col-form-label">Approval Status </label>
+                            <div class="col-sm-9">
+                                <nb-radio-group [(ngModel)]="master.approvalStatus" name="isPosted">
+                                    <nb-radio value=1>
+                                        Approve
+                                    </nb-radio>
+                                    <nb-radio value=2>
+                                        Reject
+                                    </nb-radio>
+                                </nb-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <nb-card class="min-height">
+                <fieldset [disabled]="disabled ? 'disabled' : null">
+                    <nb-tabset>
+                        <nb-tab tabTitle="GRN QC Approval" class="btn-tab">
+                            <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 300px">
+                                <table class=" table table-bordered table-striped">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product Name</th>
+                                        <th>Receive Quantity</th>
+                                        <th>Approved Quantity</th>
+                                        <th>UOM</th>
+                                        <th>Potency Percentage</th>
+                                        <th>GRN QC Ref No</th>
+                                        <th>Select</th>
+                                    </tr>
+
+                                    <tr *ngFor="let details of master.grnModel; let rowIndex = index">
+                                        <td>
+                                            {{rowIndex+1}}
+                                        </td>
+                                        <td>
+                                            {{details.productName}}
+                                        </td>
+                                        <td>
+                                            {{details.actualRcvQty}}
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control" [(ngModel)]="details.approvedQty"
+                                                id="ApprovedQty" name="approvedQty" nbInput fullWidth
+                                                placeholder="Approved Quantity">
+                                        </td>
+                                        <td>
+                                            {{details.uomName}}
+                                        </td>
+                                        <td>
+                                            <input type="number" max="100" class="form-control"
+                                                [(ngModel)]="details.potency" id="potency" name="potency" nbInput
+                                                fullWidth placeholder="potency" (change)="checkPotency(rowIndex)">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" [(ngModel)]="details.QCRefNo"
+                                                id="QCRefNo" name="QCRefNo" nbInput fullWidth placeholder="QC RefNo">
+                                        </td>
+                                        <td>
+                                            <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                                [(ngModel)]="details.isSelect">
+                                            </nb-checkbox>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </nb-tab>
+                    </nb-tabset>
+                </fieldset>
+            </nb-card>
+        </div>
+    </nb-card-header>
+</nb-card>

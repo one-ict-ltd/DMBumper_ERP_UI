@@ -1,0 +1,224 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row" hidden>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="zoneCode">Zone</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="GetAllRegion(zoneCode = $event.id);" [items]="zoneList"
+                            name="zoneCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="zoneCode"
+                            placeholder="Select Zone" appendTo="body" [(ngModel)]="zoneSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="regionCode">Region</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="regionCode = $event.id;getAllArea($event.id);"
+                            [items]="regionList" [virtualScroll]="true" name="regionCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="regionCode" placeholder="Select Region"
+                            appendTo="body" [(ngModel)]="regionSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" hidden>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="areaCode">Area</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="areaCode = $event.id;getAllTerritoryByArea($event.id);"
+                            [items]="areaList" name="areaCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="areaCode" placeholder="Select Area" appendTo="body" [(ngModel)]="areaSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="getAllTerritory(depotCode = $event.id);" [items]="depotList"
+                            name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                            placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="getAllTerritory(depotCode = this.$event.id);" [items]="depotList"
+                            name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                            placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div> -->
+            <div class="col-lg-6 col-md-6 col-sm-6" hidden>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="partyId">Territory</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="(territoryCode = this.$event.id);" [items]="territoryList"
+                            [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="territoryCode" placeholder="Select territory"
+                            appendTo="body" [(ngModel)]="territorySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="partyId">Invoice Type</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="(typeId = this.$event.id);" [items]="typeList"
+                            [virtualScroll]="true" name="typeId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="typeId" placeholder="Select a type" appendTo="body" [(ngModel)]="typeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="partyId" class="col-2 col-form-label">Customer Name <span>*</span></label>
+                    <div class="col-sm-10">
+                        <ng-select nbselect [items]="parties" [virtualScroll]="true" name="partyId" bindLabel="name"
+                            id="partyId" [(ngModel)]="partySelected" (change)="onPartyChange($event)"
+                            [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Customer" [virtualScroll]="true" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" hidden>
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="checkbox" class="col-sm-2 col-form-label">Show Date Range</label>
+                    <div class="col-sm-10">
+                        <div class="validation-checkboxes">
+                            <nb-checkbox [(ngModel)]="showDateRange" name="checkbox" status="success"
+                                (change)="onCheckboxChange($event)">
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="row" *ngIf="showDateRange"> -->
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-sm-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card>
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <iframe id="pdfPreview" [src]="base64Pdf" frameborder="0" width="100%" height="480px">
+            </iframe>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+
+<div class="row" *ngIf="showbody" hidden>
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+            <!-- <nb-card-header>
+                <div class="row">
+                    <div class="col-sm-6"><b>Sales Invoice List For Collection</b></div>
+                    <div class="col-sm-6">Opening Balance: <b>{{openingBalance}}</b></div>
+                </div>
+            </nb-card-header> -->
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 500px">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <!-- <tr>
+                                    <th colspan="6" style="text-align: center; background-color: goldenrod;"></th>
+                                    <th colspan="6" style="text-align: center; background-color: darkseagreen;">Dues
+                                        Adjust Amount</th>
+                                    <th style="text-align: center; background-color: darkorange;"></th>
+                                </tr> -->
+                                <tr style="text-align: center; background-color: darkseagreen;">
+                                    <th>#</th>
+                                    <th>Invoice No.</th>
+                                    <th>Invoice Date</th>
+                                    <th>Invoice Type</th>
+                                    <th>Party Name</th>
+                                    <th>Territory</th>
+
+                                    <th>Depot</th>
+                                    <th>Group</th>
+                                    <th>Bonus Adjust</th>
+                                    <th>Net Invoice Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of bodyData; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.salesInvoiceNo}}</td>
+                                    <td>{{details.salesInvoiceDate}}</td>
+                                    <td>{{details.transactionTypeName}}</td>
+                                    <td>{{details.partyName}}</td>
+                                    <td>{{details.TerritoryName}}</td>
+                                    <td>{{details.DepotName}}</td>
+                                    <td>{{details.categoryName}}</td>
+                                    <td>{{details.bonusAmount}}</td>
+                                    <td>{{details.netSalesAmount}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; text-align: right;" colspan="8">Grand Total :</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalDiscount)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalNetSalesAmt)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

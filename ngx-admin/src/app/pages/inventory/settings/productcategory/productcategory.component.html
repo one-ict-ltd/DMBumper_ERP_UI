@@ -1,0 +1,132 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="categoryName">Category Name <span
+                                    style="color: red;">*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.categoryName"
+                                    id="categoryName" required name="categoryName" nbInput fullWidth
+                                    placeholder="Category Name">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label"></label>
+                            <div class="col-sm-9 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="aliasName">Alias Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.aliasName"
+                                    id="aliasName" name="aliasName" nbInput fullWidth placeholder="Alias Name">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+
+                    <nb-tab tabTitle="Category Specification" class="btn-tab">
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group row">
+                                    <label class="col-sm-6 col-form-label" for="specName">Specification Name <span
+                                            style="color: red;">*</span></label>
+                                    <div class="col-sm-6">
+                                        <input type="text" class="form-control" required [(ngModel)]="master.specName"
+                                            id="specName" name="specName" nbInput fullWidth
+                                            placeholder="Specification Name">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="text-right">
+                                    <button (click)="refesh()" class="btn btn-warning btn-sm"> <i class="fa fa-refresh"
+                                            aria-hidden="true"></i> Refresh </button>
+                                    <button (click)="addDetails(dialog)" class="btn btn-success btn-sm m-3"> <i
+                                            class="fa fa-plus" aria-hidden="true"></i> Add </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Specification Name</th>
+                                    <td>Action</td>
+                                </tr>
+
+                                <tr *ngFor="let detail of master.lstDetail; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <input [(ngModel)]="detail.specificationType" type="text" class="form-control"
+                                            id="specName" required name="specName" nbInput fullWidth
+                                            placeholder="Specification Name">
+                                    </td>
+
+                                    <td>
+                                        <!-- <button (click)="editDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button> -->
+                                        <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+                    </nb-tab>
+
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

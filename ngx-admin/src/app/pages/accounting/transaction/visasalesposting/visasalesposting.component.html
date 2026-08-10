@@ -1,0 +1,336 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <div class="form-group row">
+                            <label for="candidateCode" class="col-sm-3 col-form-label">Candidate Code</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="candidateCode" required
+                                    [(ngModel)]="master.candidateCode" name="candidateCode" nbInput fullWidth
+                                    placeholder="Candidate Code" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="agentName" class="col-sm-3 col-form-label">Agent Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="agentName" required
+                                    [(ngModel)]="master.agentName" name="agentName" nbInput fullWidth
+                                    placeholder="Agent Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="groupName" class="col-sm-3 col-form-label">Group Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="groupName" required
+                                    [(ngModel)]="master.groupName" name="groupName" nbInput fullWidth
+                                    placeholder="Group Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="countryName" class="col-sm-3 col-form-label">Country Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="countryName" required
+                                    [(ngModel)]="master.countryName" name="countryName" nbInput fullWidth
+                                    placeholder="Country Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="workOrderNo" class="col-sm-3 col-form-label">Work Order No</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="workOrderNo" required
+                                    [(ngModel)]="master.workOrderNo" name="workOrderNo" nbInput fullWidth
+                                    placeholder="Work Order No" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sponsorId" class="col-sm-3 col-form-label">Sponsor</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="sponsorId" required
+                                    [(ngModel)]="master.sponsorId" name="sponsorId" nbInput fullWidth
+                                    placeholder="Sponsor" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="reference" class="col-sm-3 col-form-label">Reference</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="reference" required
+                                    [(ngModel)]="master.reference" name="reference" nbInput fullWidth
+                                    placeholder="Reference" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="assignRemarks" class="col-sm-3 col-form-label">Visa Assign Remarks</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="assignRemarks" required
+                                    [(ngModel)]="master.assignRemarks" name="assignRemarks" nbInput fullWidth
+                                    placeholder="Visa Assign Remarks" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="unAssignRemarks" class="col-sm-3 col-form-label">Visa Unassign Remarks</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="unAssignRemarks" required
+                                    [(ngModel)]="master.unAssignRemarks" name="unAssignRemarks" nbInput fullWidth
+                                    placeholder="Visa Unassign Remarks" readonly>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group row">
+                            <label for="candidateName" class="col-sm-3 col-form-label">Candidate Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="candidateName" required
+                                    [(ngModel)]="master.candidateName" name="candidateName" nbInput fullWidth
+                                    placeholder="Candidate Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="candidateStatus" class="col-sm-3 col-form-label">Candidate Status</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="candidateStatus" required
+                                    [(ngModel)]="master.candidateStatus" name="candidateStatus" nbInput fullWidth
+                                    placeholder="Candidate Status" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="companyName" class="col-sm-3 col-form-label">Company Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="companyName" required
+                                    [(ngModel)]="master.companyName" name="companyName" nbInput fullWidth
+                                    placeholder="Company Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="tradeName" class="col-sm-3 col-form-label">Trade Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="tradeName" required
+                                    [(ngModel)]="master.tradeName" name="tradeName" nbInput fullWidth
+                                    placeholder="Trade Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="cityName" class="col-sm-3 col-form-label">City Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="cityName" required
+                                    [(ngModel)]="master.cityName" name="cityName" nbInput fullWidth
+                                    placeholder="City Name" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="visaNo" class="col-sm-3 col-form-label">Visa No</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="visaNo" required [(ngModel)]="master.visaNo"
+                                    name="visaNo" nbInput fullWidth placeholder="Visa No" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="passportNo" class="col-sm-3 col-form-label">Passport No
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="passportNo" required
+                                    [(ngModel)]="master.passportNo" name="passportNo" nbInput fullWidth
+                                    placeholder="Passport No" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="contact" class="col-sm-3 col-form-label">Contact</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="contact" required
+                                    [(ngModel)]="master.contact" name="contact" nbInput fullWidth placeholder="Contact"
+                                    readonly>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salesAmount" class="col-sm-3 col-form-label">Service Charge
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="salesAmount" required
+                                    [(ngModel)]="master.salesAmount" name="salesAmount" nbInput fullWidth
+                                    placeholder="Sales Amount" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="agentCommission" class="col-sm-3 col-form-label">Agent Commission</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="agentCommission" required
+                                    [(ngModel)]="master.agentCommission" name="agentCommission" nbInput fullWidth
+                                    placeholder="Agent Commission" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="netAmount" class="col-sm-3 col-form-label">Net Amount</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="netAmount" required
+                                    [(ngModel)]="master.netAmount" name="netAmount" nbInput fullWidth
+                                    placeholder="Net Amount" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="additionalCharge" class="col-sm-3 col-form-label">Additional Charge</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="additionalCharge" required
+                                    [(ngModel)]="master.additionalCharge" name="additionalCharge" nbInput fullWidth
+                                    placeholder="Additional Charge" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="specialDiscount" class="col-sm-3 col-form-label">Special Discount</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="specialDiscount" required
+                                    [(ngModel)]="master.specialDiscount" name="specialDiscount" nbInput fullWidth
+                                    placeholder="Special Discount" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="salesDate" class="col-sm-3 col-form-label">Sales Date <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input nbInput placeholder="Sales Date" [(ngModel)]="master.salesDate" id="salesDate"
+                                    name="salesDate" [nbDatepicker]="salesDate" fullWidth
+                                    [ngModelOptions]="{standalone: true}" disabled>
+                                <nb-datepicker #salesDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card class="actions-card" style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th colspan="6">
+                            <h3>Visa Sales</h3>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Candidate Name:</td>
+                        <td align="left">{{candidateName}}</td>
+                        <td>Candidate Code:</td>
+                        <td align="left">{{candidateCode}}</td>
+                        <td>Candidate Status:</td>
+                        <td align="left">{{candidateStatus}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Passport No:</td>
+                        <td align="left">{{passportNo}}</td>
+                        <td>Agent Name:</td>
+                        <td align="left">{{agentName}}</td>
+                        <td>Company Name:</td>
+                        <td align="left">{{companyName}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Group Name:</td>
+                        <td align="left">{{groupName}}</td>
+                        <td>Trade Name:</td>
+                        <td align="left">{{tradeName}}</td>
+                        <td>Country Name:</td>
+                        <td align="left">{{countryName}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>City Name:</td>
+                        <td align="left">{{cityName}}</td>
+                        <td>Work Order No:</td>
+                        <td align="left">{{workOrderNo}}</td>
+                        <td>Visa No:</td>
+                        <td align="left">{{visaNo}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Sponsor:</td>
+                        <td align="left">{{sponsorId}}</td>
+                        <td>Contact:</td>
+                        <td align="left">{{contact}}</td>
+                        <td>Reference:</td>
+                        <td align="left">{{reference}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Assign Remarks:</td>
+                        <td align="left">{{assignRemarks}}</td>
+                        <td>UnAssign Remarks:</td>
+                        <td align="left">{{unAssignRemarks}}</td>
+                        <td>Service Charge:</td>
+                        <td align="left">{{salesAmount}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Agent Commission:</td>
+                        <td align="left">{{agentCommission}}</td>
+                        <td>Additional Charge:</td>
+                        <td align="left">{{additionalCharge}}</td>
+                        <td>Special Discount:</td>
+                        <td align="left">{{specialDiscount}}</td>
+                    </tr>
+                    <tr>
+                        <td>Net Amount:</td>
+                        <td align="left">{{netAmount}}</td>
+                        <td>Sales Date:</td>
+                        <td align="left">{{salesDate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

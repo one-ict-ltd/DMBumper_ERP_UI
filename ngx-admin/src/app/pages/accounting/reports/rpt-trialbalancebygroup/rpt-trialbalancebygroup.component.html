@@ -1,0 +1,177 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="companyId" class="col-4 col-form-label">Company Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect (change)="getBranch(this.$event.id);" [items]="companies" name="companyId"
+                            bindLabel="name" id="companyId" [(ngModel)]="ddlSelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="BranchId" class="col-4 col-form-label">Branch Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="branchs" name="BranchId" bindLabel="name" id="BranchId"
+                            [(ngModel)]="branchSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Branch" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="fromdateSelected" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="todateSelected" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Group Code</th>
+                        <th>Group Name</th>
+                        <th style="text-align: right;">Debit Amount</th>
+                        <th style="text-align: right;">Credit Amount</th>
+                        <!-- <td>Action</td> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;" (click)="getLedgersList(dialog,item.ledgerId)">
+                        <td>{{i+1}}</td>
+                        <td>{{item.accountCode}}</td>
+                        <td>{{item.accountName}}</td>
+                        <td align="right">{{this.currencyFormatter(item.drAmount)}}</td>
+                        <td align="right">{{this.currencyFormatter(item.crAmount)}}</td>
+                        <!-- <td>
+                            <button (click)="getLedgersList(dialog,item.ledgerId)" class="btn btn-success btn-sm m-1">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td><strong>Group Wise Trial Balance</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue }}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.accountCode}}</td>
+                        <td>{{item.accountName}}</td>
+                        <td align="right">{{this.currencyFormatter(item.drAmount)}}</td>
+                        <td align="right">{{this.currencyFormatter(item.crAmount)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>
+
+<ng-template #dialog let-data let-ref="dialogRef">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <nb-card-header>Ledger's List</nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <nb-card class="max-height">
+                            <table class="table table-bordered table-striped table-responsive" style="height: 500px;">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Account Code</th>
+                                    <th>Account Name</th>
+                                    <th style="text-align: right;">Debit Amount</th>
+                                    <th style="text-align: right;">Credit Amount</th>
+                                </tr>
+                                <tr *ngFor="let item of this.bodyDataLedgerList; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{item.accountCode}}</td>
+                                    <td>{{item.accountName}}</td>
+                                    <td align="right">{{this.currencyFormatter(item.drAmount)}}</td>
+                                    <td align="right">{{this.currencyFormatter(item.crAmount)}}</td>
+                                </tr>
+                            </table>
+                        </nb-card>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-11">
+                    </div>
+                    <div class="col-1">
+                        <button style="text-align: right;" nbButton (click)="ref.close()">X</button>
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</ng-template>

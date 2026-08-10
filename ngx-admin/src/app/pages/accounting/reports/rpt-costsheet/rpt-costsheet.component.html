@@ -1,0 +1,104 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="fromdateSelected" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="todateSelected" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-body>
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table" class="table table-bordered">
+                <thead style="background-color:lightgray;border-bottom:groove;">
+                    <tr>
+                        <th style="text-align:center;vertical-align: middle;">Particulars</th>
+                        <th style="text-align:center;vertical-align: middle;">Amount</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of bodyData;">
+                        <!-- <td style="width:80%;font-weight:{{item.font}};">{{item.costHeadName}}</td>
+                        <td style="width:20%;font-weight:{{item.font}};" align="right">{{item.costAmount}}</td> -->
+                        <td style="width:80%;">{{item.costHeadName}}</td>
+                        <td style="width:20%;" align="right">{{item.costAmount}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<!-- PDF  -->
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td>Statement of Cost & Profit</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tr>
+                    <td>For the month of {{yearEndDate}}</td>
+                </tr>
+            </table>
+
+            <div class="row" style="padding: 0px 15px 0px 15px;">
+                <table id="body_table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Particulars</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of bodyData;">
+                            <!-- <td style="width:80%;font-weight:{{item.font}};">{{item.costHeadName}}</td>
+                            <td style="width:20%;font-weight:{{item.font}};">{{item.costAmount}}</td> -->
+                            <td style="width:80%;">{{item.costHeadName}}</td>
+                            <td style="width:20%;">{{item.costAmount}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

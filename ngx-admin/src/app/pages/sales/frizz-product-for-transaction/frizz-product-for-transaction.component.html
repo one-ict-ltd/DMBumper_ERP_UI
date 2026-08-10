@@ -1,0 +1,140 @@
+<nb-card class="actions-card">
+    <nb-card-header><b>{{pageNavigation}}</b>
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card class="actions-card" *ngIf="!show">
+    <nb-card-body>
+        <div class="row">
+
+
+            <!-- <div class="col-6">
+                <div class="form-group row">
+                    <label class="col-4 col-form-label" for="depotCode">Batch No. </label>
+                    <div class="col-8">
+                        <ng-select nbselect (change)="onChangeDropDown($event);(master.batchNo = $event.id);"
+                            [items]="batchList" name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="depotCode" placeholder="Select Batch No." appendTo="body" [(ngModel)]="batchSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>  -->
+            <!-- <div class="col-6">
+                <div class="form-group row">
+                    <label class="col-4 col-form-label" for="productWiseSpecificationId">Product </label>
+                    <div class="col-8">
+                        <ng-select nbselect (change)="onChangeDropDown('product', $event);(master.productWiseSpecificationId = $event.id);
+                        filterTableData(master.productWiseSpecificationId);" [items]="productSpecListForFilter"
+                            [virtualScroll]="true" name="productWiseSpecificationId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="territoryCode"
+                            placeholder="Select product to filter" appendTo="body" [(ngModel)]="productSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label class="col-4 col-form-label" for="isSelect">Status </label>
+                    <div class="col-8">
+                        <ng-select nbselect (change)="onChangeDropDown('status', $event);filterTableData(master.productWiseSpecificationId);
+                        (master.isSelect = $event.id);" [items]="frizzStatusList" [virtualScroll]="true"
+                            name="isSelect" bindLabel="name" [ngModelOptions]="{standalone: true}" id="isSelect"
+                            placeholder="Select product to filter" appendTo="body" [(ngModel)]="frizzStatusSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div> -->
+            <!-- <div class="col-6">
+                <div class="form-group row">
+                    <label for="moneyBook" class="col-4 col-form-label">MR Book No.
+                        <span> *</span></label>
+                    <div class="col-8">
+                        <input type="text" class="form-control" [(ngModel)]="master.moneyReceiptBook" id="moneyBook"
+                            name="moneyBook" fullWidth placeholder="Money Receipt Book">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6"></div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromPageNo" class="col-4 col-form-label">From Page No.<span> *</span>
+                    </label>
+                    <div class="col-8">
+                        <input type="number" class="form-control" [(ngModel)]="master.fromPageNo" id="fromPageNo"
+                            name="fromPageNo" fullWidth placeholder="From  page">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="toPageNo" class="col-4 col-form-label">To Page No.<span> *</span></label>
+                    <div class="col-8">
+                        <input type="number" class="form-control" [(ngModel)]="master.toPageNo" id="toPageNo"
+                            name="toPageNo" fullWidth placeholder="To Page">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div style="text-align: center;">
+                    <button (click)="loadAllPages()" class="btn btn-success btn-sm m-3"> Load Pages </button>
+                </div>
+            </div> -->
+        </div>
+        <h4 style="color: red; text-align: center;">Total {{noOfProduct}} Product<span *ngIf="noOfProduct>1">s</span>
+            Frizzed to Transaction</h4>
+    </nb-card-body>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 500px">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product Name</th>
+                                    <th>UOM</th>
+                                    <th>Price</th>
+                                    <th>Batch No.</th>
+                                    <th>Status</th>
+                                    <th>
+                                        <nb-checkbox hidden name="isSelectAll" id="isSelectAll" status="success"
+                                            [(ngModel)]="isSelectAll" (change)="checkChange($event)">
+                                        </nb-checkbox>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor=" let details of productSpecList; let rowIndex=index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.name}}</td>
+                                    <td>{{details.uomName}}</td>
+                                    <td>{{details.price}}</td>
+                                    <td><input type="text" [(ngModel)]="details.batchNumbers"
+                                            placeholder="enter batch no.">
+                                    </td>
+                                    <td>{{details.frizzStatus}}</td>
+                                    <td style="text-align: center;">
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect"></nb-checkbox>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

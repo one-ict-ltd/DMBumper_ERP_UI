@@ -1,0 +1,70 @@
+span {
+  color: red;
+}
+
+.my-custom-scrollbar {
+  position: relative;
+  height: 640px;
+  width: auto;
+  overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+  display: block;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Just common table stuff. Really. */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  padding: 8px 16px;
+}
+
+th {
+  background: #eee;
+}
+
+.table thead td {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #eee;
+  font-weight: bold;
+}
+
+.reportHeaderClass {
+  background: whitesmoke !important;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: bold;
+  border: 0
+}
+
+
+.highlighted-row-sl-1 {
+  background-color: white;
+}
+
+.highlighted-row-sl-2 {
+  background-color: rgb(60, 173, 218);
+}
+
+.highlighted-row-sl-3 {
+  background-color: rgb(164, 182, 164);
+}
+
+
+.highlighted-row-sl-4 {
+  background-color: rgba(86, 241, 169, 0.699);
+  font-weight: bold;
+}

@@ -1,0 +1,215 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="companyName" class="col-sm-3 col-form-label">Company Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="companyName" required
+                                    [(ngModel)]="master.companyName" name="companyName" nbInput fullWidth
+                                    placeholder="Company Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="aliasName" class="col-sm-3 col-form-label">Short Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="aliasName" required
+                                    [(ngModel)]="master.aliasName" name="aliasName" nbInput fullWidth
+                                    placeholder="Short Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="ownerName" class="col-sm-3 col-form-label">Owner Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="ownerName" required
+                                    [(ngModel)]="master.ownerName" name="ownerName" nbInput fullWidth
+                                    placeholder="Owner Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="managerName" class="col-sm-3 col-form-label">Manager Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="managerName" required
+                                    [(ngModel)]="master.managerName" name="managerName" nbInput fullWidth
+                                    placeholder="Manager Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="businessNature" class="col-sm-3 col-form-label">Business Nature</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="businessNature" required
+                                    [(ngModel)]="master.businessNature" name="businessNature" nbInput fullWidth
+                                    placeholder="Business Nature">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="dateOfEstablishment" class="col-sm-3 col-form-label">Establishment Date</label>
+                            <div class="col-sm-9">
+                                <input [nbDatepicker]="dateOfEstablishment" id="dateOfEstablishment" required
+                                    [(ngModel)]="master.dateOfEstablishment" name="dateOfEstablishment" nbInput
+                                    fullWidth placeholder="Establishment Date">
+                                <nb-datepicker #dateOfEstablishment></nb-datepicker>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="liquidityRatio" class="col-sm-3 col-form-label">Liquidity Ratio</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="liquidityRatio" required
+                                    [(ngModel)]="master.liquidityRatio" name="liquidityRatio" nbInput fullWidth
+                                    placeholder="Liquidity Ratio">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="permanentEmployee" class="col-sm-3 col-form-label">No of Employees</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="permanentEmployee" required
+                                    [(ngModel)]="master.permanentEmployee" name="permanentEmployee" nbInput fullWidth
+                                    placeholder="No of Employees">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="companyBankAccName" class="col-sm-3 col-form-label">Bank A/C Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="companyBankAccName" required
+                                    [(ngModel)]="master.companyBankAccName" name="companyBankAccName" nbInput fullWidth
+                                    placeholder="Bank A/C Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="imageHeight" class="col-sm-3 col-form-label">Logo Height <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="imageHeight" required
+                                    [(ngModel)]="master.imageHeight" name="imageHeight" nbInput fullWidth
+                                    placeholder="Logo Height">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="filePath" class="col-sm-3 col-form-label">Logo Path <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="filePath" required
+                                    [(ngModel)]="master.filePath" name="filePath" nbInput fullWidth
+                                    placeholder="Logo Path">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="tradeLicense" class="col-sm-3 col-form-label">Trade License</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="tradeLicense" required
+                                    [(ngModel)]="master.tradeLicense" name="tradeLicense" nbInput fullWidth
+                                    placeholder="Trade License">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="vatNo" class="col-sm-3 col-form-label">VAT No</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="vatNo" required [(ngModel)]="master.vatNo"
+                                    name="vatNo" nbInput fullWidth placeholder="VAT No">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="tinNo" class="col-sm-3 col-form-label">TIN No</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="tinNo" required [(ngModel)]="master.tinNo"
+                                    name="tinNo" nbInput fullWidth placeholder="TIN No">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="officeTelephone" class="col-sm-3 col-form-label">Telephone
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="officeTelephone" required
+                                    [(ngModel)]="master.officeTelephone" name="officeTelephone" nbInput fullWidth
+                                    placeholder="Telephone">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="companyEmail" class="col-sm-3 col-form-label">Company Email
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="companyEmail" required
+                                    [(ngModel)]="master.companyEmail" name="companyEmail" nbInput fullWidth
+                                    placeholder="Company Email">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="alternetEmail" class="col-sm-3 col-form-label">Alternative Email</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="alternetEmail" required
+                                    [(ngModel)]="master.alternetEmail" name="alternetEmail" nbInput fullWidth
+                                    placeholder="Alternative Email">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="website" class="col-sm-3 col-form-label">Website <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="website" required
+                                    [(ngModel)]="master.website" name="website" nbInput fullWidth placeholder="Website">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="addressLine" class="col-sm-3 col-form-label">Address <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="addressLine" required
+                                    [(ngModel)]="master.addressLine" name="addressLine" nbInput fullWidth
+                                    placeholder="Address">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="companyBankAccNo" class="col-sm-3 col-form-label">Bank A/C No</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="companyBankAccNo" required
+                                    [(ngModel)]="master.companyBankAccNo" name="companyBankAccNo" nbInput fullWidth
+                                    placeholder="Bank A/C No">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="imageWidth" class="col-sm-3 col-form-label">Logo Width <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="imageWidth" required
+                                    [(ngModel)]="master.imageWidth" name="imageWidth" nbInput fullWidth
+                                    placeholder="Logo Width">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">Is Active ?</label>
+                            <div class="col-sm-9">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

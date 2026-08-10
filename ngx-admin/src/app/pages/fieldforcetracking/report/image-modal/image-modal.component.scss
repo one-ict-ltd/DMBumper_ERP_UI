@@ -1,0 +1,18 @@
+.custom-modal {
+    width: 1400px;
+    /* Adjust the width as needed */
+    max-height: 1200px;
+    /* Adjust the maximum height as needed */
+}
+
+.image-box {
+    //border: 2px solid #ddd;
+    // padding: 10px;
+    // margin: 10px;
+    cursor: pointer;
+    transition: border 0.3s ease;
+
+    &:hover {
+        border-color: #3498db;
+    }
+}

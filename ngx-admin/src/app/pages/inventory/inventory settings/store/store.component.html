@@ -1,0 +1,72 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData" [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-sm-3 col-form-label">Company Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.companyId = this.$event.id);getSBU(this.$event.id)" [items]="companyItems" name="companyId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="companyId" placeholder="Select Company" appendTo="body" [(ngModel)]="master.companySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="storeName">Store Name<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" [(ngModel)]="master.storeName" id="storeName" name="storeName" nbInput fullWidth placeholder="Store Name">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="sbuId" class="col-sm-3 col-form-label">Branch Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.sbuId = this.$event.id);" [items]="sbuItems" bindLabel="name" [ngModelOptions]="{standalone: true}" id="sbuId" placeholder="Select Branch" appendTo="body" [(ngModel)]="master.sbuSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="storeCode">Store Code<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" [(ngModel)]="master.storeCode" id="storeCode" name="storeCode" nbInput fullWidth placeholder="Store Code">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

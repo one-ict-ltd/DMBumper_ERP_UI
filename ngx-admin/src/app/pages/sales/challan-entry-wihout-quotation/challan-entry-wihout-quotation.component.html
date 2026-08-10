@@ -1,0 +1,434 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="loadFromDate">From
+                        Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="master.loadFromDateShow" name="loadFromDateShow"
+                            id="loadFromDateShow" [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="loadToDate">To
+                        Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="master.loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <button class="btn btn-primary" nbButton (click)="getGridData();">Load Data</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show" style="margin-bottom: 0.2rem;">
+    <!-- <nb-card-header>
+        <div class="row">
+            <div class="col-8"> Challan Details</div>
+        </div>
+    </nb-card-header> -->
+
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="form-group row">
+                        <lable class="col-sm-2 col-form-label" for="CustomerName "> Customer Name <span>*</span></lable>
+                        <div class="col-sm-12">
+                            <ng-select nbselect (change)="(master.partyId = this.$event.id); GetPartyDetails();"
+                            [items]="partyList" [virtualScroll]="true" name="partyName" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="partyId" placeholder="Select Customer" appendTo="body"
+                            [(ngModel)]="master.partySelected" style="width: 100%;">
+                            </ng-select>
+                        </div>
+                    </div> 
+            </div>
+        </div>
+        <div class="row">
+            <div class="row col-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">  
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="challanNo">Challan No.<span>*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" required [(ngModel)]="master.challanNo" id="challanNo"
+                            name="challanNo" nbInput fullWidth placeholder="Challan No.">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                            <label for="address" class="col-sm-4 col-form-label">Delivery Address</label>
+                            <div class="col-sm-8">
+                                <textarea type="text" class="form-control" id="address" required
+                                    [(ngModel)]="master.address" name="address" nbInput fullWidth rows="4"></textarea>
+                            </div>
+                    </div> 
+                    
+                </div>  
+                <div class="col-lg-4 col-md-6 col-sm-12"> 
+                    <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="challanDate">Challan Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input (ngModelChange)="getActualDate($event);" nbInput
+                                    placeholder="Challan Date" [(ngModel)]="master.challanDateShow" id="challanDateShow"
+                                    name="challanDateShow" [nbDatepicker]="idatepicker2" fullWidth
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepicker2></nb-datepicker>
+                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="isFinal" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-4 validation-checkboxes">
+                            <nb-checkbox [(ngModel)]="master.isFinal" name="isFinal" status="success" (change)="GetTenderChallanDetailsForFinalChallanByQuotationMasterId();">
+                                <b>Is Final</b>
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="col-lg-4 col-md-6 col-sm-12">   
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="refNo">Ref No.<span>*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" required [(ngModel)]="master.refNo" id="refNo"
+                            name="refNo" nbInput fullWidth placeholder="Ref No.">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card class="actions-card" *ngIf="!show">
+  <nb-card-header>
+    <div class="row">
+      <div class="col-2"><b>Challan Details</b></div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+
+      <div class="col-8">
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label" for="productWiseSpecificationId">Product<span>*</span></label>
+          <div class="col-sm-10">
+            <ng-select nbselect
+              (change)="(master.productWiseSpecificationId = this.$event.id); getProductSpecDetails();"
+              [items]="productSpecList" name="productName" bindLabel="name" [ngModelOptions]="{standalone: true}"
+              id="productWiseSpecificationId" placeholder="Select product" appendTo="body"
+              [(ngModel)]="master.productSpecSelected" [disabled]="disabled ? 'disabled' : null">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="challanQty">Qty. <span>*</span></label>
+          <div class="col-sm-8 input-group" id="challanQty">
+            <input type="number" class="form-control" required [(ngModel)]="master.challanQty" min="0" id="challanQty"
+              name="challanQty" fullWidth style="width: 70%;" nbInput placeholder="Qty."
+              aria-describedby="uomName" (ngModelChange)="CalculateTotalPrice();"
+              oninput="this.value = Math.abs(this.value)" [readonly]="isDisabled ? 'isDisabled' : null">
+            <div class="input-group-append">
+              <span class="input-group-text" id="uomName">{{master.uomName}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="price">Unit Price / Rate <span>*</span></label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" required [(ngModel)]="master.price" id="price"
+              name="price" nbInput fullWidth placeholder="Price" (ngModelChange)="CalculateTotalPrice();">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="discountAmount">Discount</label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" [(ngModel)]="master.discountAmount"
+              id="discountAmount" name="discountAmount" nbInput fullWidth placeholder="Discount Amount"
+              (ngModelChange)="CalculateTotalPrice();">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="vat">VAT</label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" [(ngModel)]="master.vat" id="vat" name="vat"
+              nbInput fullWidth placeholder="VAT" (ngModelChange)="CalculateTotalPrice();">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="total">Total TP</label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" required [(ngModel)]="master.totalPrice" id="total"
+              name="total" nbInput fullWidth placeholder="Total Price" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="tTotal"><b>Total</b> (TP+VAT-Disc.)</label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" required [(ngModel)]="master.tTotal" id="tTotal"
+              name="tTotal" nbInput fullWidth placeholder="Total" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="form-group">
+          <label class="col-form-label" for="specification"><b>Description of Items</b></label>
+          <textarea class="form-control" id="specification" name="specification" rows="2"
+            [(ngModel)]="master.specification" [ngModelOptions]="{standalone: true}"
+            placeholder="Enter description of items, notes or any additional details..."></textarea>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="form-group">
+          <label class="col-form-label" for="remarks"><b>Remarks</b></label>
+          <textarea class="form-control" id="remarks" name="remarks" rows="2"
+            [(ngModel)]="master.remarks" [ngModelOptions]="{standalone: true}"
+            placeholder="Enter remarks..."></textarea>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div style="text-align: center;">
+          <button (click)="addToDetailsGrid()" class="btn btn-success btn-sm m-3"
+            [disabled]="isDisabled ? 'isDisabled' : null">
+            <i class="fa fa-plus" aria-hidden="true"></i> Add
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-4 text-right"><b>Net Challan Amount :</b></div>
+      <div class="col-2"><b>{{master.grandTotal}}</b></div>
+    </div>
+
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <div class="grid-wrapper" style="overflow-y:scroll; overflow-x: scroll; max-height: 300px">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Qty.</th>
+              <th>UOM</th>
+              <th>Price</th>
+              <th>VAT</th>
+              <th>Discount/Qty.</th>
+              <th style="width: 200px;">Total</th>
+              <th style="width: 100px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+              <td>{{rowIndex+1}}</td>
+              <td style="width: 25%;">{{details.productName}}</td>
+              <td>
+                <input [(ngModel)]="details.challanQty" type="number" class="form-control" id="challanQty" min="0"
+                  required name="challanQty" nbInput fullWidth placeholder="Qty."
+                  (ngModelChange)="calculateTotal(rowIndex);"
+                  oninput="this.value = (Math.abs(this.value)<1?1:Math.abs(this.value))">
+              </td>
+              <td>{{details.uomName}}</td>
+              <td>
+                <input [(ngModel)]="details.price" type="number" class="form-control text-right" id="price" required
+                  min="0" name="price" nbInput fullWidth placeholder="price" (ngModelChange)="calculateTotal(rowIndex);">
+              </td>
+              <td>
+                <input [(ngModel)]="details.vat" type="number" class="form-control text-right" id="vat" min="0"
+                  name="vat" nbInput fullWidth placeholder="VAT" (ngModelChange)="calculateTotal(rowIndex);">
+              </td>
+              <td>
+                <input [(ngModel)]="details.discountAmount" type="number" class="form-control text-right" min="0"
+                  id="discountAmount" name="discountAmount" nbInput fullWidth placeholder="Discount"
+                  (ngModelChange)="calculateTotal(rowIndex);">
+              </td>
+              <td>
+                <input [(ngModel)]="details.total" type="number" class="form-control text-right" id="total" readonly
+                  min="0" name="total" nbInput fullWidth style="width: 100% !important" placeholder="Total Amount">
+              </td>
+              <td>
+                <button (click)="deleteDetails(rowIndex)" class="btn btn-danger btn-sm m-0"
+                  style="height: 25px; width: 25px; padding: 0 0 0 0;">
+                  <i class="fa fa-trash" aria-hidden="true" style="font-size: x-small;"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <!-- <td colspan="6"></td> -->
+              <td class="text-right" colspan="7"><b>Gross Total :</b></td>
+              <td>
+                <input type="number" class="form-control text-right" [(ngModel)]="master.totalGross"
+                  min="0" name="totalGross" nbInput readonly fullWidth placeholder="Gross Total">
+              </td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="text-right" colspan="7"><b>Net Challan Amount :</b></td>
+              <td>
+                <input type="number" class="form-control text-right" style="color: red !important;font-weight: bold;"
+                  required readonly [(ngModel)]="master.grandTotal" name="grandTotal" nbInput fullWidth
+                  placeholder="Net Total">
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+
+<div class="row" *ngIf="!show" hidden>
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Quotation For Challan" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Part No</th>
+                                    <th>Product Name</th>
+                                    <th>Description of Item</th>
+                                    <th>Quotation Qty</th>
+                                    <th>Delivered Qty</th>
+                                    <th>Balance Qty</th>
+                                    <th>Challan Qty</th>
+                                    <th>Remarks</th>
+                                    <th>Select</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.skuNumber}}</td>
+                                    <td>{{details.productName}}</td>
+                                    <td>{{details.specification}}</td>
+                                    <td style="text-align: right;">{{details.quotationQty}}</td>
+                                    <td style="text-align: right;">{{details.deliveredChallanQty}}</td>
+                                    <td style="color: blue; font-weight: bold; text-align: right">
+                                        {{details.balanceQty}}
+                                    </td>
+                                    <td style="font-weight: bold; text-align: right; padding-right: 1px; padding-left: 1px;">
+                                        <input type="number" min="0" class="form-control text-right"
+                                            style="min-width: 80px;padding: 0.4375rem 0rem" [(ngModel)]="details.challanQty"
+                                            (ngModelChange)="ValidateChallanQtys(rowIndex);"
+                                            id="challanQty" name="challanQty" nbInput fullWidth placeholder="challanQty">
+                                    </td>
+                                    <td>{{details.remarks}}</td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect" (change)="checkChange($event,rowIndex)">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+<div class="row" *ngIf="!show && master.isFinal" hidden>
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Previous Challan for Final Challan" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Challan No</th>
+                                    <th>Part No</th>
+                                    <th>Product Name</th>
+                                    <th>Description of Item</th>
+                                    <th>Challan Qty</th>
+                                    <th>Remarks</th>
+                                    <th>Select</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.finalChallanDetailsViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.challanNo}}</td>
+                                    <td>{{details.skuNumber}}</td>
+                                    <td>{{details.productName}}</td>
+                                    <td>{{details.specification}}</td>
+                                    <td style="text-align: right;">{{details.challanQty}}</td>
+                                    <td>{{details.remarks}}</td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect" (change)="checkChangeFinalChallan($event,rowIndex)">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+
+
+
+
+

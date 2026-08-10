@@ -1,0 +1,10 @@
+<nb-card>
+    <nb-card-header> Messsage </nb-card-header>
+    <nb-card-body>       
+      <label class="label" #name nbLabel>{{names.message}}</label>
+    </nb-card-body>
+    <nb-card-footer>
+      <button nbButton status="danger" (click)="cancel()" class="cancel">Cancel</button>
+      <button nbButton status="success" (click)="submit(names.value)">Yes</button>     
+    </nb-card-footer>
+  </nb-card>

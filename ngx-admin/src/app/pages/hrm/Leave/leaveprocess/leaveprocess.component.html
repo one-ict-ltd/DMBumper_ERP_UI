@@ -1,0 +1,82 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <fieldset>
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label for="leaveYearId" class="col-4 col-form-label">Leave Year
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="leaveYearItems"
+                                    (change)="(master.leaveYearId = this.$event.id);LoadLeavePolicy();"
+                                    name="leaveYearId" bindLabel="name" id="leaveYearId"
+                                    [(ngModel)]="master.leaveYearSelected" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Select Leave Year" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="form-group row">
+                            <label for="leavePolicyId" class="col-2 col-form-label">Leave Policy</label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="leavePolicyItems"
+                                    (change)="(master.leavePolicyId = this.$event.id);" name="leavePolicyId"
+                                    bindLabel="name" id="leavePolicyId" [(ngModel)]="master.leavePolicySelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Leave Policy"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group row">
+                            <label class=""></label>
+                            <div class="">
+                                <button (click)="ProcessSalary();" class="btn btn-success btn-sm">Process</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+        <label><b>Total Employee: {{totalEmployee}}</b></label>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Name</th>
+                        <th>Leave Type</th>
+                        <th>Leave Year</th>
+                        <th>Leave Day</th>
+                        <th>Leave Carry</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.employeeName}}</td>
+                        <td>{{item.typeName}}</td>
+                        <td>{{item.yearName}}</td>
+                        <td>{{item.leaveDays}}</td>
+                        <td>{{item.leaveCarryDays}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

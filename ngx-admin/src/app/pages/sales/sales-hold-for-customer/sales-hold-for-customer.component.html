@@ -1,0 +1,89 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-5 col-md-5 col-sm-5">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="getAllTerritory(depotCode = this.$event.id);" [items]="depotList"
+                            name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                            placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="partyId">Territory<span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="(territoryCode = this.$event.id);" [items]="territoryList"
+                            [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="territoryCode" placeholder="Select territory"
+                            appendTo="body" [(ngModel)]="territorySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-2">
+                <button (click)="onPreview()" class="btn btn-success ">
+                    Preview </button>
+            </div>
+        </div>
+
+    </nb-card-body>
+</nb-card>
+
+<div class="row" *ngIf="showbody">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 500px">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+
+                                <tr style="text-align: center; background-color: darkseagreen;">
+                                    <th>#</th>
+                                    <th>Code</th>
+                                    <th>Party Name</th>
+                                    <th>Address</th>
+                                    <th>Owner Name</th>
+                                    <th>Mobile</th>
+                                    <th>Territory Name</th>
+                                    <th>Territory Code</th>
+                                    <th>Is Hold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of master.lstAccPartyViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.partyCode}}</td>
+                                    <td>{{details.partyName}}</td>
+                                    <td>{{details.addressLine}}</td>
+                                    <td>{{details.ownerName}}</td>
+                                    <td>{{details.contactNumber}}</td>
+                                    <td>{{details.territoryName}}</td>
+                                    <td>{{details.territoryCode}}</td>
+                                    <td>
+                                        <nb-checkbox name="isHold" id="isHold" status="success"
+                                            [(ngModel)]="details.isHold">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

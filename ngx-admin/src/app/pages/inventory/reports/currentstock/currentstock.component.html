@@ -1,0 +1,202 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-6 col-md-8 col-sm-12" hidden>
+                <div class="form-group row">
+                    <label for="companyId" class="col-sm-12 col-form-label">Company <span> *</span></label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="getSBU(master.companyId = this.$event.id);" [items]="companyList"
+                            name="companyId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="companyId"
+                            placeholder="Select Company" appendTo="body" [(ngModel)]="master.companySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="sbuId" class="col-sm-12 col-form-label">Depot<span> *</span></label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="getStore(master.sbuId = this.$event.id);" [items]="sbus"
+                            name="sbuId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="sbuId"
+                            placeholder="Select a Warehouse" appendTo="body" [(ngModel)]="master.branchSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="productTypeId" class="col-sm-12 col-form-label">Product
+                                Type</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(getTypeWiseProducts(0,this.$event.id)); (master.productTypeId = this.$event.id);"
+                                    [items]="productTypeList" name="productTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productTypeId"
+                                    placeholder="Select Product Type" appendTo="body"
+                                    [(ngModel)]="master.productTypeSelected" [disabled]="disabled ? 'disabled' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+            <div class="col-lg-6 col-md-8 col-sm-12" hidden>
+                <div class="form-group row">
+                    <label for="storeId" class="col-sm-12 col-form-label">Store Name<span> *</span></label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="(master.storeId = this.$event.id);" [items]="StoreList"
+                            name="storeId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="storeId"
+                            placeholder="Select a Warehouse" appendTo="body" [(ngModel)]="master.storeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-6 col-md-8 col-sm-12"></div> -->
+            <div class="col-lg-6 col-md-8 col-sm-12" hidden>
+                <div class="form-group row">
+                    <label for="StoreWiseGroup" class="col-4 col-form-label">Store Wise Group?</label>
+                    <div class="col-sm-12 validation-checkboxes">
+                        <nb-checkbox [(ngModel)]="master.isStoreWiseGroup" name="StoreWiseGroup" status="success">
+                            <!-- <b>Store Wise Group?</b> -->
+                        </nb-checkbox>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="productId" class="col-4 col-form-label">Product Name</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="getAllProductSpecification(master.productId = this.$event.id);"
+                            [items]="ProductList" name="productId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="productId" placeholder="Select a Warehouse"
+                            appendTo="body" [(ngModel)]="master.productSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="productWiseSpecificationId" class="col-sm-6 col-form-label">Product
+                        Specification</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="(master.productWiseSpecificationId = this.$event.id);"
+                            [items]="ProductSpecificationList" name="productWiseSpecificationId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="productWiseSpecificationId"
+                            placeholder="Select a Warehouse" appendTo="body"
+                            [(ngModel)]="master.productspecificationSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <div class="grid-wrapper" style="overflow-y:scroll; max-height: 400px">
+                <table id="simple_table" class=" table table-bordered table-striped" [virtualScroll]="true">
+                    <thead>
+                        <tr>
+                            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of bodyData; let i = index;">
+                            <td>{{i+1}}</td>
+                            <!-- <td style="text-align: center;vertical-align: middle;" [attr.rowspan]="item.storeSpan"
+                            *ngIf="item.storeSpan">{{item.storeName}}</td> -->
+                            <!-- <td style="text-align: center;vertical-align: middle;" [attr.rowspan]="item.productSpan"
+                            *ngIf="item.productSpan">{{item.Name}}</td> -->
+                            <td>{{item.productCode}}</td>
+                            <td>{{item.productName}}</td>
+                            <td>{{item.packSize}}</td>
+                            <td>{{item.batchNo}}</td>
+                            <td>{{item.mfgDate}}</td>
+                            <td>{{item.expDate}}</td>
+                            <td class="text-right">{{item.CurrentStock}}</td>
+                            <td class="text-right">{{item.ttlValue}}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-right" colspan="8">Total:</td>
+                            <td class="text-right">{{formatDecimalPoint(ttlStockValue)}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Current Stock</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>: {{item.leftValue}}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>: {{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <!-- <td style="text-align: center;vertical-align: middle;" [attr.rowspan]="item.storeSpan"
+                            *ngIf="item.storeSpan">{{item.storeName}}</td> -->
+                        <!-- <td style="text-align: center;vertical-align: middle;" [attr.rowspan]="item.productSpan"
+                            *ngIf="item.productSpan">{{item.Name}}</td> -->
+
+                        <td>{{item.productCode}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.packSize}}</td>
+                        <td>{{item.batchNo}}</td>
+                        <td>{{item.mfgDate}}</td>
+                        <td>{{item.expDate}}</td>
+                        <td class="text-right">{{item.CurrentStock}}</td>
+                        <td class="text-right">{{item.ttlValue}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-right" colspan="8">Total:</td>
+                        <td class="text-right">{{formatDecimalPoint(ttlStockValue)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

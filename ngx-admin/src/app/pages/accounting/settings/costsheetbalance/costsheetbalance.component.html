@@ -1,0 +1,165 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <div class="form-group row">
+                            <label for="parentHeadId" class="col-sm-3 col-form-label">Parent Head <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.parentHeadId = this.$event.id);getDdlCostHeadByParent(this.$event.id);"
+                                    [items]="parentHeadItems" name="parentHeadId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="parentHeadId"
+                                    placeholder="Select Parent Head" appendTo="body"
+                                    [(ngModel)]="master.parentHeadSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-sm-3 col-form-label">Remarks</label>
+                            <div class="col-sm-9">
+                                <textarea type="text" class="form-control" id="description" required
+                                    [(ngModel)]="master.description" name="description" nbInput fullWidth></textarea>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="costHeadName" class="col-sm-3 col-form-label">Cost Head Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" (keyup)="getDuplicate();" class="form-control" id="costHeadName"
+                                    required [(ngModel)]="master.costHeadName" name="costHeadName" nbInput fullWidth
+                                    placeholder="Head Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sortOrder" class="col-sm-3 col-form-label">Sort Order</label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" id="sortOrder" required
+                                    [(ngModel)]="master.sortOrder" name="sortOrder" nbInput fullWidth
+                                    placeholder="Sort Order">
+                            </div>
+                            <div class="col-sm-6 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="ledgerId" class="col-sm-3 col-form-label">Ledger Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.ledgerId = this.$event.id);" [items]="ledgerItems"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="ledgerId"
+                                    placeholder="Select Ledger" appendTo="body" [(ngModel)]="master.ledgerSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group row">
+                            <label for="formulaTypeId" class="col-sm-3 col-form-label">Formula Type
+                                <span>*</span></label>
+                            <div class="col-sm-6">
+                                <ng-select nbselect (change)="(master.formulaTypeId = this.$event.id)"
+                                    [items]="formulaTypeItems" name="formulaTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="formulaTypeId"
+                                    placeholder="Select Formula Type" appendTo="body"
+                                    [(ngModel)]="master.formulaTypeSelected">
+                                </ng-select>
+                            </div>
+                            <div class="col-sm-3">
+                                <button (click)="addDetails(dialog)" class="btn btn-warning btn-sm"><i
+                                        class="fa fa-plus" aria-hidden="true"></i> Add Ledger
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Ledger Details" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Ledger Name</th>
+                                    <th>Formula</th>
+                                    <td>Action</td>
+                                </tr>
+                                <tr *ngFor="let detail of master.lstDetails; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <input [(ngModel)]="detail.accountName" type="text" class="form-control"
+                                            id="accountName" required name="accountName" nbInput fullWidth
+                                            placeholder="Ledger Name">
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.formulaName" type="text" class="form-control"
+                                            id="formulaName" required name="formulaName" nbInput fullWidth
+                                            placeholder="Formula">
+                                    </td>
+                                    <td>
+                                        <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                        <button (click)="editDetail(rowIndex)" class="btn btn-primary btn-sm m-1">
+                                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

@@ -1,0 +1,303 @@
+<nb-card class="actions-card">
+  <nb-card-header> <label class="col-form-label" for="">{{pageNavigation}}</label>
+    <ngx-common-button (click)="ButtonAction()" *ngIf="!isDisabled"></ngx-common-button>
+  </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+  <nb-card-header class="text-right">
+    <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="loadFromDateShow">From Date <span>*</span></label>
+          <div class="col-sm-8">
+            <input required [(ngModel)]="loadFromDateShow" name="loadFromDateShow" id="loadFromDateShow"
+              [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #idatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="loadToDateShow">To Date <span>*</span></label>
+          <div class="col-sm-8">
+            <input required [(ngModel)]="loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+              [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #idatepicker2></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group row !important">
+          <button class="btn btn-info" (click)="GetGridData();">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-wrapper">
+      <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+      </ag-grid-angular>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+  <nb-card-header>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+      <form #masterForm="ngForm">
+        <div class="row">
+          <div class="col-4">
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label" for="salesInvoiceDate">Quotation Date <span>*</span></label>
+              <div class="col-sm-8">
+                <input required [(ngModel)]="master.salesInvoiceDate"
+                  name="salesInvoiceDate" id="salesInvoiceDate" [nbDatepicker]="idatepicker" nbInput fullWidth
+                  placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                <nb-datepicker #idatepicker></nb-datepicker>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label" for="salesInvoiceNo">Quotation No.<span>*</span></label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" required [(ngModel)]="master.salesInvoiceNo" id="salesInvoiceNo"
+                  name="salesInvoiceNo" nbInput fullWidth placeholder="Quotation No.">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-group row">
+              <label class="col-sm-4 col-form-label" for="refNo">Reference No.</label>
+              <div class="col-sm-8">
+                <input type="text" class="form-control" [(ngModel)]="master.refNo" id="refNo"
+                  name="refNo" nbInput fullWidth placeholder="Reference No.">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label" for="partyId">Customer Name <span>*</span></label>
+              <div class="col-sm-12">
+                <ng-select nbselect (change)="(master.partyId = this.$event.id); GetPartyDetails();"
+                  [items]="partyList" [virtualScroll]="true" name="partyName" bindLabel="name"
+                  [ngModelOptions]="{standalone: true}" id="partyId" placeholder="Select Customer" appendTo="body"
+                  [(ngModel)]="master.partySelected" style="width: 100%;">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-header>
+</nb-card>
+
+<nb-card class="actions-card" *ngIf="!show">
+  <nb-card-header>
+    <div class="row">
+      <div class="col-2"><b>Quotation Details</b></div>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+
+      <div class="col-8">
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label" for="productWiseSpecificationId">Product<span>*</span></label>
+          <div class="col-sm-10">
+            <ng-select nbselect
+              (change)="(master.productWiseSpecificationId = this.$event.id); getProductSpecDetails();"
+              [items]="productSpecList" name="productName" bindLabel="name" [ngModelOptions]="{standalone: true}"
+              id="productWiseSpecificationId" placeholder="Select product" appendTo="body"
+              [(ngModel)]="master.productSpecSelected" [disabled]="disabled ? 'disabled' : null">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="Invoice">Qty. <span>*</span></label>
+          <div class="col-sm-8 input-group" id="Invoice">
+            <input type="number" class="form-control" required [(ngModel)]="master.invoiceQty" min="0" id="invoiceQty"
+              name="invoiceQty" fullWidth style="width: 70%;" nbInput placeholder="Qty."
+              aria-describedby="uomName" (ngModelChange)="CalculateTotalPrice();"
+              oninput="this.value = Math.abs(this.value)" [readonly]="isDisabled ? 'isDisabled' : null">
+            <div class="input-group-append">
+              <span class="input-group-text" id="uomName">{{master.uomName}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="price">Unit Price / Rate <span>*</span></label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" required [(ngModel)]="master.price" id="price"
+              name="price" nbInput fullWidth placeholder="Price" (ngModelChange)="CalculateTotalPrice();">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="discountAmount">Discount</label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" [(ngModel)]="master.discountAmount"
+              id="discountAmount" name="discountAmount" nbInput fullWidth placeholder="Discount Amount"
+              (ngModelChange)="CalculateTotalPrice();">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="vat">VAT</label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" [(ngModel)]="master.vat" id="vat" name="vat"
+              nbInput fullWidth placeholder="VAT" (ngModelChange)="CalculateTotalPrice();">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="total">Total TP</label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" required [(ngModel)]="master.totalPrice" id="total"
+              name="total" nbInput fullWidth placeholder="Total Price" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="tTotal"><b>Total</b> (TP+VAT-Disc.)</label>
+          <div class="col-sm-8">
+            <input type="number" min="0" class="form-control" required [(ngModel)]="master.tTotal" id="tTotal"
+              name="tTotal" nbInput fullWidth placeholder="Total" readonly>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="form-group">
+          <label class="col-form-label" for="specification"><b>Description of Items</b></label>
+          <textarea class="form-control" id="specification" name="specification" rows="3"
+            [(ngModel)]="master.specification" [ngModelOptions]="{standalone: true}"
+            placeholder="Enter description of items, notes or any additional details..."></textarea>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div style="text-align: center;">
+          <button (click)="addToDetailsGrid()" class="btn btn-success btn-sm m-3"
+            [disabled]="isDisabled ? 'isDisabled' : null">
+            <i class="fa fa-plus" aria-hidden="true"></i> Add
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-4 text-right"><b>Net Quotation Amount :</b></div>
+      <div class="col-2"><b>{{master.grandTotal}}</b></div>
+    </div>
+
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <div class="grid-wrapper" style="overflow-y:scroll; overflow-x: scroll; max-height: 300px">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product Name</th>
+              <th>Qty.</th>
+              <th>UOM</th>
+              <th>Price</th>
+              <th>VAT</th>
+              <th>Discount/Qty.</th>
+              <th style="width: 200px;">Total</th>
+              <th style="width: 100px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+              <td>{{rowIndex+1}}</td>
+              <td style="width: 25%;">{{details.productName}}</td>
+              <td>
+                <input [(ngModel)]="details.invoiceQty" type="number" class="form-control" id="invoiceQty" min="0"
+                  required name="invoiceQty" nbInput fullWidth placeholder="Qty."
+                  (ngModelChange)="calculateTotal(rowIndex);"
+                  oninput="this.value = (Math.abs(this.value)<1?1:Math.abs(this.value))">
+              </td>
+              <td>{{details.uomName}}</td>
+              <td>
+                <input [(ngModel)]="details.price" type="number" class="form-control text-right" id="price" required
+                  min="0" name="price" nbInput fullWidth placeholder="price" (ngModelChange)="calculateTotal(rowIndex);">
+              </td>
+              <td>
+                <input [(ngModel)]="details.vat" type="number" class="form-control text-right" id="vat" min="0"
+                  name="vat" nbInput fullWidth placeholder="VAT" (ngModelChange)="calculateTotal(rowIndex);">
+              </td>
+              <td>
+                <input [(ngModel)]="details.discountAmount" type="number" class="form-control text-right" min="0"
+                  id="discountAmount" name="discountAmount" nbInput fullWidth placeholder="Discount"
+                  (ngModelChange)="calculateTotal(rowIndex);">
+              </td>
+              <td>
+                <input [(ngModel)]="details.total" type="number" class="form-control text-right" id="total" readonly
+                  min="0" name="total" nbInput fullWidth style="width: 100% !important" placeholder="Total Amount">
+              </td>
+              <td>
+                <button (click)="deleteDetails(rowIndex)" class="btn btn-danger btn-sm m-0"
+                  style="height: 25px; width: 25px; padding: 0 0 0 0;">
+                  <i class="fa fa-trash" aria-hidden="true" style="font-size: x-small;"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td class="text-right" colspan="7"><b>Gross Total :</b></td>
+              <td>
+                <input type="number" class="form-control text-right" [(ngModel)]="master.totalGross"
+                  min="0" name="totalGross" nbInput readonly fullWidth placeholder="Gross Total">
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="text-right" colspan="7"><b>Net Quotation Amount :</b></td>
+              <td>
+                <input type="number" class="form-control text-right" style="color: red !important;font-weight: bold;"
+                  required readonly [(ngModel)]="master.grandTotal" name="grandTotal" nbInput fullWidth
+                  placeholder="Net Total">
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+
+<nb-card class="actions-card">
+  <nb-card-header><label class="col-form-label" for="">{{pageNavigation}}</label>
+    <ngx-common-button (click)="ButtonAction()" *ngIf="!isDisabled"></ngx-common-button>
+  </nb-card-header>
+</nb-card>

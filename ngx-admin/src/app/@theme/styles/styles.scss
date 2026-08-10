@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
+
+// themes - our custom or/and out of the box themes
+@import 'themes';
+
+// framework component themes (styles tied to theme variables)
+@import '~@nebular/theme/styles/globals';
+@import '~@nebular/auth/styles/all';
+
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/grid';
+
+// loading progress bar theme
+@import './pace.theme';
+
+@import './layout';
+@import './overrides';
+
+// install the framework and custom global styles
+@include nb-install() {
+
+  // framework global styles
+  @include nb-theme-global();
+  @include nb-auth-global();
+
+  @include ngx-layout();
+  // loading progress bar
+  @include ngx-pace-theme();
+
+  @include nb-overrides();
+}
+
+;
+@import "~@ng-select/ng-select/themes/default.theme.css";
+@import "~@ag-grid-community/all-modules/dist/styles/ag-grid.css";
+@import "~@ag-grid-community/all-modules/dist/styles/ag-theme-alpine.css";
+
+.menu-item a .menu-title{
+  flex: 1 1 auto !important;
+}
+
+
+.nb-theme-default nb-sidebar.compacted {
+  display: none !important;
+}
+
+
+.nb-theme-default nb-sidebar .scrollable::-webkit-scrollbar-thumb {
+  background: #567c82;
+  // #99ced7 567c82
+  cursor: pointer;
+  border-radius: 0.15625rem;
+}
+
+.nb-theme-default nb-sidebar .scrollable::-webkit-scrollbar {
+  width: 0.5125rem !important;
+  height: 0.1125rem !important;
+}
+
+.nb-theme-default [_nghost-wgu-c239] .menu-sidebar[_ngcontent-wgu-c239] .scrollable {
+  padding-top: 1.25rem;
+}

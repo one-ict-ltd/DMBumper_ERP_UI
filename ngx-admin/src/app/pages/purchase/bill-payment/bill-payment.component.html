@@ -1,0 +1,355 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show" style="margin-bottom: 0.2rem;">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="paymentNumber"> Bill Payment No <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.paymentNumber"
+                                    id="paymentNumber" name="paymentNumber" nbInput fullWidth
+                                    placeholder=" Bill No." readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="paymentDate">Bill Payment
+                                Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.paymentDate"
+                                    (ngModelChange)="getBillPaymentNo();" name="paymentDate"
+                                    id="paymentDate" [nbDatepicker]="idatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <lable class="col-sm-4 col-form-label" for="Supplier"> Supplier</lable>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change) ="(master.partyId = this.$event.id)"
+                                    [items]="parties" name="PartyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="Party"
+                                    placeholder="Select Party" [(ngModel)]="master.partySelected"
+                                    (ngModelChange)="getSupplierWiseBillsForPayment(this.$event)"
+                                    appendTo="body"
+                                   >
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <lable class="col-sm-4 col-form-label" for="blll"> Bill No.</lable>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change) ="(master.billMasterId = this.$event.id)"
+                                    [items]="billList" name="billMasterId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="Party"
+                                    placeholder="Select Bill" [(ngModel)]="master.billSelected"
+                                    (ngModelChange)="getBillDetailsForPayment(this.$event)"
+                                    appendTo="body"
+                                   >
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="billNo"> Bill No <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.billNo"
+                                    id="billNo" name="billNo" nbInput fullWidth
+                                    placeholder=" Bill No." readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="billDate"> Bill Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.billDate"
+                                    id="billDate" name="billDate" nbInput fullWidth
+                                    placeholder=" Bill Date." readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="netAmount"> Bill Amount</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-right" required [(ngModel)]="master.netAmount"
+                                    id="netAmount" name="netAmount" nbInput fullWidth
+                                    placeholder=" Billing  Amount." readonly>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="paymentModeId"> Payment Mode<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                (change)="(master.paymentModeId = this.$event.id);ChangePaymentMode();"
+                                [items]="PaymentModeList" name="paymentModeId" bindLabel="name"
+                                [ngModelOptions]="{standalone: true}" id="paymentModeId"
+                                placeholder="Select Payment Mode" appendTo="body"
+                                [(ngModel)]="master.PaymentModeSelected" required>
+                            </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="!showChk"> 
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"  for="bankName">Bank Name<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.bankName" id="bankName"
+                                name="bankName" nbInput fullWidth placeholder="Bank Name">
+                            </div>
+                        </div>
+                    </div>
+
+                         
+                    <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="!showChk">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"   for="branchName">Branch Name<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.branchName" id="branchName" name="branchName"
+                                nbInput fullWidth placeholder="Branch Name" [ngModelOptions]="{standalone: true}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="!showChk">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"   for="chequeNo">Number<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.chequeNo" id="chequeNo"
+                                name="chequeNo" nbInput fullWidth placeholder="Number">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="!showChk">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"   for="chequeDate">Date
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.chequeDate" [nbDatepicker]="chequeDate"
+                                id="chequeDate" name="chequeDate" nbInput fullWidth placeholder="Date"
+                                [ngModelOptions]="{standalone: true}">
+                            <nb-datepicker #chequeDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="!show" style="margin-bottom: 0.2rem;">
+    <nb-card-header>
+        <div class="row">
+            <div class="col-8"> Payment Details</div>
+        </div>
+    </nb-card-header>
+
+    <nb-card-body>
+        <div class="row">
+            <!-- <div class="col-8"> Payment Details</div> -->
+            <div class="row col-12">
+                <div class="col-lg-4 col-md-6 col-sm-12">   
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="paidAmount">Paid Amount</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control  text-right" required [(ngModel)]="master.paidAmount"
+                                id="paidAmount" name="paidAmount" nbInput fullWidth
+                                placeholder="paidAmount" readonly>
+                        </div>
+                    </div>
+                </div>  
+                <div class="col-lg-4 col-md-6 col-sm-12">   
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="duesAmount"> Payment Dues</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control text-right" required [(ngModel)]="master.duesAmount"
+                                id="duesAmount" name="duesAmount" nbInput fullWidth
+                                placeholder="Dues" readonly>
+                        </div>
+                    </div>
+                </div> 
+
+                <div class="col-lg-4 col-md-6 col-sm-12">   
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="paymentAmount"> Payment Amount</label>
+                        <div class="col-sm-8">
+                                <input type="number" class="form-control text-right" required min="0"
+                                [(ngModel)]="master.paymentAmount" id="paymentAmount"
+                                name="paymentAmount" nbInput fullWidth placeholder="paymentAmount"
+                                (ngModelChange)="CalculatePaymentTotal();" style="padding: 0.4375rem 0rem">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </nb-card-body>
+</nb-card>
+
+
+<div class="row" *ngIf="!show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-8">Billing Items</div>
+
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>PO Number</th>
+                                    <th>Factory Challan No</th>
+                                    <th>GRN No</th>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th>UOM</th>
+                                    <!-- <th>QTY.</th> -->
+                                    <th>Received Qty.</th>
+                                    <!-- <th>Receive Qty</th> -->
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                    <th>VAT(%)</th>
+                                    <th>VAT Amount</th>
+                                    <th>Actual Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of lstDetailsViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.purOrderNo}}</td>
+                                    <td>{{details.factoryReceiveSINo}}</td>
+                                    <td>{{details.grnNo}}</td>
+                                    <td>{{details.productCode}}</td>
+                                    <td>{{details.productName}}</td>
+                                    <td>{{details.uomName}}</td>
+                                    <td style="font-weight: bold; text-align: right">{{details.receivedQty}}</td>
+                                    <td style="font-weight: bold; text-align: right"> {{details.rate}}</td>
+                                    <td style="font-weight: bold; text-align: right">{{details.total}} </td>
+                                    <td style="font-weight: bold; text-align: right">{{details.vatPercent}} </td>
+
+                                    <td style="font-weight: bold; text-align: right">{{details.vatAmount}}</td>
+                                    <td style="font-weight: bold; text-align: right">{{details.actualAmount}} </td>
+                                </tr>
+
+                                <tr>
+                                    <td rowspan="7" colspan="10"></td>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Gross Amount :</td>
+                                    <td class="text-right"> {{this.grandTotal}}
+                                    <td rowspan="7"></td>
+                                </tr>
+
+                                 <tr>
+                                    <td class="text-left " colspan="1" style="font-weight: bold;">Discount (%):</td>
+                                    <td class="text-right">
+                                        {{this.discountPercent}}
+                                        <!-- <input type="number" class="form-control text-right" required min="0"
+                                        [(ngModel)]="master.discountPercent" id="discountPercent"
+                                        name="discountPercent" nbInput fullWidth placeholder="Discount Percent"
+                                        (ngModelChange)="CalculateSummary();" style="padding: 0.4375rem 0rem"> -->
+                                    </td>
+                                    <td class="text-right"> {{this.discountAmount}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Amount after Discount:</td>
+                                    <td class="text-right"> {{this.amountAfterDiscount}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Truck Fair :</td>
+                                    <td  class="text-right">  {{this.truckFair}}
+                                        <!-- <input type="number" class="form-control text-right" required min="0"
+                                            [(ngModel)]="master.truckFair" id="truckFair"
+                                            name="truckFair" nbInput fullWidth placeholder="Truck Fair"
+                                            (ngModelChange)="CalculateSummary();" style="padding: 0.4375rem 0rem"> -->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Transport Bill :</td>
+                                    <td   class="text-right"> {{this.transportBill}}
+                                        <!-- <input type="number" class="form-control text-right" required min="0"
+                                            [(ngModel)]="master.transportBill" id="transportBill"
+                                            name="transportBill" nbInput fullWidth placeholder="transportBill"
+                                            (ngModelChange)="CalculateSummary();" style="padding: 0.4375rem 0rem"> -->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="1" style="font-weight: bold;">Less TDS(%):</td>
+                                    <td class="text-right">  {{this.tdsPercent}}
+                                        <!-- <input type="number" class="form-control text-right" required min="0"
+                                        [(ngModel)]="master.tdsPercent" id="tdsPercent"
+                                        name="tdsPercent" nbInput fullWidth placeholder="Less TDS"
+                                        (ngModelChange)="CalculateSummary();"> -->
+                                    </td>
+                                    <td class="text-right"> {{this.tdsAmount}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Net Amount :</td>
+                                    <td class="text-right" style="font-weight: bold;"> {{this.netAmount}}</td>
+                                  
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+              
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>
+

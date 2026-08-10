@@ -1,0 +1,157 @@
+<nb-card class="actions-card">
+    <nb-card-header id="pageHeader">{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="ClassId" class="col-sm-4 col-form-label">Select Class<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.ClassId = this.$event.id);getDdlAccountGroupData(this.$event.id);getUserClassWiseLedger(this.$event.id)"
+                                    [items]="groupNatureItems" name="ClassId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="ClassId" placeholder="Select Class"
+                                    appendTo="body" [(ngModel)]="master.ClassSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="groupId" class="col-sm-4 col-form-label">Select Account
+                                Group<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.groupId = this.$event.id);getDdlAccountSubGroupData(this.$event.id);getUserGroupWiseLedger(this.$event.id)"
+                                    [items]="accountGroupItems" name="groupId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="groupId" placeholder="Select Group"
+                                    appendTo="body" [(ngModel)]="master.groupSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="subGroupId" class="col-sm-4 col-form-label">Select Sub Group
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.subGroupId = this.$event.id);getDdlAccountSubSubGroupData(this.$event.id);getUserGroupWiseLedger(this.$event.id)"
+                                    [items]="accountSubGroupItems" name="subGroupId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="subGroupId" placeholder="Select Sub Group"
+                                    appendTo="body" [(ngModel)]="master.subGroupSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="subSubGroupId" class="col-sm-4 col-form-label">Select Sub Sub Group
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.subSubGroupId = this.$event.id);;getUserGroupWiseLedger(this.$event.id)"
+                                    [items]="accountSubSubGroupItems" name="subSubGroupId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="subSubGroupId"
+                                    placeholder="Select Sub Group" appendTo="body"
+                                    [(ngModel)]="master.subSubGroupSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="employeeId" class="col-sm-4 col-form-label">Employee Name</label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.employeeId = this.$event.id);"
+                                    [items]="employeeItems" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId" placeholder="Select Employee"
+                                    appendTo="body" [(ngModel)]="master.employeeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-4">
+                        <div class="form-group row">
+                            <label for="effectiveDate" class="col-sm-5 col-form-label">Effective Date
+                                <span>*</span></label>
+                            <div class="col-sm-7">
+                                <input id="effectiveDate" required [(ngModel)]="master.effectiveDate"
+                                    name="effectiveDate" [nbDatepicker]="effectiveDate" nbInput fullWidth
+                                    placeholder="Effective Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #effectiveDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <label><b>Ledger Details</b></label>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th hidden>Menu ID</th>
+                        <th>SL#</th>
+                        <th>Ledger Code</th>
+                        <th>Ledger Name</th>
+                        <th>Group Name</th>
+                        <th>Is Active? &nbsp; &nbsp; <nb-checkbox id="selectAll" name="selectAll" status="success"
+                                title="Toggle check all or Uncheck all" [(ngModel)]="isCheckedAll"
+                                (change)="ToggleSelectUnSelect()">
+                            </nb-checkbox>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let detail of master.lstModel;let rowIndex = index">
+                        <td hidden>
+                            {{detail.ledgerId}}
+                        </td>
+                        <td>{{rowIndex}}</td>
+                        <td>{{detail.accountCode}}</td>
+                        <td>
+                            {{detail.accountName}}
+                        </td>
+                        <td>
+                            {{detail.groupName}}
+                        </td>
+                        <td>
+                            <nb-checkbox [(ngModel)]="detail.isActive" id="isActive" name="isActive" status="success">
+                            </nb-checkbox>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

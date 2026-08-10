@@ -1,0 +1,196 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-sm-2 col-form-label"> Date <span>*</span></label>
+                    <div class="col-sm-6">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="partyId">Product Type</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="(productTypeName = this.$event.name);" [items]="productTypeList"
+                            [virtualScroll]="true" name="productTypeName" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="productTypeName" placeholder="Select a Product Type" appendTo="body" [(ngModel)]="productTypeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="partyId" class="col-2 col-form-label">Product</label>
+                    <div class="col-sm-10">
+                        <ng-select nbselect (change)="(productWiseSpecificationId = this.$event.id);"
+                            [items]="productSpecList" name="productName" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="productWiseSpecificationId"
+                            placeholder="Select product" appendTo="body" [(ngModel)]="productSpecSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+
+
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" #simple_table #table class="table table-bordered mb-0">
+                <thead>
+
+                    <tr>
+                        <th>{{dateRange}}</th>
+                    </tr>
+
+                    <tr>
+                        <th>Sl</th>
+                        <!-- <th>Category</th> -->
+                        <th>Code</th>
+                        <th>Particulars</th>
+                        <th>Pack Size</th>
+                        <th>Factory</th>
+                         <th>Transit</th>
+                        <th>Rajshahi Depot</th>
+                        <th>Bogura Depot</th>
+                        <th>Mymensingh Depot </th>
+                        <th>Jessore Depot</th>
+                        <th>Comilla Depot </th>
+                        <th>Rangpur Depot</th>
+                        <th>Faridpur Depot</th>
+                        <th>Barisal Depot</th>
+                        <th>Chattogram Depot </th>
+                        <th>Sylhet Depot </th>
+                        <th>Dhaka Depot </th>
+                        <th>Khulna Depot</th>
+                        <th>kushtia Depot </th>
+                        <th>B. Baria Depot </th>
+                        <th>Total</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{ i + 1 }}</td>
+                        <!-- <td> {{item.productCategory}}</td> -->
+                        <td> {{item.productCode}}</td>
+                        <td> {{item.productName}}</td>
+                        <td> {{item.packSize}}</td>
+                        <td> {{item.FAC_CtnQty}}</td>
+                        <td> {{item.TRA_CtnQty}}</td>
+                        <td> {{item.RAJ_CtnQty}}</td>
+                        <td> {{item.BOG_CtnQty}}</td>
+                        <td> {{item.MYM_CtnQty}}</td>
+                        <td> {{item.JAS_CtnQty}}</td>
+                        <td> {{item.CUM_CtnQty}}</td>
+                        <td> {{item.RAN_CtnQty}}</td>
+
+                        <td> {{item.FAR_CtnQty}}</td>
+                        <td> {{item.BAR_CtnQty}}</td>
+
+                        <td> {{item.CHI_CtnQty}}</td>
+                        <td> {{item.SYL_CtnQty}}</td>
+
+                        <td> {{item.DHA_CtnQty}}</td>
+                        <td> {{item.KHU_CtnQty}}</td>
+
+                        <td> {{item.KUS_CtnQty}}</td>
+                        <td> {{item.BBA_CtnQty}}</td>
+
+                        <td> {{item.TOT_CtnQty}}</td>
+                        <td> {{item.TOT_CtnQtyAmount}}</td>
+
+
+
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <!-- <td></td>   -->
+                        <td class="numeric"> Grand Total </td>
+                        <td></td>
+                        <td class="numeric"> {{totalFAC_CtnQty}}</td>
+                         <td class="numeric"> {{totalTRA_CtnQty}}</td>
+                        <td class="numeric"> {{ totalRAJ_CtnQty}}</td>
+                        <td class="numeric"> {{totalRAJ_CtnQty}}</td>
+                        <td class="numeric"> {{totalBOG_CtnQty}}</td>
+                        <td class="numeric"> {{totalJAS_CtnQty}}</td>
+                        <td class="numeric"> {{totalCUM_CtnQty}}</td>
+                        <td class="numeric"> {{totalRAN_CtnQty}}</td>
+                        <td class="numeric"> {{totalFAR_CtnQty}}</td>
+                        <td class="numeric"> {{totalBAR_CtnQty}}</td>
+                        <td class="numeric"> {{totalCHI_CtnQty}}</td>
+                        <td class="numeric"> {{totalSYL_CtnQty}}</td>
+                        <td class="numeric"> {{totalDHA_CtnQty}}</td>
+                        <td class="numeric"> {{totalKHU_CtnQty}}</td>
+                        <td class="numeric"> {{totalKUS_CtnQty}}</td>
+                        <td class="numeric"> {{totalBBA_CtnQty}}</td>
+                        <td class="numeric"> {{totalTOT_CtnQty}}</td>
+                        <td class="numeric"> </td>
+
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <!-- <td></td>   -->
+                        <td></td>
+                        <td class="numeric">Grand Total Amount</td>
+                        <td></td>
+                        <td class="numeric"> {{totalFAC_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalTRA_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{ totalRAJ_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalBOG_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalMYM_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalJAS_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalCUM_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalRAN_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalFAR_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalBAR_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalCHI_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalSYL_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalDHA_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalKHU_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalKUS_CtnQtyAmount}}</td>
+                        <td class="numeric"> {{totalBBA_CtnQtyAmount}}</td>
+                        <td class="numeric"> </td>
+                        <td class="numeric"> {{totalTOT_CtnQtyAmount}}</td>
+
+
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+
+
+<nb-card hidden>
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <iframe id="pdfPreview" [src]="base64Pdf" frameborder="0" width="100%" height="480px">
+            </iframe>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

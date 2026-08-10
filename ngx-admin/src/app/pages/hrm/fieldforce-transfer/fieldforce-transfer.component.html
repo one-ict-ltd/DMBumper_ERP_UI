@@ -1,0 +1,233 @@
+<!-- <nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card> -->
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+<nb-card>
+    <nb-card-header>
+        <div class="row">
+            <div style="flex-grow: 1;">
+                <label>Field Force Transfer</label>
+            </div>
+            <div>
+                <button (click)="save()"
+                    style="background-color: green; color: white; border-radius: 5px; padding: 10px 20px; border: none;">Transfer</button>
+            </div>
+        </div>
+
+
+    </nb-card-header>
+    <nb-card-body>
+        <div class="col-lg-6 col-md-8 col-sm-12">
+            <div class="form-group row">
+                <label for="type" class="col-sm-3 col-form-label">Select Employee<span>*</span></label>
+                <div class="col-sm-9">
+                    <ng-select nbselect (change)="(master.employeeId = this.$event.id);employeeDetails();"
+                        [items]="EmployeeList" name="type" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                        id="type" placeholder="Select " appendTo="body" [(ngModel)]="master.employeeSelected" required>
+                    </ng-select>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="locationtxt">Location Type</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" required
+                                            [(ngModel)]="master.locationtxt" id="locationtxt" name="locationtxt" nbInput
+                                            fullWidth placeholder="Location type.." readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="zonetxt">Zone Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" required [(ngModel)]="master.zonetxt"
+                                            id="zonetxt" name="zonetxt" nbInput fullWidth placeholder="zone name.."
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="regiontxt">Region Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" required [(ngModel)]="master.regiontxt"
+                                            id="regiontxt" name="regiontxt" nbInput fullWidth
+                                            placeholder="region name.." readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="depottxt">Depot Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" required [(ngModel)]="master.depottxt"
+                                            id="depottxt" name="depottxt" nbInput fullWidth placeholder="depot name.."
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="areatxt">Area Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" required [(ngModel)]="master.areatxt"
+                                            id="areatxt" name="areatxt" nbInput fullWidth placeholder="area name.."
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label" for="areatxt">Territory Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" required
+                                            [(ngModel)]="master.territorytxt" id="territorytxt" name="territorytxt"
+                                            nbInput fullWidth placeholder="territory name.." readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label for="postingLocation" class="col-sm-3 col-form-label">
+                                        Location Type</label>
+                                    <div class="col-sm-9">
+                                        <ng-select nbselect
+                                            (change)="(master.postingLocation = this.$event.id);showHideDdl();"
+                                            [items]="PostingLocationList" name="postingLocation" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="postingLocation"
+                                            placeholder="Select Posting Location" appendTo="body"
+                                            [(ngModel)]="master.postingLocationSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12" *ngIf="showZone">
+                                <div class="form-group row">
+                                    <label for="ZoneCode" class="col-sm-3 col-form-label">Zone Name</label>
+                                    <div class="col-sm-9">
+                                        <ng-select nbselect (change)="zoneChange(master.zoneId = this.$event.id);"
+                                            [items]="zoneList" name="zoneId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="zoneId"
+                                            placeholder="Select Zone Name" appendTo="body"
+                                            [(ngModel)]="master.zoneSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12" *ngIf="showRegion">
+                                <div class="form-group row">
+                                    <label for="RegionCode" class="col-sm-3 col-form-label">Region Name</label>
+                                    <div class="col-sm-9">
+                                        <ng-select nbselect
+                                            (change)="regionChange(master.regionId = this.$event.id);getDuplicateTerritoty('R',this.$event.id)"
+                                            [items]="RegionList" name="regionId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="regionId"
+                                            placeholder="Select Region Name" appendTo="body"
+                                            [(ngModel)]="master.regionSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12" *ngIf="showDepo">
+                                <div class="form-group row">
+                                    <label for="depoId" class="col-sm-3 col-form-label">Depot Name</label>
+                                    <div class="col-sm-9">
+                                        <!-- (change)="depoChange(master.depoId = this.$event.id);" -->
+                                        <ng-select nbselect (change)="(master.depoId = this.$event.id);"
+                                            [items]="depotList" name="depoId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="depoId"
+                                            placeholder="Select Depo Name" appendTo="body"
+                                            [(ngModel)]="master.depotSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12" *ngIf="showArea">
+                                <div class="form-group row">
+                                    <label for="areaId" class="col-sm-3 col-form-label">Area Name</label>
+                                    <div class="col-sm-9">
+                                        <ng-select nbselect
+                                            (change)="(master.areaId = this.$event.id);getterritorybyareaCode(this.$event.id);getDuplicateTerritoty('A',this.$event.id)"
+                                            [items]="AreaList" name="areaId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="areaId"
+                                            placeholder="Select Area Name" appendTo="body"
+                                            [(ngModel)]="master.areaSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12" *ngIf="showTerritory">
+                                <div class="form-group row">
+                                    <label for="territoryId" class="col-sm-3 col-form-label">Territory
+                                        Name</label>
+                                    <div class="col-sm-9">
+                                        <ng-select nbselect
+                                            (change)="(master.territoryId = this.$event.id);getDuplicateTerritoty('T',this.$event.id)"
+                                            [items]="TerritoryList" name="territoryId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="territoryId"
+                                            placeholder="Select Territory Name" appendTo="body"
+                                            [(ngModel)]="master.territorySelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

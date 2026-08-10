@@ -1,0 +1,153 @@
+@import '../../styles/themes';
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+
+@include nb-install-component() {
+  .menu-sidebar ::ng-deep .scrollable {
+    padding-top: nb-theme(layout-padding-top);
+  }
+}
+
+// li{
+//   border-bottom: 1px solid #edf1f7;
+// }
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+button{
+ // border-color: #00d68f !important;
+  border-radius: 0.25rem !important;
+ // border-bottom: 1px solid #edf1f7 !important;
+  width: 100%;
+  float: left;
+  text-align: left;
+}
+
+li button {
+  background-color: #ffffff;
+  border: 0px solid #ccc;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* Style subcategories */
+ul ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+li ul li button {
+  background-color: #ffffff;
+  //border: 0px solid #aaa;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  font-weight:  600;
+  font-size: 14px;
+  border-bottom: 0.001rem dotted #c8d7de;
+}
+
+/* Style subsubcategories */
+ul ul ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+li ul li ul li button {
+  background-color: #ffffff;
+  border: 0px solid #888;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  font-weight:  600;
+  font-size: 14px;
+  // border-bottom: 0.001rem dotted #93a8b3;
+}
+
+/* Style categories */
+ul ul ul ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+li ul li ul li ul li a {
+  color: black;
+  text-decoration: none;
+  display: block;
+  padding: 5px 3px;
+  margin: 5px;
+  cursor: pointer;
+  border-bottom: 1px solid #b0e2ea !important;
+  //font-weight: bold;
+  font-size: 14px;
+}
+
+/* Highlight selected items */
+li button.selected,
+li ul li button.selected,
+li ul li ul li button.selected,
+li ul li ul li ul li a.selected {
+  background-color: #e45b1b;
+  border-color: black;
+  color: #fff;
+  border: 1px solid #0056b3;
+}
+
+.last-selected-link {
+  color: #338ff2  !important;
+  font-weight:  600; /* Set the desired font color (e.g., red) */
+}
+
+
+/* menu.component.css */
+/* menu.component.css */
+
+/* Add styles for the open and closed arrow icons */
+.arrow {
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 14px;
+  float: right;
+  transition: transform 0.2s;
+ 
+}
+
+/* Style the open arrow icon */
+.arrow.open {
+  transform: rotate(90deg);
+}
+
+/* Style the closed arrow icon */
+.arrow.closed {
+  transform: rotate(0deg);
+}
+
+/* Add styles for the open menu */
+button.open {
+  background-color: #ffffff; /* Change the background color when open */
+}
+
+/* Add styles for the closed menu */
+button.closed {
+ // background-color: transparent; /* Change the background color when closed */
+  background-color: #ffffff; /* Change the background color when closed */
+}
+
+
+
+button.last-selected {
+  background-color: #338ff2 !important; /* Change the background color for the last selected menu */
+  color: #fff; /* Change the text color for the last selected menu */
+ // border: 1px solid #0056b3;
+}
+
+
+
+
+
+

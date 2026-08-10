@@ -1,0 +1,139 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+
+        </div>
+        <div class="row">
+
+            <div class="col-6">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-form-label" for="fromDate">Collection From Date<span>*</span></label>
+                    <div class="col-sm-12">
+                        <input required [(ngModel)]="master.fromDate" name="fromDate" id="fromDate"
+                            [nbDatepicker]="tdatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #tdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-form-label" for="toDate">Collection To Date<span>*</span></label>
+                    <div class="col-sm-12">
+                        <input required [(ngModel)]="master.toDate" name="toDate" id="toDate"
+                            [nbDatepicker]="fdatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-form-label" for="partyId">Customer Name <span>*</span></label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="GetPartyDetails(master.partyId = this.$event.id);"
+                            [items]="partyList" name="partyName" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="partyId" placeholder="Select Customer" appendTo="body"
+                            [(ngModel)]="master.partySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-form-label" for="mobileNo">Mobile No.<span>*</span></label>
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control" required [(ngModel)]="master.mobileNo" id="mobileNo"
+                            name="mobileNo" nbInput fullWidth placeholder="mobile No.">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="">
+            <table id="simple_table" class="table">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;" style="width: 100%;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.partyName}}</td>
+                        <td>{{item.paymentMode}}</td>
+                        <td>{{item.bankName}}</td>
+                        <td>{{item.chequeNo}}</td>
+                        <td>{{item.trxNo}}</td>
+                        <td>{{item.collectionAmount}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th colspan="4">
+                            {{rReportHeader}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue}}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;" style="width: 100%;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.partyName}}</td>
+                        <td>{{item.paymentMode}}</td>
+                        <td>{{item.bankName}}</td>
+                        <td>{{item.chequeNo}}</td>
+                        <td>{{item.trxNo}}</td>
+                        <td>{{item.collectionAmount}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

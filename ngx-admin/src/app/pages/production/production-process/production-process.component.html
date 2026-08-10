@@ -1,0 +1,502 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="FromDate">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadFromDateShow" name="loadFromDateShow" id="loadFromDateShow"
+                            [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="ToDate">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row !important">
+                    <button class="btn btn-info" (click)="GetGridData();">Search</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show" style="margin-bottom: 0.2rem;">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productionTypeId">Production
+                                Type<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.productionTypeId = this.$event.id);clearBatchNo();"
+                                    [items]="productionTypeList" name="productionTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productionTypeId"
+                                    placeholder="Select Product Type" appendTo="body"
+                                    [(ngModel)]="productionTypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productionPlanId">Batch No
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.productionPlanId = this.$event.id); getBatchDetails($event);"
+                                    [items]="productionPlanList" id="productionPlanId" name="productionPlanId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Select Batch Name" appendTo="body"
+                                    [(ngModel)]="master.productionPlanSelected">
+                                    <!-- (ngModelChange)="getBatchDetails($event);" -->
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchSize">Batch Size</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.batchSize"
+                                    id="batchSize" name="batchSize" nbInput fullWidth placeholder="batchSize" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchWeight">Batch Weight</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.batchWeight"
+                                    id="batchWeight" name="batchWeight" nbInput fullWidth placeholder="batchWeight"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productName">Product Name </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.productName"
+                                    id="productName" name="productName" nbInput fullWidth placeholder="productName"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="processName">Process </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.processName"
+                                    id="processName" name="processName" nbInput fullWidth placeholder="processName"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productionPlanId">Pack Size</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.packSize"
+                                    id="packSize" name="packSize" nbInput fullWidth placeholder="packSize" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productWeight">Weight </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.productWeight"
+                                id="productWeight" name="productWeight" nbInput fullWidth
+                                placeholder="productWeight" readonly>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="batchDate">Batch Date</label>
+                            <div class="col-sm-8">
+                                <input required name="bDatepicker" id="bDatepicker" [nbDatepicker]="bDatepicker" nbInput
+                                    fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}"
+                                    [(ngModel)]="master.batchDate" readonly>
+                                <nb-datepicker #bDatepicker aria-disabled="true"></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="processDate">Process Date</label>
+                            <div class="col-sm-8">
+                                <input required name="pDatepicker" id="pDatepicker" [nbDatepicker]="pDatepicker" nbInput
+                                    fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}"
+                                    [(ngModel)]="master.processDate">
+                                <nb-datepicker #pDatepicker aria-disabled="true"></nb-datepicker>
+                            </div>
+                        </div>
+                    </div> -->
+
+
+
+
+                </div>
+
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+<div class="row" *ngIf="!show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-8"><b class="ghead">Plan Process List</b></div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Process Name</th>
+                                    <th>Process Status</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Total Output</th>
+                                    <th>Has QC?</th>
+                                    <th>QC Approval</th>
+                                    <th>Process Note</th>
+                                    <th colspan="2">Completion Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of master.processModelList; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.processName}}</td>
+                                    <td>{{details.processStatus}}</td>
+                                    <td> <!-- start time -->
+                                        <input type="datetime-local" id="startTime{{rowIndex+1}}" name="startTime"
+                                            [(ngModel)]="details.startTime"
+                                            [disabled]="details.isSelect ? null : 'disabled'"
+                                            (ngModelChange)="SetMachineDateTime(rowIndex);">
+                                    </td>
+                                    <td><!-- end time -->
+                                        <input type="datetime-local" id="endTime{{rowIndex+1}}" name="endTime"
+                                            [(ngModel)]="details.endTime"
+                                            [disabled]="details.isSelect ? null : 'disabled'"
+                                            (ngModelChange)="SetMachineDateTime(rowIndex);">
+                                    </td>
+                                    <td style="width: 120px;">
+                                        <!-- Total Output totalOutput-->
+                                        <input type="number" class="form-control text-right" required id="totalOutput"
+                                            name="totalOutput" nbInput fullWidth placeholder="Output" min="0"
+                                            [(ngModel)]="details.totalOutput"
+                                            [disabled]="details.isSelect ? null : 'disabled'">
+                                        <!-- oninput="this.value = Math.abs(this.value)" -->
+                                    </td>
+                                    <td>
+                                        <!-- Has QC? -->
+                                        {{details.hasQCStatus}}
+                                    </td>
+                                    <td style="font-weight: bold; text-align: right">
+                                        <!-- QC Approval -->
+                                        {{details.qcApprovalStatus}}
+                                    </td>
+                                    <td>
+                                        <!-- Process Note  {{details.processNote}}-->
+                                        <input type="text" class="form-control" required
+                                            [(ngModel)]="details.processNote" id="processNote" name="processNote"
+                                            nbInput fullWidth placeholder="Process Note"
+                                            [disabled]="details.isSelect ? null : 'disabled'">
+                                        <!-- <textarea type="text" class="form-control" required
+                                            [(ngModel)]="details.processNote" id="processNote" name="processNote"
+                                            nbInput fullWidth
+                                            [disabled]="details.isSelect ? null : 'disabled'"></textarea> -->
+                                    </td>
+                                    <td style="min-width: 150px;">
+                                        <!-- Process Complete Status Yes  [(ngModel)]="details.processCompleteStatus"-->
+
+                                        <nb-radio-group name="processCompleteStatus{{rowIndex+1}}"
+                                            (valueChange)="processStatusChange($event, rowIndex)">
+                                            <nb-radio value="1"
+                                                [checked]="details.processCompleteStatus == 1 ? 'true': null"
+                                                [disabled]="details.isSelect ? null : 'true'">Yes</nb-radio>
+                                            <nb-radio value="2"
+                                                [checked]="details.processCompleteStatus == 2 ? 'true': null"
+                                                [disabled]="details.isSelect ? null : 'true'">No</nb-radio>
+                                        </nb-radio-group>
+                                    </td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect"
+                                            (change)="ProcessNameSelect($event, rowIndex);">
+                                            <!-- [disabled]="details.processCompleteStatus == 1 ? 'disabled' : null" -->
+                                        </nb-checkbox>
+                                    </td>
+                                    <td [attr.rowspan]="processCount" *ngIf="!rowIndex > 0"
+                                        style="vertical-align: middle !important;">
+                                        <button class="btn btn-warning" (click)="ToTransferNote()">Transfer</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="col-sm-12" style="text-align: center;">
+                    <button class="btn btn-success btn-sm m-3" (click)="SaveProductionProcess()"
+                        id="SaveProductionProcess">
+                        <i class="fa fa-save" aria-hidden="true"></i> Save Plan Process</button>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>
+
+<div class="row" *ngIf="!show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-8"><b class="ghead">Process Wise Machine List</b></div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productionTypeId">Machine
+                                Name<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="MachineList" name="machineId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="machineId"
+                                    placeholder="Select Product Type" appendTo="body"
+                                    [(ngModel)]="machineDetailModel.machineSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productionTypeId">Input / Output
+                                UOM<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="uomList" name="uomId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="uomId" placeholder="Select uom"
+                                    appendTo="body" [(ngModel)]="machineDetailModel.uomSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="">Starting Time<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="datetime-local" class="form-control" id="startingTime" name="startingTime"
+                                    [(ngModel)]="machineDetailModel.startingTime">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="">Ending Time<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="datetime-local" class="form-control" id="endingTime" name="endingTime"
+                                    [(ngModel)]="machineDetailModel.endingTime">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="">Lost Time<span>*</span></label>
+                            <div class="input-group col-sm-8">
+                                <input type="tel" class="form-control" required
+                                    [(ngModel)]="machineDetailModel.lostTimeHH" id="lostTimeHH" name="lostTimeHH"
+                                    nbInput fullWidth placeholder="HH" style="width: 50%;" maxlength="2"
+                                    oninput="this.value = Math.abs(this.value)">
+                                <div class=" input-group-append">
+                                    <input type="tel" class="form-control" required
+                                        [(ngModel)]="machineDetailModel.lostTimeMM" id="lostTimeMM" name="lostTimeMM"
+                                        nbInput fullWidth placeholder="MM" maxlength="2"
+                                        oninput="this.value = Math.abs(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="">Upload Qty.<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control text-right" required id="inputQty"
+                                    name="inputQty" nbInput fullWidth placeholder="upload qty" min="0"
+                                    [(ngModel)]="machineDetailModel.uploadQty">
+                                <!-- oninput="this.value = Math.abs(this.value)" -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="">Output Qty.<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control text-right" required id="outputQty"
+                                    name="outputQty" nbInput fullWidth placeholder="Output" min="0"
+                                    [(ngModel)]="machineDetailModel.outputQty">
+                                <!-- oninput="this.value = Math.abs(this.value)" -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12" style="text-align: center;">
+                        <button class="btn btn-info btn-sm m-3" (click)="addToMachineList()" id="addToMachineList">
+                            <i class="fa fa-plus" aria-hidden="true"></i> Add </button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Machine Code</th>
+                                    <th>Machine Name</th>
+                                    <th>Starting Time</th>
+                                    <th>Ending Time</th>
+                                    <th colspan="2">Lost Time (HH:MM)</th>
+                                    <th>Upload Qty.</th>
+                                    <th>Output Qty.</th>
+                                    <th>UOM</th>
+                                    <th>Remarks</th>
+                                    <th>Machine Output</th>
+                                    <th>Involve Person</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let el of master.processMachineList; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{el.machineCode}}</td>
+                                    <td>{{el.machineName}}</td>
+                                    <!-- <td>{{el.startingTime}}</td>
+                                    <td>{{el.endingTime}}</td> -->
+                                    <td>
+                                        <input type="datetime-local" id="startingTime" name="startingTime"
+                                            [(ngModel)]="el.startingTime">
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" id="endingTime" name="endingTime"
+                                            [(ngModel)]="el.endingTime">
+                                    </td>
+                                    <!-- <td>{{el.lostTimeHH}}</td> -->
+                                    <td>
+                                        <input type="tel" class="form-control text-right" required id="lostTimeHH"
+                                            name="lostTimeHH" nbInput fullWidth placeholder="Output" maxlength="2"
+                                            [(ngModel)]="el.lostTimeHH" oninput="this.value = Math.abs(this.value)">
+                                    </td>
+                                    <!-- <td>{{el.lostTimeMM}}</td> -->
+                                    <td>
+                                        <input type="tel" class="form-control text-right" required id="lostTimeMM"
+                                            name="lostTimeMM" nbInput fullWidth placeholder="Output" maxlength="2"
+                                            [(ngModel)]="el.lostTimeMM" oninput="this.value = Math.abs(this.value)">
+                                    </td>
+                                    <!-- <td>{{el.uploadQty}}</td> -->
+                                    <td>
+                                        <input type="number" class="form-control text-right" required id="uploadQty"
+                                            name="uploadQty" nbInput fullWidth placeholder="Output" min="0"
+                                            [(ngModel)]="el.uploadQty" oninput="this.value = Math.abs(this.value)">
+                                    </td>
+                                    <!-- <td>{{el.outputQty}}</td> -->
+                                    <td>
+                                        <input type="number" class="form-control text-right" required id="outputQty"
+                                            name="outputQty" nbInput fullWidth placeholder="Output" min="0"
+                                            [(ngModel)]="el.outputQty" oninput="this.value = Math.abs(this.value)">
+                                    </td>
+                                    <td>{{el.uomName}}</td>
+                                    <td>
+                                        <!-- {{el.remarks}} -->
+                                        <input type="text" class="form-control text-right" required id="remarks"
+                                            name="remarks" nbInput fullWidth placeholder="remarks"
+                                            [(ngModel)]="el.remarks">
+                                    </td>
+                                    <!-- <td>{{el.machineOutput}}</td> -->
+                                    <td>
+                                        <input type="number" class="form-control text-right" required id="machineOutput"
+                                            name="machineOutput" nbInput fullWidth placeholder="machine output" min="0"
+                                            [(ngModel)]="el.machineOutput" oninput="this.value = Math.abs(this.value)">
+                                    </td>
+                                    <!-- <td>{{el.involvePerson}}</td> -->
+                                    <td>
+                                        <input type="number" class="form-control text-right" required id="involvePerson"
+                                            name="involvePerson" nbInput fullWidth placeholder="involve person" min="0"
+                                            [(ngModel)]="el.involvePerson" oninput="this.value = Math.abs(this.value)">
+                                    </td>
+                                    <td>
+                                        <button (click)="deleteProcessMachine(rowIndex)"
+                                            class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="col-sm-12" style="text-align: center;">
+                    <button class="btn btn-success btn-sm m-3" (click)="SaveProductionMachine()"
+                        id="SaveProductionMachine">
+                        <i class="fa fa-save" aria-hidden="true"></i> Save Process Wise Machine </button>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

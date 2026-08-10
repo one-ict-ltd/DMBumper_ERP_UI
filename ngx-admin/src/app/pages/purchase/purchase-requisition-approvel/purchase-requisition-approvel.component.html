@@ -1,0 +1,222 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+  </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+  <!-- "!show"> -->
+  <nb-card-header>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+      <form #masterForm="ngForm">
+        <div class="row">
+
+          <!-- <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group row">
+                <label for="ApprovalStatus" class="col-sm-12 col-form-label">Approval Status<span>*</span></label>
+                <div class="col-sm-12">
+                  <ng-select nbselect [items]="ApprovalStatusList" (change)="(master.approvalStatus = this.$event.id);"
+                    name="ApprovalStatus" bindLabel="name" [ngModelOptions]="{standalone: true}" id="approvalStatus"
+                    placeholder="select one" appendTo="body" [(ngModel)]="ApprovalStatusSelected">
+                  </ng-select>
+                </div>
+              </div>
+            </div> -->
+
+
+          <div class="col-lg-4 col-md-4 col-sm-4">
+            <div class="form-group row">
+              <label for="isPosted" class="col-sm-4 col-form-label">Approval Status </label>
+              <div class="col-sm-8">
+                <nb-radio-group [(ngModel)]="master.approvalStatus" name="isPosted">
+                  <nb-radio value=1>
+                    Approve
+                  </nb-radio>
+                  <nb-radio value=2>
+                    Reject
+                  </nb-radio>
+                </nb-radio-group>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="show">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <nb-card class="min-height">
+      <fieldset [disabled]="disabled ? 'disabled' : null">
+        <nb-tabset>
+          <nb-tab tabTitle="Purchase Requisition List For Approval" class="btn-tab">
+            <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 600px">
+              <table class=" table table-bordered table-striped">
+                <tr>
+                  <th>#</th>
+                  <th>Requisition Number</th>
+                  <th>Requisition Date</th>
+                  <th>Purpose</th>
+                  <!-- <th>Mobile No.</th> -->
+                  <th>Product(s)</th>
+                  <!-- <th>Invoice Amount</th> -->
+                  <th>Status</th>
+                  <th>Approver Comment(s)</th>
+                  <th>Comment</th>
+                  <th>Details</th>
+                  <th>Select</th>
+                </tr>
+
+                <tr *ngFor="let details of master.lstReqDetailsViewModel; let rowIndex = index">
+                  <td>
+                    {{rowIndex+1}}
+                  </td>
+                  <td>
+                    <a (click)="printReport(details.purchaseReqId)">
+                      {{details.purReqNo}}
+                    </a>
+                  </td>
+                  <td>
+                    {{details.purchaseReqDate}}
+                  </td>
+                  <td>
+                    {{details.purpose}}
+                  </td>
+                  <td [innerHTML]="details.productName">
+                  </td>
+                  <td>
+                    {{details.approvalStatus}}
+                  </td>
+                  <td [innerHTML]="details.approverComments">
+                  </td>
+                  <td>
+                    <!-- <input type="text" class="form-control" required [(ngModel)]="details.comments" 
+                      id="comments"name="comments" nbInput fullWidth placeholder="comments" style="box-sizing: border-box;
+                      border: 3px solid #7cab7b;"> -->
+
+                    <textarea type="text" class="form-control" required [(ngModel)]="details.comments" id="comments"
+                      name="comments" nbInput fullWidth placeholder="comments" style="box-sizing: border-box;
+                      border: 3px solid #7cab7b;"></textarea>
+
+                  </td>
+                  <td><button class="btn btn-sm btn-success m-0 !important"
+                      (click)="ViewDetails(dialog,details.purchaseReqId,rowIndex)">Details</button></td>
+                  <td>
+                    <nb-checkbox name="isSelect" id="isSelect" status="success" [(ngModel)]="details.isSelect">
+                    </nb-checkbox>
+                    <button class="btn btn-success btn-sm m-2" (click)="printReport(details.purchaseReqId)"> <i
+                        class="fa fa-info" aria-hidden="true"></i> </button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </nb-tab>
+        </nb-tabset>
+      </fieldset>
+    </nb-card>
+  </div>
+</div>
+
+<!-- Start Modal -->
+
+<ng-template #dialog let-data let-ref="dialogRef">
+  <div class="col-sm-12 col-md-12 col-lg-12" style="width: 1050px;">
+    <nb-card class="min-height">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-8">
+            <h4>Purchase Requisition Details</h4>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4">
+            <div style="text-align: right;">
+              <button style="text-align: right;" nbButton (click)="ref.close()"><span>X</span></button>
+            </div>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="grid-wrapper">
+          <div class="row">
+
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group row">
+                <label for="purReqNo" class="col-sm-12 col-form-label">Requisition No.</label>
+                <div class="col-sm-12">
+                  <input type="text" class="form-control" required [(ngModel)]="purReqNo" id="purReqNo" name="purReqNo"
+                    nbInput fullWidth placeholder="Purchase Req. No">
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group row">
+                <label for="purchaseReqDate" class="col-sm-12 col-form-label">Purchase Req. Date</label>
+                <div class="col-sm-12">
+                  <input type="text" class="form-control" required [(ngModel)]="purchaseReqDate" id="purchaseReqDate"
+                    name="purchaseReqDate" nbInput fullWidth placeholder="purchaseReqDate">
+                  <!-- <label for="invDate" class="col-sm-12 col-form-label">{{salesInvoiceDate}}</label> -->
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+          <nb-card style="height: 500px;">
+            <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 500px">
+              <table class=" table table-bordered table-striped">
+                <tr>
+                  <th>SN</th>
+                  <th>Product Name</th>
+                  <th>UOM</th>
+                  <th>Stock Qty</th>
+                  <th>Req. Qty.</th>
+                  <td>Action</td>
+                </tr>
+
+                <tr *ngFor="let detail of DetailsViewModel; let rowIndex = index">
+                  <td>{{rowIndex+1}}</td>
+                  <td>{{detail.productName}}
+                  </td>
+                  <td>{{detail.uomName}}
+                  </td>
+                  <td>{{detail.StockQty}}
+                  </td>
+                  <td>
+                    <input [(ngModel)]="detail.reqQty" (change)="( detail.reqQty = this.$event.target.value)"
+                      type="number" class="form-control text-right" id="reqQty" required name="reqQty" nbInput fullWidth
+                      placeholder="Req. Qty.">
+                  </td>
+                  <td>
+                    <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+          </nb-card>
+        </div>
+      </nb-card-body>
+      <nb-card-footer>
+        <div class="row">
+          <div class="col-lg-8 col-md-8 col-sm-8">
+            <span>{{msg}}</span>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4">
+            <div style="text-align: right;">
+              <button class="btn btn-success m-0 !important"
+                (click)="UpdatePurchaseRequisitionDetails();ref.close()">Update &
+                Approve</button>
+            </div>
+          </div>
+        </div>
+      </nb-card-footer>
+    </nb-card>
+  </div>
+</ng-template>
+
+<!-- End Modal -->

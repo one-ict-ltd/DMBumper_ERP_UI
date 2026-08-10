@@ -1,0 +1,106 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-sm-3 col-form-label">Company Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.companyId = this.$event.id);getSBU(this.$event.id)"
+                                    [items]="companyItems" name="companyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="companyId" placeholder="Select Company"
+                                    appendTo="body" [(ngModel)]="master.companySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="noteParentId" class="col-sm-3 col-form-label">Note Type <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.noteParentId = this.$event.id);"
+                                    [items]="noteTypeItems" name="noteParentId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="noteParentId" placeholder="Select Type"
+                                    appendTo="body" [(ngModel)]="master.noteParentSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="noteNo" class="col-sm-3 col-form-label">Note No</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="noteNo" required [(ngModel)]="master.noteNo"
+                                    name="noteNo" nbInput fullWidth placeholder="Note No">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="sbuId" class="col-sm-3 col-form-label">Branch Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.sbuId = this.$event.id)" [items]="sbuItems"
+                                    name="sbuName" bindLabel="name" [ngModelOptions]="{standalone: true}" id="sbuId"
+                                    placeholder="Select Branch" appendTo="body" [(ngModel)]="master.sbuSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="noteName" class="col-sm-3 col-form-label">Note Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="noteName" required
+                                    [(ngModel)]="master.noteName" name="noteName" nbInput fullWidth
+                                    placeholder="Note Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sortOrder" class="col-sm-3 col-form-label">Sort Order</label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" id="sortOrder" required
+                                    [(ngModel)]="master.sortOrder" name="sortOrder" nbInput fullWidth
+                                    placeholder="Sort Order">
+                            </div>
+                            <label for="" class="col-sm-2 col-form-label">Is Active?</label>
+                            <div class="col-sm-4">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">Is Active?</label>
+                            <div class="col-sm-9">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

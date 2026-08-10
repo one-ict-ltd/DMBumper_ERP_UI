@@ -1,0 +1,544 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="billNo"> Bill No <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.billNo" id="billNo"
+                                    name="billNo" nbInput fullWidth placeholder=" Bill No." readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="billDate">Bill
+                                Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.billDate" (ngModelChange)="getBillNo();"
+                                    name="billDate" id="billDate" [nbDatepicker]="idatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <lable class="col-sm-4 col-form-label" for="POId"> PO <span>*</span> </lable>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="setSupplierName($event)" [items]="POList" name="POId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="POId"
+                                    placeholder="Select a PO" [(ngModel)]="master.POSelected" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <lable class="col-sm-4 col-form-label" for="Supplier"> Supplier</lable>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.partyId = this.$event.id)" [items]="parties"
+                                    name="PartyId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="Party"
+                                    placeholder="Select Party" [(ngModel)]="master.partySelected"
+                                    (ngModelChange)="getSupplierWiseItemsForBill(this.$event)" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="supplierChallanNo"> Supplier Challan No.<span>*</span>
+                            </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.supplierChallanNo"
+                                    id="supplierChallanNo" name="supplierChallanNo" nbInput fullWidth
+                                    placeholder=" Supplier Challan No. ">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="supplierChallanDate"> Supplier Challan Date<span>*</span>
+                            </label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.supplierChallanDate" name="omrRmrDate"
+                                    id="supplierChallanDate" [nbDatepicker]="supplierChallanDate" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #supplierChallanDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4  col-form-label" for="supplierName"> Supplier </label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="this.master.supplierName"
+                                    id="supplierName" name="supplierName" nbInput fullWidth placeholder="Supplier Name"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4  col-form-label" for="supplierBillDate"> Supplier Bill Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.supplierBillDate" name="supplierBillDate"
+                                    id="supplierBillDate" [nbDatepicker]="supplierBillDate" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #supplierBillDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="supplierBillNo"> Supplier Bill No. <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.supplierBillNo"
+                                    id="supplierBillNo" name="supplierBillNo" nbInput fullWidth
+                                    placeholder="Supplier Bill No">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="omrRmrNo"> OMR/RMR No <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.omrRmrNo"
+                                    id="omrRmrNo" name="omrRmrNo" nbInput fullWidth placeholder="OMR/RMR No">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="omrRmrDate"> OMR/RMR Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.omrRmrDate" name="omrRmrDate" id="omrRmrDate"
+                                    [nbDatepicker]="omrRmrDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #omrRmrDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="creditPeriod"> Credit Period <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" required [(ngModel)]="master.creditPeriod"
+                                    id="creditPeriod" name="creditPeriod" nbInput fullWidth placeholder="Credit Period"
+                                    (ngModelChange)="calculateMaturityDate();" (keyup)="calculateMaturityDate();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="maturityDate"> Maturity Date <span>*</span></label>
+                            <div class="col-sm-8">
+
+                                <input type="text" class="form-control" required [(ngModel)]="master.maturityDate"
+                                    id="maturityDate" name="maturityDate" nbInput fullWidth placeholder="maturityDate"
+                                    readonly>
+                                <!-- <input required [(ngModel)]="master.maturityDate" name="maturityDate"
+                                    id="maturityDate" [nbDatepicker]="maturityDate" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #maturityDate></nb-datepicker> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-1 col-form-label" for="particular"> Particular </label>
+                            <div class="col-sm-11">
+                                <input type="text" class="form-control" required [(ngModel)]="master.particular"
+                                    id="particular" name="particular" nbInput fullWidth placeholder="particular">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-1 col-form-label" for="remarks"> Remarks </label>
+                            <div class="col-sm-11">
+                                <input type="text" class="form-control" required [(ngModel)]="master.remarks"
+                                    id="remarks" name="remarks" nbInput fullWidth placeholder="remarks">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-8"> Items</div>
+
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <!-- <th>PO Number</th> -->
+                                    <th>Factory Challan No</th>
+                                    <th>GRN No</th>
+                                    <th>GRN Date</th>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th>UOM</th>
+                                    <!-- <th>QTY.</th> -->
+                                    <th>Received Qty.</th>
+                                    <!-- <th>Receive Qty</th> -->
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                    <th>VAT(%)</th>
+                                    <th>VAT Amount</th>
+                                    <th>Actual Amount</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <!-- <td>{{details.purOrderNo}}</td> -->
+                                    <td>{{details.factoryReceiveSINo}}</td>
+                                    <td>{{details.grnNo}}</td>
+                                    <td>{{details.grnDate}}</td>
+                                    <td>{{details.productCode}}</td>
+                                    <td>{{details.productName}}</td>
+                                    <td>{{details.uomName}}</td>
+                                    <td style="font-weight: bold; text-align: right">{{details.receivedQty}}</td>
+                                    <td style="font-weight: bold; text-align: right"> {{details.rate}}</td>
+                                    <td style="font-weight: bold; text-align: right">{{details.total}} </td>
+                                    <td style="font-weight: bold; text-align: right">{{details.vatPercent}} </td>
+
+                                    <td style="font-weight: bold; text-align: right">{{details.vatAmount}}</td>
+                                    <td style="font-weight: bold; text-align: right">{{details.actualAmount}} </td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect" (change)="checkChange($event,rowIndex)">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td rowspan="7" colspan="10"></td>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Gross Amount :</td>
+                                    <td class="text-right"> {{this.master.grandTotal}}
+                                    <td rowspan="7"></td>
+                                </tr>
+
+                                <tr>
+                                    <!-- <td class="text-left " colspan="1" style="font-weight: bold;">Discount (%):</td>
+                                    <td class="text-right">
+                                        <input type="number" class="form-control text-right" required min="0"
+                                            [(ngModel)]="master.discountPercent" id="discountPercent"
+                                            name="discountPercent" nbInput fullWidth placeholder="Discount Percent"
+                                            (ngModelChange)="CalculateSummary();" style="padding: 0.4375rem 0rem">
+                                    </td> -->
+                                    <!-- <td class="text-right"> {{this.master.discountAmount}}</td> -->
+                                     <td class="text-left " colspan="2" style="font-weight: bold;">Discount Amount:</td>
+                                     <td style="padding-right: 1px;padding-left: 1px;">
+                                        <input type="number" class="form-control text-right" required min="0"
+                                            [(ngModel)]="master.discountAmount" id="discountAmount"
+                                            name="discountAmount" nbInput fullWidth placeholder="Discount Amount"
+                                            (ngModelChange)="CalculateSummary();" style="padding: 0.4375rem 0rem">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Amount after Discount:
+                                    </td>
+                                    <td class="text-right"> {{this.master.amountAfterDiscount}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Truck Fair :</td>
+                                    <td style="padding-right: 1px;padding-left: 1px;">
+                                        <input type="number" class="form-control text-right" required min="0"
+                                            [(ngModel)]="master.truckFair" id="truckFair" name="truckFair" nbInput
+                                            fullWidth placeholder="Truck Fair" (ngModelChange)="CalculateSummary();"
+                                            style="padding: 0.4375rem 0rem">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Transport Bill :</td>
+                                    <td style="padding-right: 1px;padding-left: 1px;">
+                                        <input type="number" class="form-control text-right" required min="0"
+                                            [(ngModel)]="master.transportBill" id="transportBill" name="transportBill"
+                                            nbInput fullWidth placeholder="transportBill"
+                                            (ngModelChange)="CalculateSummary();" style="padding: 0.4375rem 0rem">
+                                    </td>
+                                </tr>
+                                <!-- <tr>
+                                    <td class="text-left" colspan="1" style="font-weight: bold;">Less TDS(%):</td>
+                                    <td class="text-right">
+                                        <input type="number" class="form-control text-right" required min="0"
+                                            [(ngModel)]="master.tdsPercent" id="tdsPercent" name="tdsPercent" nbInput
+                                            fullWidth placeholder="Less TDS" (ngModelChange)="CalculateSummary();">
+                                    </td>
+                                    <td class="text-right"> {{this.master.tdsAmount}}</td>
+                                </tr> -->
+
+                                 <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Advance Paid Amount:</td>
+                                    <td style="padding-right: 1px;padding-left: 1px;">
+                                        <input type="number" class="form-control text-right"  min="0"
+                                            [(ngModel)]="master.advancePaidAmount" id="advancePaidAmount" name="advancePaidAmount" nbInput
+                                            fullWidth placeholder="Advance Paid Amount" (ngModelChange)="ValidateAdvancePaidAmount();CalculateSummary();" style="padding: 0.4375rem 0rem">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-left" colspan="2" style="font-weight: bold;">Net Amount :</td>
+                                    <td class="text-right" style="font-weight: bold;"> {{this.master.netAmount}}</td>
+
+                                </tr>
+                               
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Bill Information</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td>Supplier Name:</td>
+                        <td>{{suppliarName}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Address:</td>
+                        <td>{{suppliarAddress}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td> <strong>Bill No:</strong></td>
+                        <td>{{billNo}}</td>
+                        <td><strong>Bill Date:</strong></td>
+                        <td>{{billDate}}</td>
+                        <!-- <td><strong>Maturity Date:</strong></td>
+                        <td>hello</td> -->
+                    </tr>
+                    <tr>
+                        <td> <strong>ORM/RMR No:</strong></td>
+                        <td>{{orm}}</td>
+                        <td><strong>ORM/RMR Date:</strong></td>
+                        <td>{{ormDate}}</td>
+                        <!-- <td><strong>Creadit Period:</strong></td>
+                        <td>{{creadit}}</td> -->
+                    </tr>
+                    <tr>
+                        <td>Supplier Challan No:</td>
+                        <td>{{challanNo}}</td>
+                        <td>Supplier Challan Date:</td>
+                        <td>{{chalanDate}}</td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td>Supplier Bill No:</td>
+                        <td>{{supplierBillNo}}</td>
+                        <td>Supplier Bill Date:</td>
+                        <td>{{supplierbillDate}}</td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td>Purchase Order No:</td>
+                        <td>{{poNo}}</td>
+                        <td>Purchase Order Date:</td>
+                        <td>{{poDate}}</td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+
+                    <tr>
+                        <td>Maturity Date:</td>
+                        <td>{{maturityDate}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+            <table id="body_table1" class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <!-- <th>PO Number</th>
+                            <th>Factory Challan No</th>
+                            <th>GRN No</th> -->
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>UOM</th>
+                        <!-- <th>QTY.</th> -->
+                        <th>Received Qty.</th>
+                        <!-- <th>Receive Qty</th> -->
+                        <th>Rate</th>
+                        <th>Total</th>
+                        <th>VAT(%)</th>
+                        <th>VAT Amount</th>
+                        <th>Actual Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+                        <td>
+                            {{rowIndex+1}}
+                        </td>
+                        <!-- <td>{{details.purOrderNo}}</td>
+                        <td>{{details.factoryReceiveSINo}}</td>
+                        <td>{{details.grnNo}}</td> -->
+                        <td>{{details.productCode}}</td>
+                        <td>{{details.productName}}</td>
+                        <td>{{details.uomName}}</td>
+                        <td style="font-weight: bold; text-align: right">{{details.receivedQty}}</td>
+                        <td style="font-weight: bold; text-align: right"> {{details.rate}}</td>
+                        <td style="font-weight: bold; text-align: right">{{details.total}} </td>
+                        <td style="font-weight: bold; text-align: right">{{details.vatPercent}} </td>
+
+                        <td style="font-weight: bold; text-align: right">{{details.vatAmount}}</td>
+                        <td style="font-weight: bold; text-align: right">{{details.actualAmount}} </td>
+                        <!-- <td>
+                            <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                [(ngModel)]="details.isSelect" (change)="checkChange($event,rowIndex)">
+                            </nb-checkbox>
+                        </td> -->
+                    </tr>
+
+                    <tr>
+                        <td rowspan="7" colspan="7"></td>
+                        <td class="text-left" colspan="2" style="font-weight: bold;">Gross Amount :</td>
+                        <td class="text-right"> {{this.master.grandTotal}}
+                        <td rowspan="7"></td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-left " colspan="1" style="font-weight: bold;">Discount (%):</td>
+                        <td class="text-right">
+                            <input type="number" class="form-control text-right" required min="0"
+                                [(ngModel)]="master.discountPercent" id="discountPercent" name="discountPercent" nbInput
+                                fullWidth placeholder="Discount Percent" (ngModelChange)="CalculateSummary();"
+                                style="padding: 0.4375rem 0rem">
+                        </td>
+                        <td class="text-right"> {{this.master.discountAmount}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" colspan="2" style="font-weight: bold;">Amount after Discount:</td>
+                        <td class="text-right"> {{this.master.amountAfterDiscount}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" colspan="2" style="font-weight: bold;">Truck Fair :</td>
+                        <td style="padding-right: 1px;padding-left: 1px;">{{this.master.truckFair}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" colspan="2" style="font-weight: bold;">Transport Bill :</td>
+                        <td style="padding-right: 1px;padding-left: 1px;">{{this.master.transportBill}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" colspan="1" style="font-weight: bold;">Less TDS(%):</td>
+                        <td class="text-right">{{tdsPercentforReport}}
+                            <!-- <input type="number" class="form-control text-right" required min="0"
+                            [(ngModel)]="master.tdsPercent" id="tdsPercent"
+                            name="tdsPercent" nbInput fullWidth placeholder="Less TDS"
+                            (ngModelChange)="CalculateSummary();"></td> -->
+                        <td class="text-right"> {{this.master.tdsAmount}}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-left" colspan="2" style="font-weight: bold;">Net Amount :</td>
+                        <td class="text-right" style="font-weight: bold;"> {{this.master.netAmount}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

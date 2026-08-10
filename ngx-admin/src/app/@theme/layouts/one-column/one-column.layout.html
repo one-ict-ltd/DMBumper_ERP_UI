@@ -1,0 +1,59 @@
+<nb-layout windowMode>
+  <nb-layout-header fixed>
+    <ngx-header></ngx-header>
+  </nb-layout-header>
+  <nb-sidebar class="menu-sidebar" tag="menu-sidebar" responsive>
+    <div class="menu-list-item">
+      <ul class="menu-list-item">
+       <li *ngFor="let menu of menuData" class="menu-list-item">   
+         <button (click)="toggleMenu(menu)" type="button" class="btn-lg" [class.open]="menu.open" [class.closed]="!menu.open" [ngClass]="{'last-selected': menu === lastSelectedMenu}">
+           {{ menu.name }} 
+           <!-- Settings  menu-->
+           <span class="arrow" [class.open]="!menu.open">&#9662;</span>
+           <!-- <span class="arrow" [class.open]="menu.open" *ngIf="menu.open">&#9662;</span> -->
+           <!-- <span class="arrow" [class.closed]="!menu.open">&#9656;</span> -->
+         </button>
+         <ul *ngIf="menu.open">
+            <!-- Account Module:   subcategories-->
+           <li *ngFor="let subcategory of menu.subcategories">
+             <button   (click)="toggleSubcategory(subcategory,menu.subcategories)" [class.open]="subcategory.open" [class.closed]="!subcategory.open">
+               {{ subcategory.name }}
+               <span class="arrow" [class.open]="!subcategory.open">&#9662;</span>
+               <!-- <span class="arrow" [class.open]="subcategory.open" *ngIf="subcategory.open">&#9662;</span> -->
+               <!-- <span class="arrow" [class.closed]="!subcategory.open">&#9656;</span> -->
+             </button>
+             <ul *ngIf="subcategory.open">
+                <!-- Account Module:   Account Settings/ Report Settings : subsubcategories-->
+               <li *ngFor="let subsubcategory of subcategory.subsubcategories">
+                 <button (click)="toggleSubsubcategory(subsubcategory,subcategory.subsubcategories)" [class.open]="subsubcategory.open" [class.closed]="!subsubcategory.open">
+                   {{ subsubcategory.name }}
+                   <span class="arrow" [class.open]="!subsubcategory.open">&#9662;</span>
+                   <!-- <span class="arrow" [class.closed]="!subsubcategory.open">&#9656;</span> -->
+                 </button>
+                 <ul *ngIf="subsubcategory.open">
+                     <!-- Account Module->   Account Settings -> categories Menu Name : categories-->
+                   <li *ngFor="let category of subsubcategory.categories">
+                     <a  [href]="category.hashlink" (click)="setLastSelectedLink(category.hashlink)" [ngClass]="{'last-selected-link': category.hashlink === lastSelectedLink}">{{ category.title }}</a>
+                    
+                     <!-- Other category content -->
+                   </li>
+                 </ul>
+                 <!-- End categories -->
+               </li>
+             </ul>
+             <!-- End subsubcategories -->
+           </li>
+         </ul>
+         <!-- End subcategories -->
+       </li>
+     </ul>
+   </div>
+  </nb-sidebar>
+  <nb-layout-column>
+    <ng-content select="router-outlet"></ng-content>
+  </nb-layout-column>
+
+  <nb-layout-footer fixed>
+    <ngx-footer></ngx-footer>
+  </nb-layout-footer>
+</nb-layout>

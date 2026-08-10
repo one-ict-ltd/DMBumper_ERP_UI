@@ -1,0 +1,363 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="companyId" class="col-4 col-form-label">Company Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect (change)="getBranch(this.$event.id);" [items]="companies" name="companyId"
+                            bindLabel="name" id="companyId" [(ngModel)]="companySelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="BranchId" class="col-4 col-form-label">Branch Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="branchs" name="BranchId" bindLabel="name" id="BranchId"
+                            [(ngModel)]="branchSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Branch" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="fromdateSelected" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="todateSelected" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-body>
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table" class="table table-bordered">
+                <thead style="background-color:lightgray;border-bottom:groove;">
+                    <tr>
+                        <th style="text-align:center;vertical-align: middle;">Particulars</th>
+                        <th style="text-align:center;vertical-align: middle;">Share Capital</th>
+                        <th style="text-align:center;">Retained Earnings</th>
+                        <th style="text-align:center;">Reserve</th>
+                        <th style="text-align:center;">Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of bodyDataEquityCurPrev;">
+                        <td style="width:40%;">{{item.noteName}}</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(NetProfitPrevYear)}}</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(item.capitalAmount+NetProfitPrevYear)}}</td>
+                    </tr>
+                    <br>
+                    <tr>
+                        <td style="width:40%;font-weight:bold;">Add: This year</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(TotalCapitalCurCurYear)}}</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(NetProfit-TotalDrawingCurYear)}}
+                        </td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCapitalCurCurYear+NetProfit-TotalDrawingCurYear)}}
+                        </td>
+                    </tr>
+                    <tr *ngFor="let item of bodyDataEquityCurCur;">
+                        <td style="width:40%;">{{item.noteName}}</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width:40%;">Net Profit/(Loss) during the year</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(NetProfit)}}</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(NetProfit)}}</td>
+                    </tr>
+                    <tr *ngIf="showDrawing">
+                        <td style="width:40%;">Less: Drawing</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">({{this.currencyFormatter(TotalDrawingCurYear)}})</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">({{this.currencyFormatter(TotalDrawingCurYear)}})</td>
+                    </tr>
+                    <br>
+                    <tr>
+                        <td style="width:40%;font-weight:bold;">Balance at {{yearEndDate}}</td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCapitalCurPrevYear+TotalCapitalCurCurYear)}}</td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(NetProfitPrevYear+NetProfit-TotalDrawingCurYear)}}
+                        </td>
+                        <td style="width:15%;font-weight:bold;" align="right"></td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCapitalCurCurYear+TotalCapitalCurPrevYear+NetProfit
+                            +NetProfitPrevYear-TotalDrawingCurYear)}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <br>
+
+        <div class="row" style="padding: 0px 15px 0px 15px;">
+            <table id="simple_table" class="table table-bordered">
+                <thead style="background-color:lightgray;border-bottom:groove;">
+                    <tr>
+                        <th style="text-align:center;vertical-align: middle;">Particulars</th>
+                        <th style="text-align:center;vertical-align: middle;">Share Capital</th>
+                        <th style="text-align:center;">Retained Earnings</th>
+                        <th style="text-align:center;">Reserve</th>
+                        <th style="text-align:center;">Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let item of bodyDataEquityPrevPrev;">
+                        <td style="width:40%;">{{item.noteName}}</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(NetProfitPrevYearPrev)}}</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(item.capitalAmount+NetProfitPrevYearPrev)}}</td>
+                    </tr>
+                    <br>
+                    <tr>
+                        <td style="width:40%;font-weight:bold;">Add: This year</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(TotalCapitalPrevCurYear)}}</td>
+                        <td style="width:15%;" align="right">
+                            {{this.currencyFormatter(NetProfitPrev-TotalDrawingPrevYear)}}</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCapitalPrevCurYear+NetProfitPrev-TotalDrawingPrevYear)}}
+                        </td>
+                    </tr>
+                    <tr *ngFor="let item of bodyDataEquityPrevCur;">
+                        <td style="width:40%;">{{item.noteName}}</td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                    </tr>
+                    <tr>
+                        <td style="width:40%;">Net Profit/(Loss) during the year</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(NetProfitPrev)}}</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">{{this.currencyFormatter(NetProfitPrev)}}</td>
+                    </tr>
+                    <tr *ngIf="showDrawing">
+                        <td style="width:40%;">Less: Drawing</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">({{this.currencyFormatter(TotalDrawingPrevYear)}})</td>
+                        <td style="width:15%;" align="right"></td>
+                        <td style="width:15%;" align="right">({{this.currencyFormatter(TotalDrawingPrevYear)}})</td>
+                    </tr>
+                    <br>
+                    <tr>
+                        <td style="width:40%;font-weight:bold;">Balance at {{prevYearEndDate}}</td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCapitalPrevPrevYear+TotalCapitalPrevCurYear)}}</td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(NetProfitPrevYearPrev+NetProfitPrev-TotalDrawingPrevYear)}}
+                        </td>
+                        <td style="width:15%;font-weight:bold;" align="right"></td>
+                        <td style="width:15%;font-weight:bold;" align="right">
+                            {{this.currencyFormatter(TotalCapitalPrevCurYear+TotalCapitalPrevPrevYear+NetProfitPrev
+                            +NetProfitPrevYearPrev-TotalDrawingPrevYear)}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<!-- PDF  -->
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td>Statement of Changes in Equity</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tr>
+                    <td>For the year ended {{yearEndDate}}</td>
+                </tr>
+            </table>
+
+            <div class="row" style="padding: 0px 15px 0px 15px;">
+                <table id="body_table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Particulars</th>
+                            <th>Share Capital</th>
+                            <th>Retained Earnings</th>
+                            <th>Reserve</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of bodyDataEquityCurPrev;">
+                            <td style="width:40%;">{{item.noteName}}</td>
+                            <td style="width:15%;">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                            <td style="width:15%;">{{this.currencyFormatter(NetProfitPrevYear)}}</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(item.capitalAmount+NetProfitPrevYear)}}</td>
+                        </tr>
+                        <br>
+                        <tr>
+                            <td style="width:40%;">Add: This year</td>
+                            <td style="width:15%;">{{this.currencyFormatter(TotalCapitalCurCurYear)}}</td>
+                            <td style="width:15%;">{{this.currencyFormatter(NetProfit-TotalDrawingCurYear)}}</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(TotalCapitalCurCurYear+NetProfit-TotalDrawingCurYear)}}</td>
+                        </tr>
+                        <tr *ngFor="let item of bodyDataEquityCurCur;">
+                            <td style="width:40%;">{{item.noteName}}</td>
+                            <td style="width:15%;">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                        </tr>
+                        <tr>
+                            <td style="width:40%;">Net Profit/(Loss) during the year</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">{{this.currencyFormatter(NetProfit)}}</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">{{this.currencyFormatter(NetProfit)}}</td>
+                        </tr>
+                        <tr *ngIf="showDrawing">
+                            <td style="width:40%;">Less: Drawing</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">({{this.currencyFormatter(TotalDrawingCurYear)}})</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">({{this.currencyFormatter(TotalDrawingCurYear)}})</td>
+                        </tr>
+                        <br>
+                        <tr>
+                            <td style="width:40%;">Balance at {{yearEndDate}}</td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(TotalCapitalCurPrevYear+TotalCapitalCurCurYear)}}</td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(NetProfitPrevYear+NetProfit-TotalDrawingCurYear)}}
+                            </td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(TotalCapitalCurCurYear+TotalCapitalCurPrevYear+NetProfit
+                                +NetProfitPrevYear-TotalDrawingCurYear)}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table id="body_tablePrev" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Particulars</th>
+                            <th>Share Capital</th>
+                            <th>Retained Earnings</th>
+                            <th>Reserve</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of bodyDataEquityPrevPrev;">
+                            <td style="width:40%;">{{item.noteName}}</td>
+                            <td style="width:15%;">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                            <td style="width:15%;">{{this.currencyFormatter(NetProfitPrevYearPrev)}}</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(item.capitalAmount+NetProfitPrevYearPrev)}}</td>
+                        </tr>
+                        <br>
+                        <tr>
+                            <td style="width:40%;">Add: This year</td>
+                            <td style="width:15%;">{{this.currencyFormatter(TotalCapitalPrevCurYear)}}
+                            </td>
+                            <td style="width:15%;">{{this.currencyFormatter(NetProfitPrev-TotalDrawingPrevYear)}}</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(TotalCapitalPrevCurYear+NetProfitPrev-TotalDrawingPrevYear)}}
+                            </td>
+                        </tr>
+                        <tr *ngFor="let item of bodyDataEquityPrevCur;">
+                            <td style="width:40%;">{{item.noteName}}</td>
+                            <td style="width:15%;">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">{{this.currencyFormatter(item.capitalAmount)}}</td>
+                        </tr>
+                        <tr>
+                            <td style="width:40%;">Net Profit/(Loss) during the year</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">{{this.currencyFormatter(NetProfitPrev)}}</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">{{this.currencyFormatter(NetProfitPrev)}}</td>
+                        </tr>
+                        <tr *ngIf="showDrawing">
+                            <td style="width:40%;">Less: Drawing</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">({{this.currencyFormatter(TotalDrawingPrevYear)}})</td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">({{this.currencyFormatter(TotalDrawingPrevYear)}})</td>
+                        </tr>
+                        <br>
+                        <tr>
+                            <td style="width:40%;">Balance at {{prevYearEndDate}}</td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(TotalCapitalPrevPrevYear+TotalCapitalPrevCurYear)}}</td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(NetProfitPrevYearPrev+NetProfitPrev-TotalDrawingPrevYear)}}
+                            </td>
+                            <td style="width:15%;"></td>
+                            <td style="width:15%;">
+                                {{this.currencyFormatter(TotalCapitalPrevCurYear+TotalCapitalPrevPrevYear+NetProfitPrev
+                                +NetProfitPrevYearPrev-TotalDrawingPrevYear)}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

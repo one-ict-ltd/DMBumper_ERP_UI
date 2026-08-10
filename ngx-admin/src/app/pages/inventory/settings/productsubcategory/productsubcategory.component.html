@@ -1,0 +1,94 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="subCategoryName">Sub Category Name <span
+                                    style="color: red;">*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.subCategoryName"
+                                    id="subCategoryName" name="subCategoryName" nbInput fullWidth
+                                    placeholder="Sub Category Name">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="productCategoryId" class="col-sm-4 col-form-label">Product
+                                Category <span style="color: red;">*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.productCategoryId = this.$event.id);"
+                                    [items]="productCategoryList" name="productCategoryId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productCategoryId"
+                                    placeholder="Select Product Category" appendTo="body"
+                                    [(ngModel)]="master.productCategorySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"></label>
+                            <div class="col-sm-8 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="aliasName">Alias Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.aliasName"
+                                    id="aliasName" name="aliasName" nbInput fullWidth placeholder="Alias Name">
+                            </div>
+                        </div>
+
+                        <!-- <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="parentId">Parent ID<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" required [(ngModel)]="master.parentId" id="parentId" name="parentId" nbInput fullWidth placeholder="Parent ID">
+                            </div>
+                        </div> -->
+
+                        <div class="form-group row">
+                            <label for="productSubCategoryId" class="col-sm-4 col-form-label">Parent Sub Category
+                                Name</label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.parentId = this.$event.id);"
+                                    [items]="productSubCategoryList" name="parentId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="parentId"
+                                    placeholder="Select Product Sub Category" appendTo="body"
+                                    [(ngModel)]="master.productSubCategorySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

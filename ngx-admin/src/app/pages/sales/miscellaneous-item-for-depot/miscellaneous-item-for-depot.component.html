@@ -1,0 +1,389 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+
+<div class="row" *ngIf="!show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+            <nb-card-header>
+                <fieldset [disabled]="disabled ? 'disabled' : null">
+                    <form #masterForm="ngForm" novalidate>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="itemDate">Date
+                                        <span>*</span></label>
+                                    <div class="col-sm-8">
+                                        <input required [(ngModel)]="master.itemDate" [nbDatepicker]="itemDate"
+                                            (ngModelChange)="getMaxNo();" nbInput fullWidth placeholder="Date"
+                                            [ngModelOptions]="{standalone: true}" readonly>
+                                        <nb-datepicker #itemDate></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="miscellaneousNo">Miscellaneous No.
+                                        <span>*</span></label>
+                                    <div class="col-sm-8">
+                                        <input type="text" required [(ngModel)]="master.miscellaneousNo"
+                                            id="miscellaneousNo" nbInput fullWidth placeholder="Miscellaneous No"
+                                            [ngModelOptions]="{standalone: true}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-8 col-sm-12" hidden>
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="sbuId">Depot <span>*</span></label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="(master.sbuId = $event.id);" [items]="fromsbus"
+                                            name="sbuId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="sbuId" placeholder="Select Depot" appendTo="body"
+                                            [(ngModel)]="master.sbuSelected"
+                                            [disabled]="disableSbu ? 'disableSbu' : null">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-8 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="miscellaneousTypeId">Misc. Type
+                                        <span>*</span></label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect
+                                            (change)="(master.miscellaneousTypeId = $event.id);MiscTypeChange();"
+                                            [items]="typeList" name="miscellaneousTypeId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="miscellaneousTypeId"
+                                            placeholder="Select Type" appendTo="body" [(ngModel)]="master.typeSelected"
+                                            [disabled]="disabledNew ? 'disabledNew' : null">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label" for="remarks">Remarks <span>*</span></label>
+                                    <div class="col-sm-10">
+                                        <input type="text" required [(ngModel)]="master.remarks" id="remarks" nbInput
+                                            fullWidth placeholder="Remarks" [ngModelOptions]="{standalone: true}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </nb-card-header>
+        </nb-card>
+
+        <!-- <nb-card>
+            <nb-card-header>
+                <fieldset [disabled]="disabled ? 'disabled' : null">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-8 col-sm-12">
+                            <div class="form-group row">
+                                <label class="col-sm-2 col-form-label" for="selectedProductId">Product Name
+                                    <span>*</span></label>
+                                <div class="col-sm-10">
+                                    <ng-select nbselect (change)="(master.selectedProductId = $event.id);"
+                                        [items]="productList" name="selectedProductId" bindLabel="name"
+                                        [ngModelOptions]="{standalone: true}" id="selectedProductId"
+                                        placeholder="Select Product" appendTo="body"
+                                        [(ngModel)]="master.productSelected" required>
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-md-8 col-sm-12">
+                            <div class="form-group row">
+                                <label for="colFromDate" class="col-sm-4 col-form-label">Qty.<span>*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="number" min="0" required [(ngModel)]="master.detailsCtnQty"
+                                        id="detailsCtnQty" nbInput fullWidth placeholder="Qty"
+                                        [ngModelOptions]="{standalone: true}"
+                                        oninput="this.value = Math.abs(this.value)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-8 col-sm-12">
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label" for="batchNo">Batch No.
+                                    <span>*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" required [(ngModel)]="master.batchNo" id="batchNo" nbInput
+                                        fullWidth placeholder="batchNo" [ngModelOptions]="{standalone: true}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-8 col-sm-12">
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label" for="detailsRemarks">Remarks
+                                    <span>*</span></label>
+                                <div class="col-sm-8">
+                                    <input type="text" required [(ngModel)]="master.detailsRemarks" id="detailsRemarks"
+                                        nbInput fullWidth placeholder="Remarks" [ngModelOptions]="{standalone: true}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div style="text-align: center;">
+                                <button class="btn btn-success btn-sm m-3" (click)="addToDetailsGrid()"
+                                    id="addToDetailsGrid"> <i class="fa fa-plus" aria-hidden="true"></i> Add
+                                    Item</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </fieldset>
+            </nb-card-header>
+        </nb-card> -->
+
+        <div class="row" *ngIf="!show">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <nb-card class="min-height">
+                    <fieldset [disabled]="disabled ? 'disabled' : null">
+                        <nb-tabset>
+                            <nb-tab tabTitle="List Of Products" class="btn-tab">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-8 col-sm-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-2 col-form-label" for="selectedProductId">Product Name
+                                                <span>*</span></label>
+                                            <div class="col-sm-10">
+                                                <ng-select nbselect (change)="(master.selectedProductId = $event.id);"
+                                                    [items]="productList" name="selectedProductId" bindLabel="name"
+                                                    [ngModelOptions]="{standalone: true}" id="selectedProductId"
+                                                    placeholder="Select Product" appendTo="body"
+                                                    [(ngModel)]="master.productSelected" required>
+                                                </ng-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-8 col-sm-12">
+                                        <div class="form-group row">
+                                            <label for="colFromDate"
+                                                class="col-sm-4 col-form-label">Qty.<span>*</span></label>
+                                            <div class="col-sm-8">
+                                                <input type="number" min="0" required [(ngModel)]="master.detailsCtnQty"
+                                                    id="detailsCtnQty" nbInput fullWidth placeholder="Qty"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    oninput="this.value = Math.abs(this.value)">
+                                            </div>
+
+                                            <!-- <label for="cUpToDate" class="col-sm-2 col-form-label">Loose<span>*</span></label>
+                                <div class="col-sm-3">
+                                    <input type="number" min="0" required [(ngModel)]="master.detailsLooseQty"
+                                        id="detailsLooseQty" nbInput fullWidth placeholder="Loose Qty"
+                                        [ngModelOptions]="{standalone: true}">
+                                </div> -->
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-8 col-sm-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label" for="batchNo">Batch No.
+                                                <span>*</span></label>
+                                            <div class="col-sm-8">
+                                                <input type="text" required [(ngModel)]="master.batchNo" id="batchNo"
+                                                    nbInput fullWidth placeholder="batchNo"
+                                                    [ngModelOptions]="{standalone: true}" (blur)="onbatchNoChange()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-8 col-sm-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label" for="price">Manufacturing
+                                                Date<span>*</span></label>
+                                            <div class="col-sm-8">
+                                                <input required [(ngModel)]="master.mgfDate"
+                                                    (ngModelChange)="getMaxNo();" name="mgfDate" id="mgfDate"
+                                                    [nbDatepicker]="mdatepicker" nbInput fullWidth placeholder="Date"
+                                                    [ngModelOptions]="{standalone: true}">
+                                                <nb-datepicker #mdatepicker></nb-datepicker>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-8 col-sm-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label" for="price">Expire
+                                                Date<span>*</span></label>
+                                            <div class="col-sm-8">
+                                                <input required [(ngModel)]="master.expireDate"
+                                                    (ngModelChange)="getMaxNo();" name="expireDate" id="expireDate"
+                                                    [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                                                    [ngModelOptions]="{standalone: true}">
+                                                <nb-datepicker #idatepicker></nb-datepicker>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-8 col-sm-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label" for="detailsRemarks">Remarks
+                                                <span>*</span></label>
+                                            <div class="col-sm-8">
+                                                <input type="text" required [(ngModel)]="master.detailsRemarks"
+                                                    id="detailsRemarks" nbInput fullWidth placeholder="Remarks"
+                                                    [ngModelOptions]="{standalone: true}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div style="text-align: center;">
+                                            <button class="btn btn-success btn-sm m-3" (click)="addToDetailsGrid()"
+                                                id="addToDetailsGrid"> <i class="fa fa-plus" aria-hidden="true"></i> Add
+                                                Item</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 300px">
+                                    <table class=" table table-bordered table-striped">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Code</th>
+                                            <th>Product Name</th>
+                                            <th>Pack Size</th>
+                                            <th>Qty.</th>
+                                            <th>Batch</th>
+                                            <th>Manfacturing Date</th>
+                                            <th>Expire Date</th>
+                                            <!-- <th>Loose Qty</th> -->
+                                            <th>Remarks</th>
+                                            <th style="width: 120px;">Action</th>
+                                        </tr>
+
+                                        <tr
+                                            *ngFor="let details of master.lstMiscellaneousDetailsViewModel; let rowIndex = index">
+                                            <td>
+                                                {{rowIndex+1}}
+                                            </td>
+                                            <td>
+                                                {{details.code}}
+                                            </td>
+                                            <td>
+                                                {{details.productName}}
+                                            </td>
+                                            <td>
+                                                {{details.packSize}}
+                                            </td>
+
+                                            <td>
+                                                <!-- [innerHTML]="details.ctnQty" -->
+                                                <input type="number" class="form-control text-right" required
+                                                    [(ngModel)]="details.ctnQty" id="ctnQty" name="ctnQty" nbInput
+                                                    fullWidth placeholder="Qty">
+                                            </td>
+                                            <!-- <td [innerHTML]="details.looseQty"></td> -->
+                                            <td [innerHTML]="details.batchNo"></td>
+                                            <td>{{details.mgfDate}}</td>
+                                            <td>{{details.expireDate}}</td>
+                                            <td>
+                                                {{details.remarks}}
+                                            </td>
+                                            <td>
+                                                <div style="text-align: center;">
+                                                    <!-- <button class="btn btn-info btn-sm" (click)="editDetails(rowIndex)">
+                                                        <i class="fa fa-paint-brush" aria-hidden="true"></i>
+                                                    </button> &nbsp; -->
+                                                    <button class="btn btn-danger btn-sm"
+                                                        (click)="removeDetails(rowIndex)">
+                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </nb-tab>
+                            <nb-tab tabTitle="Attachments" class="btn-tab">
+                                <div class="row">
+                                    <!-- <div class=" col-sm-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-4 col-form-label" for="sbuId">File
+                                                <span>*</span></label>
+                                            <div class="col-sm-8">
+                                                <input type="file" id="file"
+                                                    (change)="getFileDetails($event.target.files, rowIndex)">
+                                                <img [src]="detail.imageFile" style="height: 100px;">
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                    <div class=" col-sm-12">
+                                        <div style="text-align: center;">
+                                            <button (click)="addFiles()" class="btn btn-success btn-sm m-3"
+                                                [disabled]="disabledBtnFile ? 'disabled' : null"> <i class="fa fa-plus"
+                                                    aria-hidden="true"></i> Add File</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-sm-12">
+                                        <!-- <div class="form-group row"> </div> -->
+                                        <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 300px">
+                                            <table class=" table table-bordered table-striped">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>File Name</th>
+                                                    <th>Attachment</th>
+                                                    <th>Action</th>
+                                                </tr>
+
+                                                <tr
+                                                    *ngFor="let details of master.lstFileAttachment; let rowIndex = index">
+                                                    <td>
+                                                        {{rowIndex+1}}
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" id="text" required
+                                                            name="text" nbInput fullWidth placeholder="Text"
+                                                            [(ngModel)]="details.docInfo">
+                                                    </td>
+                                                    <td>
+                                                        <input type="file" id="file"
+                                                            (change)="getFileDetails($event.target.files, rowIndex)">
+                                                    </td>
+                                                    <td>
+                                                        <div style="text-align: center;">
+                                                            <button class="btn btn-danger btn-sm"
+                                                                (click)="removeFile(rowIndex)">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </nb-tab>
+                        </nb-tabset>
+                    </fieldset>
+                </nb-card>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,371 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salaryTypeId" class="col-sm-3 col-form-label">Employee's Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.employeeId = this.$event.id);getDuplicate();"
+                                    [items]="employeeItems" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId" placeholder="Select Employee"
+                                    appendTo="body" [virtualScroll]="true" [(ngModel)]="master.employeeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="fiscalYearId" class="col-sm-3 col-form-label">Salary Type <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salaryGradeItems"
+                                    (change)="(master.salaryGradeId = this.$event.id);LoadSalarySlab();"
+                                    name="salaryGradeId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="salaryGradeId" placeholder="Select Grade Name" appendTo="body"
+                                    [(ngModel)]="master.salaryGradeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="designation" class="col-sm-3 col-form-label">Designation
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="designation" required
+                                    [(ngModel)]="master.designation" name="designation" nbInput fullWidth
+                                    placeholder="Designation">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salarySlabId" class="col-sm-3 col-form-label">Grade Name <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salarySlabItems"
+                                    (change)="(master.salarySlabId = this.$event.id);GetSlabAmount();"
+                                    name="salarySlabId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="salarySlabId" placeholder="Select Slab Name" appendTo="body"
+                                    [(ngModel)]="master.salarySlabSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="department" class="col-sm-3 col-form-label">Department
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="department" required
+                                    [(ngModel)]="master.department" name="department" nbInput fullWidth
+                                    placeholder="Department">
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="fiscalYearId" class="col-sm-3 col-form-label">Salary Type <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salaryGradeItems"
+                                    (change)="(master.salaryGradeId = this.$event.id);LoadSalarySlab();"
+                                    name="salaryGradeId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="salaryGradeId" placeholder="Select Grade Name" appendTo="body"
+                                    [(ngModel)]="master.salaryGradeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salarySlabId" class="col-sm-3 col-form-label">Slab Name <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salarySlabItems"
+                                    (change)="(master.salarySlabId = this.$event.id);GetSlabAmount();GetDesignation();"
+                                    name="salarySlabId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="salarySlabId" placeholder="Select Slab Name" appendTo="body"
+                                    [(ngModel)]="master.salarySlabSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="currentDesignation" class="col-sm-3 col-form-label">Designation <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.designation = this.$event.name);"
+                                    [items]="DesignationList" name="currentDesignation" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="currentDesignation"
+                                    placeholder="Select Designation" appendTo="body"
+                                    [(ngModel)]="master.designationSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-6">
+                                            <div class="form-group row">
+                                                <label for="department" class="col-sm-3 col-form-label">Department
+                                                </label>
+                                                <div class="col-sm-9">
+                                                    <input type="text" class="form-control" id="department" required
+                                                        [(ngModel)]="master.department" name="department" nbInput fullWidth
+                                                        placeholder="Department">
+                                                </div>
+                                            </div>
+                                        </div> -->
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="currentDepartment" class="col-sm-3 col-form-label">Department
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.department = this.$event.name);"
+                                    [items]="DepartmentList" name="currentDepartment" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="currentDepartment"
+                                    placeholder="Select Department" appendTo="body"
+                                    [(ngModel)]="master.departmentSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="slabAmount" class="col-sm-3 col-form-label">Slab Amount <span>*</span>
+                            </label>
+                            <div class="col-sm-3">
+                                <input type="number" class="form-control" id="slabAmount" required
+                                    [(ngModel)]="master.slabAmount" name="slabAmount" nbInput fullWidth
+                                    placeholder="Slab Amount">
+                            </div>
+                            <label for="effectiveDateShow" class="col-sm-3 col-form-label">Effective Date
+                            </label>
+                            <div class="col-sm-3">
+                                <input (ngModelChange)="getActualDate($event);" id="effectiveDateShow" required
+                                    [(ngModel)]="master.effectiveDateShow" name="effectiveDateShow"
+                                    [nbDatepicker]="effectiveDateShow" nbInput fullWidth
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #effectiveDateShow></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label"></label>
+                            <div class="col-sm-9">
+                                <button (click)="CalculateStructure();"
+                                    class="btn btn-primary btn-sm">Calculate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-6 col-lg-6">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Addition" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Head Name</th>
+                                    <th style="text-align: right;">Amount</th>
+                                    <th>Is Active?</th>
+                                    <!-- <th>Action</th> -->
+                                </tr>
+                                <tr *ngFor="let detail of master.lstAddtion; let rowIndex = index"
+                                    (click)="editStructure(dialog,detail.employeeStructureId,detail.salaryHeadName,detail.structureAmount,detail.isActive)">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{detail.salaryHeadName}}</td>
+                                    <td align="right">{{currencyFormatter(detail.structureAmount)}}</td>
+                                    <td>{{detail.isActive}}</td>
+                                    <!-- <td>
+                                        <button
+                                            (click)="editStructure(dialog,detail.employeeStructureId,detail.salaryHeadName,detail.structureAmount,detail.isActive)"
+                                            class="btn btn-success btn-sm">
+                                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                        </button>
+                                    </td> -->
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center;font-weight: bolder;">Total Addition</td>
+                                    <td style="text-align: right;font-weight: bolder;">
+                                        {{currencyFormatter(additionAmount)}}</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center;font-weight: bolder;">Net Amount</td>
+                                    <td style="text-align: right;font-weight: bolder;">
+                                        {{currencyFormatter(additionAmount-deductionAmount)}}</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+    <div class="col-md-6 col-lg-6">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Deduction" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Head Name</th>
+                                    <th style="text-align: right;">Amount</th>
+                                    <th>Is Active?</th>
+                                </tr>
+                                <tr *ngFor="let detail of master.lstDeduction; let rowIndex = index"
+                                    (click)="editStructure(dialog,detail.employeeStructureId,detail.salaryHeadName,detail.structureAmount,detail.isActive)">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{detail.salaryHeadName}}</td>
+                                    <td align="right">{{currencyFormatter(detail.structureAmount)}}</td>
+                                    <td>{{detail.isActive}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center;font-weight: bolder;">Total Deduction</td>
+                                    <td style="text-align: right;font-weight: bolder;">
+                                        {{currencyFormatter(deductionAmount)}}</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+<div class="row" *ngIf="!show" [hidden]="true">
+    <div class="col-md-12">
+        <nb-card>
+            <nb-card-header class="text-right">
+                <fieldset [disabled]="disabled ? 'disabled' : null">
+                    <form #masterForm="ngForm" novalidate>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="bankAmount" class="col-sm-3 col-form-label">Bank Amount
+                                        <span>*</span></label>
+                                    <div class="col-sm-9">
+                                        <input type="number" class="form-control" id="bankAmount" required
+                                            [readOnly]="true" [(ngModel)]="master.bankAmount" name="bankAmount" nbInput
+                                            fullWidth placeholder="Bank Amount">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="cashAmount" class="col-sm-3 col-form-label">Cash Amount <span>*</span>
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <input type="number" class="form-control" id="cashAmount" required
+                                            (change)="calculateBankAmount($event)" [(ngModel)]="master.cashAmount"
+                                            name="cashAmount" nbInput fullWidth placeholder="Cash Amount">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </fieldset>
+            </nb-card-header>
+        </nb-card>
+    </div>
+</div>
+
+<!-- Pop-up structure edit -->
+
+<ng-template #dialog let-data let-ref="dialogRef">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="max-height">
+            <nb-card-header>Edit Employee's Salary Structure</nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label for="salaryHeadName" class="col-sm-3 col-form-label">Salary Head Name
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="salaryHeadName" required
+                                    name="salaryHeadName" value={{salaryHeadName}} nbInput fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label for="structureAmount" class="col-sm-3 col-form-label">Amount
+                            </label>
+                            <div class="col-sm-4">
+                                <input type="number" class="form-control" id="structureAmount" required
+                                    [(ngModel)]="master.structureAmount" name="structureAmount" nbInput fullWidth>
+                            </div>
+                            <div class="col-sm-3 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                            <div class="col-sm-2">
+                                <button (click)="UpdateStructure();ref.close()"
+                                    class="btn btn-warning btn-sm">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-11">
+                    </div>
+                    <div class="col-1">
+                        <button style="text-align: right;" nbButton (click)="ref.close()">X</button>
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</ng-template>

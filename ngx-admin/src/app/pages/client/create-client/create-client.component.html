@@ -1,0 +1,301 @@
+<nb-card class="actions-card">
+  <nb-card-header >{{pageNavigation}}
+    <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+  </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+  <nb-card-header class="text-right">
+    <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+      </ag-grid-angular>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show" >
+  <nb-card-header>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+    <form #masterForm="ngForm" novalidate >
+     
+      <div class="row">
+        <div class="col-4">
+
+          <div class="form-group row">
+            <label for="text" class="col-sm-3 col-form-label">Text</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="text" required [(ngModel)]="master.text" name="text" nbInput
+                fullWidth placeholder="Text">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="dropdown" class="col-sm-3 col-form-label">Dropdown</label>
+            <div class="col-sm-9">              
+              <ng-select nbselect (change)="( master.dropDownId = this.$event.id)" [items]="vouchertype" 
+                name="dropdown" bindLabel="name"  id="dropdown" 
+                placeholder="Select VoucherType" appendTo="body"
+                [(ngModel)]="master.ddlSelected" [ngModelOptions]="{standalone: true}">
+              </ng-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="muliselect" class="col-sm-3 col-form-label"> Multi Select</label>
+            <div class="col-sm-9">
+              <ng-select (change)="setMultiSelect()" [items]="curency" name="multiselect" bindLabel="name"
+                id="muliselect" placeholder="Select Curency" appendTo="body" multiple="true"
+                [(ngModel)]="master.multiseletobj">
+              </ng-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="date" class="col-sm-3 col-form-label">Date</label>
+            <div class="col-sm-9">              
+                <input nbInput placeholder="Form Picker" [(ngModel)]="master.date" [nbDatepicker]="formpicker" fullWidth [ngModelOptions]="{standalone: true}">
+                <nb-datepicker #formpicker></nb-datepicker> 
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="date" class="col-sm-3 col-form-label">Popup</label>
+            <div class="col-sm-9 row">
+              <div class="col-sm-10">
+                <input type="text" value="{{ master.popUp}}" [(ngModel)]="master.popUp" name="popup" fullWidth readonly
+                  nbInput id="text" placeholder="Text">
+              </div>
+              <div class="col-sm-2">
+                <button type="submit" class="btn btn-success btn-sm" (click)="openMasterPopup()"><i class="fa fa-folder-open"
+                    aria-hidden="true"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group row">
+            <label for="" class="col-sm-3 col-form-label">Checkbox</label>
+            <div class="col-sm-9">
+              <div class="validation-checkboxes">
+                <nb-checkbox [(ngModel)]="master.checkBox" name="checkbox" status="success">Checkbox</nb-checkbox>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="textarea" class="col-sm-3 col-form-label">Text Aria</label>
+            <div class="col-sm-9">
+              <textarea rows="3" [(ngModel)]="master.textArea" name="textarea" nbInput fullWidth id="textarea"
+                placeholder="Text Area"></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="date" class="col-sm-3 col-form-label">Radio</label>
+            <div class="col-sm-9">
+              <div class="demo-items">
+                <nb-radio-group [(value)]="radioGroupValue">
+                  <nb-radio [value]="'This is value 1'">
+                    Radio 1
+                  </nb-radio>
+                  <nb-radio [value]="'This is value 2'">
+                    Radio 2
+                  </nb-radio>
+                  <nb-radio [value]="'This is value 3'">
+                    Radio 3
+                  </nb-radio>
+                </nb-radio-group>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form-group row">
+            <label for="date" class="col-sm-4 col-form-label">Upload Images </label>
+            <div class="col-sm-8">
+              <div class="form-group">
+                <!-- <input type="file" id="file" multiple (change)="uploadFiles($event.target.files)"> -->
+                <input id="file" type="file" multiple class="form-control" (change)="onFileChange($event)">
+              </div>
+            </div>
+          </div>
+          <div class="form-group row image-aria" >
+            <!-- <img src={{item.url}}> -->
+            <img *ngFor='let url of urls'  [src]="url">
+          </div>
+          <!-- <button type="button" (click)="RequestUpload()">Ok</button> -->
+        </div>
+      </div>
+      <!-- <button type="submit" class="btn btn-warning btn-sm"> <i class="fa fa-refresh" aria-hidden="true"></i>
+        new Save </button> -->
+    </form>
+  </fieldset>
+  </nb-card-header>
+</nb-card>
+<nb-card *ngIf="false">
+  <nb-card-header>
+    <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <table class="table table-bordered">
+        <tr>
+          <th>Company</th>
+          <th>Contact</th>
+          <th>Country</th>
+          <th>Action</th>
+        </tr>
+        <tr>
+          <td>Alfreds Futterkiste</td>
+          <td>Maria Anders</td>
+          <td>Germany</td>
+          <td>
+            <ngx-grid-button (click)="ButtonAction()"></ngx-grid-button>
+          </td>
+        </tr>
+        <tr>
+          <td>Centro comercial Moctezuma</td>
+          <td>Francisco Chang</td>
+          <td>Mexico</td>
+          <td>
+            <ngx-grid-button (click)="ButtonAction()"></ngx-grid-button>
+          </td>
+        </tr>
+        <tr>
+          <td>Ernst Handel</td>
+          <td>Roland Mendel</td>
+          <td>Austria</td>
+          <td>
+            <ngx-grid-button (click)="ButtonAction()"></ngx-grid-button>
+          </td>
+        </tr>
+        <tr>
+          <td>Island Trading</td>
+          <td>Helen Bennett</td>
+          <td>UK</td>
+          <td>
+            <ngx-grid-button (click)="ButtonAction()"></ngx-grid-button>
+          </td>
+        </tr>
+        <tr>
+          <td>Laughing Bacchus Winecellars</td>
+          <td>Yoshi Tannamuri</td>
+          <td>Canada</td>
+          <td>
+            <ngx-grid-button (click)="ButtonAction()"></ngx-grid-button>
+          </td>
+        </tr>
+        <tr>
+          <td>Magazzini Alimentari Riuniti</td>
+          <td>Giovanni Rovelli</td>
+          <td>Italy</td>
+          <td>
+            <ngx-grid-button (click)="ButtonAction()"></ngx-grid-button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+  <div class="col-md-12 col-lg-12">
+    <nb-card class="min-height">
+      <fieldset [disabled]="disabled ? 'disabled' : null">
+      <nb-tabset>
+        <nb-tab tabTitle="Details" class="btn-tab">          
+          <div class="text-right">
+            <button (click)="refesh()" class="btn btn-warning btn-sm"> <i class="fa fa-refresh" aria-hidden="true"></i> Refesh </button>
+            <button (click)="addDetails()" class="btn btn-success btn-sm m-3"> <i class="fa fa-plus" aria-hidden="true"></i> Add </button>
+          </div>
+          <div class="grid-wrapper">         
+            <table class=" table table-bordered table-striped">
+              <tr>
+                <th>SN</th>
+                <th>Text</th>
+                <th>Dropdown</th>
+                <th>MultiSelect</th>
+                <th>Date</th>
+                <th>Popup</th>
+                <th>CheckBox</th>
+                <th>Textarea</th>
+                <th>Image</th>
+                <td>Action</td>
+              </tr>
+
+              <tr *ngFor="let detail of master.lstdetailmodel; let rowIndex = index">                
+                <td>{{rowIndex+1}}</td>
+                <td>
+                  <input [(ngModel)]="detail.dtext" (change)="( detail.dtext = this.$event.target.value)" type="text" class="form-control" id="text"
+                    required name="text" nbInput fullWidth placeholder="Text">
+                </td>
+                <td>
+                  <ng-select (change)="( detail.ddropdownId = this.$event.id)" [items]="vouchertype" 
+                name="dropdown" bindLabel="name" [ngModelOptions]="{standalone: true}" id="dropdown" 
+                placeholder="Select VoucherType" appendTo="body" [(ngModel)]="detail.ddlSelected">
+              </ng-select>                
+                </td>
+                <td>
+                  <ng-select (change)="(detail.multiseletobj = this.$event)" [items]="detail.multiselet"
+                    name="multiselect" bindLabel="name" id="muliselect" placeholder="Select Category" appendTo="body"
+                    multiple="true">
+                  </ng-select>
+                </td>
+                <td>
+                  <input nbInput [(ngModel)]="detail.ddate" (change)="( detail.ddate = this.$event.target.value)"  placeholder="Form Picker" [nbDatepicker]="formpicker" fullWidth [ngModelOptions]="{standalone: true}">
+                <nb-datepicker #formpicker></nb-datepicker>  
+                </td>
+                <td>
+                  <div class="row">
+                    <div class="col-8">
+                      <input [(ngModel)]="detail.dpopup" type="text" value="{{ detail.dpopup }}" fullWidth readonly nbInput id="text"
+                        placeholder="Text">
+                    </div>
+                    <div class="col-2 p-0">
+                      <button type="submit" class="btn btn-success btn-sm" (click)="openDetailPopup(rowIndex)"><i
+                          class="fa fa-folder-open" aria-hidden="true"></i></button>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <nb-checkbox [(ngModel)]="detail.dcheckbox" (change)="(detail.dcheckbox = this.$event.target.checked)" status="success">Checkbox
+                  </nb-checkbox>
+                </td>
+                <td>
+                  <textarea [(ngModel)]="detail.dtextArea" (change)="(detail.dtextArea = this.$event.target.value)" rows="1" nbInput fullWidth
+                    id="textaria" placeholder="Text Area"></textarea>
+                </td>
+                <td>
+                  <div class="row">
+                  <input type="file" id="file" (change)="uploadFileDetail($event.target.files, rowIndex)" style="width: 100px;">
+                  <img [src]="detail.url">
+                </div>
+                </td>
+                <td>
+                  <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+              <!-- <p *ngFor="let detail of master.lstdetailmodel; let rowIndex = index">
+                {{detail | json}}
+              </p> -->
+            </table>
+          </div>
+        </nb-tab>
+        <nb-tab tabTitle="Documents" class="btn-tab">
+          <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+          <br>
+          <br>
+          <span>Content #2</span>
+        </nb-tab>
+        <nb-tab tabTitle="Button" class="btn-tab">
+          <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+          <br>
+          <br>
+          <span>Content #2</span>
+        </nb-tab>
+      </nb-tabset>
+    </fieldset>
+    </nb-card>
+  </div>

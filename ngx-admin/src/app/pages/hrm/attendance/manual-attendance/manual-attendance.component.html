@@ -1,0 +1,129 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salaryTypeId" class="col-sm-3 col-form-label">Employee's Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.employeeId = this.$event.id);initEmployeeInfo(this.$event.id);"
+                                    [items]="employeeItems" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId" placeholder="Select Employee"
+                                    appendTo="body" [(ngModel)]="master.employeeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="previousDesignation" class="col-sm-3 col-form-label">Designation
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="previousDesignation" required
+                                    [(ngModel)]="master.previousDesignation" name="previousDesignation" nbInput
+                                    fullWidth placeholder="Designation" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="previousDepartment" class="col-sm-3 col-form-label">Department
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="previousDepartment" required
+                                    [(ngModel)]="master.previousDepartment" name="previousDepartment" nbInput fullWidth
+                                    placeholder="Department" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="applicationDate">Date<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input required [(ngModel)]="master.applicationDate" [nbDatepicker]="applicationDate"
+                                    nbInput fullWidth placeholder="Application Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #applicationDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="registrationNo" class="col-sm-3 col-form-label">Start Time
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="startTime" required
+                                    [(ngModel)]="master.startTime" name="startTime" nbInput fullWidth
+                                    placeholder="start Time">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="engineNo" class="col-sm-3 col-form-label">End Time
+                                <span>*</span> </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="endTime" required
+                                    [(ngModel)]="master.endTime" name="endTime" nbInput fullWidth
+                                    placeholder="end Time">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="loanAmount" class="col-sm-3 col-form-label">Working Time
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="workingTime" required
+                                    [(ngModel)]="master.workingTime" name="workingTime" nbInput fullWidth
+                                    placeholder="working Time">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="remarks">Remarks</label>
+                            <div class="col-sm-9">
+                                <textarea type="text" class="form-control" id="remarks" required
+                                    [(ngModel)]="master.remarks" name="remarks" nbInput fullWidth></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

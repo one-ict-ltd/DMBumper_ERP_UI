@@ -1,0 +1,103 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="employeeId" class="col-sm-3 col-form-label">Select
+                                Employee<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.employeeId = this.$event.id);"
+                                    [items]="EmployeeList" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId" placeholder="Select Employee"
+                                    appendTo="body" [(ngModel)]="master.EmployeeSelected" required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="leaveTypeId" class="col-sm-3 col-form-label">Leave Type<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.leaveTypeId = this.$event.id);"
+                                    [items]="LeaveTypeList" name="leaveTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="leaveTypeId"
+                                    placeholder="Select Leave Type" appendTo="body"
+                                    [(ngModel)]="master.LeaveTypeSelected" required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="yearId" class="col-sm-3 col-form-label">Leave Year<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.yearId = this.$event.id);" [items]="LeaveYearList"
+                                    name="yearId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="yearId"
+                                    placeholder="Select Leave Year" appendTo="body"
+                                    [(ngModel)]="master.LeaveYearSelected" required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="leaveDays" class="col-sm-3 col-form-label">Yearly Max
+                                Leave<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="leaveDays" required
+                                    [(ngModel)]="master.leaveDays" name="leaveDays" nbInput fullWidth
+                                    placeholder="Yearly Max Leave">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="leaveCarryDays" class="col-sm-3 col-form-label">Yearly Max Carry</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="leaveCarryDays"
+                                    [(ngModel)]="master.leaveCarryDays" name="leaveCarryDays" nbInput fullWidth
+                                    placeholder="Yearly Max Carry">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="" class="col-sm-5 col-form-label"> Is Active ?</label>
+                            <div class="col-sm-7">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

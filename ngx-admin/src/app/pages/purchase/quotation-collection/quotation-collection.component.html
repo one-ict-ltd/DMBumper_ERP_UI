@@ -1,0 +1,367 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="quotationCollectionMasterNo"> Quotation
+                                Collection
+                                No.<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required
+                                    [(ngModel)]="master.quotationCollectionMasterNo" id="quotationCollectionMasterNo"
+                                    name="quotationCollectionMasterNo" nbInput fullWidth
+                                    placeholder="Product Requisition no" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="quotationCollectionMasterDate">Quotation
+                                Collection
+                                Date<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.quotationCollectionMasterDate"
+                                    (ngModelChange)="getQuotationCollectionNo();" name="quotationCollectionMasterDate"
+                                    id="quotationCollectionMasterDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #fdatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="remarks">Remarks</label>
+                            <div class="col-sm-12">
+                                <textarea type="text" class="form-control" required [(ngModel)]="master.remarks"
+                                    id="remarks" name="remarks" nbInput fullWidth
+                                    placeholder="Remarks">{{master.remarks}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+
+                    <nb-tab tabTitle="Supplier" class="btn-tab">
+
+                        <div class="row">
+                            <div class="col-6 col-sm-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="">Final Requisition
+                                        Product<span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <ng-select nbselect
+                                            (change)="(master.PurRequisitionFinalizeDetailId = this.$event.PurRequisitionFinalizeDetailId);"
+                                            (ngModelChange)="getProductById(this.$event)" [items]="productList"
+                                            name="PurRequisitionFinalizeDetailId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="PurRequisitionFinalizeDetailId"
+                                            placeholder="Select Requisition Product" appendTo="body"
+                                            [(ngModel)]="master.productSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-8 col-sm-12" hidden>
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="">Product</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" readonly required
+                                            [(ngModel)]="master.productName" id="productName" name="productName" nbInput
+                                            fullWidth placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-2 col-sm-2">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="">Req. Quantity</label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" readonly required
+                                            [(ngModel)]="master.reqQty" id="reqQty" name="reqQty" nbInput fullWidth
+                                            placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <label class="col-form-label" for="uomName">UOM Name</label>
+                                <input type="text" class="form-control" required [(ngModel)]="master.uomName"
+                                    id="uomName" name="uomName" nbInput fullWidth placeholder="UOM Name" readonly>
+                            </div>
+                            <div class="col-2 col-sm-2">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="">Quotation Collection
+                                        Type<span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <ng-select nbselect (change)="(master.quotationTypeId = this.$event.id);"
+                                            (ngModelChange)="getSupplierByQuotationType(this.$event)"
+                                            [items]="quotationTypeList" name="quotationTypeId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="quotationTypeId"
+                                            placeholder="Select Quotation Type" appendTo="body"
+                                            [(ngModel)]="master.quotationTypeSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-6 col-sm-6">
+                                        <label class="col-form-label" for="">Supplier<span>*</span></label>
+                                        <!-- <ng-select nbselect  [items]="supplierList" name="supplierId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                        id="supplierId" placeholder="Select a Supplier" appendTo="body" [(ngModel)]="master.supplierSelected">
+                                      </ng-select> -->
+
+                                        <ng-select nbselect (change)="(master.supplierId = this.$event.id)"
+                                            [items]="parties" name="PartyId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="Party" placeholder="Select Party"
+                                            [(ngModel)]="master.partySelected" appendTo="body">
+                                        </ng-select>
+                                    </div>
+
+                                    <div class="col-2 col-sm-2">
+                                        <label class="col-form-label" for="rate">Rate<span>*</span></label>
+                                        <input type="number" class="form-control text-right" required
+                                            [(ngModel)]="master.rate" id="rate" name="rate" min="0" nbInput fullWidth
+                                            (ngModelChange)="getTotalRate()" placeholder="rate">
+                                    </div>
+                                    <div class="col-2 col-sm-2">
+                                        <label class="col-form-label" for="VatPercent">Vat(%)</label>
+                                        <input type="number" class="form-control text-right" required
+                                            [(ngModel)]="master.VatPercent" id="VatPercent" name="VatPercent" min="0"
+                                            (ngModelChange)="getTotalRate()" nbInput fullWidth placeholder="Vat(%)">
+                                    </div>
+                                    <div class="col-2 col-sm-2">
+                                        <label class="col-form-label" for="rate">Vat Amount</label>
+                                        <input type="number" class="form-control text-right" required
+                                            [(ngModel)]="master.VatAmount" id="VatAmount" name="VatAmount" min="0"
+                                            nbInput fullWidth placeholder="Vat Amount" readonly>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-9">
+                                        <label class="col-form-label" for="rate">Discount Amt.</label>
+                                        <input type="number" class="form-control text-right" required
+                                            [(ngModel)]="master.Discount" id="Discount" name="Discount" min="0"
+                                            (ngModelChange)="getTotalRate()" nbInput fullWidth placeholder="Discount">
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-9">
+                                        <label class="col-form-label" for="rate">Total Rate<span>*</span></label>
+                                        <input type="number" class="form-control text-right" required
+                                            [(ngModel)]="master.TotalRate" id="TotalRate" name="TotalRate" min="0"
+                                            nbInput fullWidth placeholder="Total Rate" readonly>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-9">
+                                        <label class="col-form-label"
+                                            for="manufactureOrigin">Manuf.&Origin<span>*</span></label>
+                                        <input type="text" class="form-control text-right" required
+                                            [(ngModel)]="master.manufactureOrigin" id="manufactureOrigin"
+                                            name="manufactureOrigin" nbInput fullWidth placeholder="Manuf.&Origin">
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-6 col-sm-9">
+                                        <label class="col-form-label" for="qty">Quantity<span>*</span></label>
+                                        <input type="number" class="form-control text-right" required
+                                            [(ngModel)]="master.qty" id="qty" name="qty" min="0" nbInput fullWidth
+                                            placeholder="qty">
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <div class="text-right">
+                                            <button (click)="refesh()" class="btn btn-warning btn-sm"> <i
+                                                    class="fa fa-refresh" aria-hidden="true"></i>Refresh </button>
+                                            <button (click)="addDetails(dialog)" class="btn btn-success btn-sm m-3"> <i
+                                                    class="fa fa-plus" aria-hidden="true"></i> Add </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <div class="grid-wrapper">
+                                <table class=" table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>SL</th>
+                                            <th>Product</th>
+                                            <th>Supplier</th>
+                                            <th>Quantity</th>
+                                            <th>UOM</th>
+                                            <th>Manuf.&Origin</th>
+                                            <th>Rate</th>
+                                            <th>Vat(%)</th>
+                                            <th>Vat Amt</th>
+                                            <th>Disc. Amt</th>
+                                            <th>Total Rate</th>
+                                            <th>Amount</th>
+
+
+                                            <!-- <th>Sight Rate (Cash)</th>
+                                    <th>Sight Amount</th> -->
+                                            <!-- <th>Deferred Rate (Credit)</th>
+                                    <th>Deferred Amount</th> -->
+                                            <th style="width: 15px;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let detail of master.lstQuoDetailsViewModel; let rowIndex = index">
+                                            <td>{{rowIndex+1}}</td>
+                                            <td>{{detail.productName}}
+                                            </td>
+                                            <td>{{detail.supplierName}}
+                                            </td>
+                                            <td>
+                                                {{detail.qty}}
+                                            </td>
+                                            <td>
+                                                {{detail.uomName}}
+                                            </td>
+                                            <td>
+                                                {{detail.manufactureOrigin}}
+                                            </td>
+                                            <td>
+                                                {{detail.rate}}
+                                            </td>
+                                            <td>
+                                                {{detail.VatPercent}}
+                                            </td>
+                                            <td>
+                                                {{detail.VatAmount}}
+                                            </td>
+                                            <td>
+                                                {{detail.Discount}}
+                                            </td>
+                                            <td>
+                                                {{detail.TotalRate}}
+                                            </td>
+                                            <td>
+                                                {{detail.amount}}
+                                            </td>
+                                            <!-- 
+                                    <td>
+                                        {{detail.deferredRate}}
+                                    </td>
+
+                                    <td>
+                                        {{detail.deferredAmount}}
+                                    </td> -->
+
+                                            <td>
+                                                <div style="vertical-align: middle;">
+                                                    <button (click)="deleteDetails(rowIndex)"
+                                                        class="btn btn-danger btn-sm m-1">
+                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </nb-tab>
+
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Quotation Collection</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Quotatin Collection No:</strong></td>
+                        <td>{{quocolNo}}</td>
+                        <td><strong>Quotation Collection Date:</strong></td>
+                        <td>{{quColDate}}</td>
+                    </tr>
+                    <tr>
+                        <td> <strong>Final Requisition Product:</strong></td>
+                        <td>{{productNameforReport}}</td>
+                        <td><strong>Quantity:</strong></td>
+                        <td>{{qty}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <table id="body_table1" class="table">
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th>Supplier</th>
+                        <th>Rate</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of quotationDetailsData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.supplierName}}</td>
+                        <td>{{item.rate}}</td>
+                        <td>{{item.qty}}</td>
+                        <td>{{item.amount}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

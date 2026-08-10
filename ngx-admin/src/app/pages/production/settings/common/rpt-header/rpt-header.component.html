@@ -1,0 +1,43 @@
+<!-- <nb-card class="actions-card">
+  <nb-card-header>
+    <div class="row" style="width: 550px;height: 75px; border: solid 1px; margin-left: 5px;">
+      <div>
+        <img src="./../../../../assets/images/oict-logo.png" height="50px" style="margin: 5px 1px 1px 5px;">
+      </div>
+      <div style="font-size: 10px; text-align: center; width: 490px ">
+        <div style="font-size: 15px;"> {{company.name}} </div>
+        <div style="line-height: 0.9rem;"> {{company.address}} </div>
+        <div style="line-height: 0.9rem;"> {{company.phone}}; {{company.fax}}</div>
+        <div style="line-height: 0.9rem;"> {{company.email}}; {{company.website}}</div>
+        <br>
+
+        <!-- <ul *ngIf="company.name">
+          <li *ngIf="company.name">
+            
+          </li>
+          <li *ngIf="company.address"><span t-field="">{{company.address}}</span> </li>
+          <li *ngIf="company.phone">Phone: <span t-field="">{{company.phone}}, Fax {{company.fax}}</span></li>
+          <li *ngIf="company.email">Email: <span t-field="company.email">{{company.email}}, {{company.website}}</span>
+          </li> 
+        </ul>-->
+      <!-- </div>
+    </div>
+  </nb-card-header>
+</nb-card> -->
+
+<nb-card class="actions-card">
+  <nb-card-header>
+    <div class="row" style="width: 550px;height: 75px; border: solid 1px; margin-left: 5px;">
+      <div class="col-1">
+        <img src="{{filePath}}" height="{{imageHeight}}" width="{{imageWidth}}" style="margin: 5px 1px 1px 5px;">
+      </div>
+      <div style="font-size: 10px; text-align: center;" class="col-10">
+        <div style="font-size: 13px;font-family: 'Times New Roman';">{{companyName}}</div>
+        <div style="line-height: 0.9rem;font-family: 'Times New Roman';"> {{addressLine}} </div>
+        <div style="line-height: 0.9rem;font-family: 'Times New Roman';"> {{officeTelephone}}; {{companyEmail}};
+          {{website}}</div>
+      </div>
+      <div class="col-1"></div>
+    </div>
+  </nb-card-header>
+</nb-card>

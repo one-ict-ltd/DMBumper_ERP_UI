@@ -1,0 +1,25 @@
+.container-btn button{
+    margin: 0 5px 10px 0;
+}
+.is-invalid{
+    border: solid 1px red;
+}
+.image-aria{
+    height: 85px;
+    overflow-y: auto;
+    border: solid 1px darkgrey;
+    border-radius: 5px;
+}
+img{
+    width: 80px; padding: 2px;
+}
+.min-height{
+       min-height: 300px;
+}
+.btn-tab{
+    padding-top: 0px;
+    margin-top: -50px;
+}
+.ng-select.ng-select-single .ng-select-container {    
+    background-color: transparent;
+}

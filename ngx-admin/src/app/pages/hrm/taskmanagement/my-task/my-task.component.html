@@ -1,0 +1,622 @@
+<!-- <nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+      <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+</nb-card-header>
+</nb-card> -->
+
+<nb-card>
+    <!-- <nb-card-header>
+        <h6>{{pageNavigation}}</h6>
+    </nb-card-header> -->
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-5">
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <div class="row" *ngIf="show">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <nb-card class="min-height">
+                                        <fieldset [disabled]="disabled ? 'disabled' : null">
+                                            <nb-tabset>
+                                                <nb-tab tabTitle="My Today's Task" class="btn-tab">
+                                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                                        <table id="simple_table"
+                                                            class="table table-bordered table-striped mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th style="width: 50%;">Task Name</th>
+                                                                    <th style="width: 25%;">End Date</th>
+                                                                    <th style="width: 25%;">Action </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr *ngFor="let item of lstTodayTask; let i = index;">
+                                                                    <td>{{i+1}}</td>
+                                                                    <td>{{item.taskName}}</td>
+                                                                    <td>{{item.expectedEndDate}}</td>
+                                                                    <td>
+                                                                        <button
+                                                                            (click)="OpenTaskStatusModal('TodayTask',dialog, i)"
+                                                                            class="btn btn-success btn-sm m-1"
+                                                                            title="Change Task Status">
+                                                                            <i class="fal fa-pen-square"></i>
+                                                                        </button>
+                                                                        <button
+                                                                            (click)="OpenAddSubTaskModal(subTaskDialog, item.taskName,item.taskInfoId)"
+                                                                            class="btn btn-success btn-sm m-1"
+                                                                            title="Add Sub-Task">
+                                                                            <i class="fa fa-tasks"
+                                                                                aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </nb-tab>
+                                            </nb-tabset>
+                                        </fieldset>
+                                    </nb-card>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-7">
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <div class="row" *ngIf="show">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <nb-card class="min-height">
+                                        <fieldset [disabled]="disabled ? 'disabled' : null">
+                                            <nb-tabset (changeTab)="GetTaskInfoByempIdStatus($event, 1)">
+                                                <nb-tab tabTitle="Pending" class="btn-tab">
+                                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                                        <table id="simple_table"
+                                                            class="table table-bordered table-striped mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th style="width: 50%;">Task Name</th>
+                                                                    <th style="width: 25%;">End Date</th>
+                                                                    <th style="width: 25%;">Action </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr
+                                                                    *ngFor="let item of lstMyTaskStatus; let i = index;">
+                                                                    <td>{{i+1}}</td>
+                                                                    <td>{{item.taskName}}</td>
+                                                                    <td>{{item.expectedEndDate}}</td>
+                                                                    <td>
+                                                                        <button
+                                                                            (click)="OpenTaskStatusModal('',dialog, i)"
+                                                                            class="btn btn-success btn-sm m-1"
+                                                                            title="Change Task Status">
+                                                                            <i class="fal fa-pen-square"></i>
+                                                                        </button>
+                                                                        <button
+                                                                            (click)="OpenAddSubTaskModal(subTaskDialog, item.taskName,item.taskInfoId)"
+                                                                            class="btn btn-success btn-sm m-1"
+                                                                            title="Add Sub-Task">
+                                                                            <i class="fa fa-tasks"
+                                                                                aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </nb-tab>
+                                                <nb-tab tabTitle="On Process" class="btn-tab">
+                                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                                        <table id="simple_table"
+                                                            class="table table-bordered table-striped mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th style="width: 50%;">Task Name</th>
+                                                                    <th style="width: 25%;">End Date</th>
+                                                                    <th style="width: 25%;">Action </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr
+                                                                    *ngFor="let item of lstMyTaskStatus; let i = index;">
+                                                                    <td>{{i+1}}</td>
+                                                                    <td>{{item.taskName}}</td>
+                                                                    <td>{{item.expectedEndDate}}</td>
+                                                                    <td>
+                                                                        <button
+                                                                            (click)="OpenTaskStatusModal('',dialog, i)"
+                                                                            class="btn btn-success btn-sm m-1"
+                                                                            title="Change Task Status">
+                                                                            <i class="fal fa-pen-square"></i>
+                                                                        </button>
+                                                                        <button
+                                                                            (click)="OpenAddSubTaskModal(subTaskDialog, item.taskName,item.taskInfoId)"
+                                                                            class="btn btn-success btn-sm m-1"
+                                                                            title="Add Sub-Task">
+                                                                            <i class="fa fa-tasks"
+                                                                                aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </nb-tab>
+                                                <nb-tab tabTitle="Complete" class="btn-tab">
+                                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                                        <table id="simple_table"
+                                                            class="table table-bordered table-striped mb-0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th style="width: 50%;">Task Name</th>
+                                                                    <th style="width: 25%;">End Date</th>
+                                                                    <th style="width: 25%;">Action </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr
+                                                                    *ngFor="let item of lstMyTaskStatus; let i = index;">
+                                                                    <td>{{i+1}}</td>
+                                                                    <td>{{item.taskName}}</td>
+                                                                    <td>{{item.expectedEndDate}}</td>
+                                                                    <td>
+                                                                        <button
+                                                                            (click)="OpenTaskStatusModal('',dialog, i)"
+                                                                            class="btn btn-success btn-sm m-1"
+                                                                            title="Change Task Status">
+                                                                            <i class="fal fa-pen-square"></i>
+                                                                        </button>
+                                                                        <button
+                                                                            (click)="OpenAddSubTaskModal(subTaskDialog, item.taskName,item.taskInfoId)"
+                                                                            class="btn btn-success btn-sm m-1"
+                                                                            title="Add Sub-Task">
+                                                                            <i class="fa fa-tasks"
+                                                                                aria-hidden="true"></i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </nb-tab>
+                                            </nb-tabset>
+                                        </fieldset>
+                                    </nb-card>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+
+
+
+<!-- Start Status Modal -->
+
+<ng-template #dialog let-data let-ref="dialogRef">
+    <div class="col-sm-12 col-md-12 col-lg-12" style="width: 1050px;">
+        <nb-card class="min-height">
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-lg-11 col-md-11 col-sm-11">
+                        <h4>Task Status</h4>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1">
+                        <button style="text-align: right;" nbButton (click)="ref.close()"><span>X</span></button>
+                    </div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label for="pMobile" class="col-sm-12 col-form-label">Task Name <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" id="pMobile" required readonly
+                                    [(ngModel)]="TaskStatusLogViewModel.taskName" name="pMobile" nbInput fullWidth
+                                    placeholder="Task Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group row">
+                            <label for="remarks" class="col-sm-12 col-form-label">Comments </label>
+                            <div class="col-sm-12">
+                                <textarea class="form-control" id="remarks" required
+                                    [(ngModel)]="TaskStatusLogViewModel.remarks" name="remarks" nbInput fullWidth
+                                    placeholder="remarks">
+                            </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4" hidden>
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="TaskStatusLogViewModel.isActive" name="isActive"
+                                    status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label for="taskStatusId" class="col-sm-12 col-form-label">Task Status
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(TaskStatusLogViewModel.taskStatusId = this.$event.id);"
+                                    [items]="TaskStatusList" name="taskStatusId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="taskStatusId"
+                                    placeholder="Select a status" appendTo="body" [(ngModel)]="taskStatusSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="date">Status Change Date
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="TaskStatusLogViewModel.date" name="date" id="date"
+                                    [nbDatepicker]="idatepickerSU" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepickerSU></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="time">Time
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="time" required [(ngModel)]="TaskStatusLogViewModel.time" name="time"
+                                    id="time" nbInput fullWidth placeholder="Time">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nb-card-body>
+
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-lg-10 col-md-10 col-sm-10">
+                        <span>{{msg}}</span>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2">
+                        <div style="text-align: center;">
+                            <button class="btn btn-success m-0 !important" nbButton (click)="SaveTaskStatusLog()">Update
+                                Status</button>
+                        </div>
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</ng-template>
+
+<!-- End Status Modal -->
+
+
+
+
+
+<!-- Sub-Task -->
+<ng-template #subTaskDialog let-data let-ref="dialogRef">
+    <div class="col-sm-12 col-md-12 col-lg-12" style="width: 1100px; max-height: 70%;">
+
+        <nb-card>
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <h4>Add Sub-Task</h4>
+                    </div>
+                    <div class="col-lg-5 col-md-5 col-sm-5">
+                        <div style="text-align: right;">
+                            <button style="text-align: right !important;" nbButton (click)="SaveTask()"
+                                class="btn btn-success m-0">Save</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1" style="text-align: right !important;">
+                        <button nbButton (click)="ref.close()"><span>X</span></button>
+                    </div>
+                </div>
+            </nb-card-header>
+
+            <nb-card-body>
+                <fieldset [disabled]="disabled ? 'disabled' : null">
+                    <form #masterForm="ngForm">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="parentTaskName">Parent Task Name
+                                        <span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" required
+                                            [(ngModel)]="master.parentTaskName" id="parentTaskName"
+                                            name="parentTaskName" readonly nbInput fullWidth
+                                            placeholder="Parent Task Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="taskName">Sub-Task Name
+                                        <span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" required [(ngModel)]="master.taskName"
+                                            id="taskName" name="taskName" nbInput fullWidth placeholder="Task Name">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="taskType">Task
+                                        Type<span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <ng-select nbselect (change)="( master.taskTypeId = this.$event.id);"
+                                            [items]="taskTypeList" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" name="taskType" id="taskType"
+                                            placeholder="Select a task type" appendTo="body"
+                                            [(ngModel)]="taskTypeSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="taskPriority">Task
+                                        Priority<span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <ng-select nbselect (change)="( master.taskPriorityId = this.$event.id);"
+                                            [items]="taskPriorityList" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" name="taskPriority" id="taskPriority"
+                                            placeholder="Select a task priority" appendTo="body"
+                                            [(ngModel)]="taskPrioritySelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4 col-md-4 col-sm-4" hidden>
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="taskCode">Task Code
+                                        <span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <input type="text" class="form-control" required readonly
+                                            [(ngModel)]="master.taskCode" id="taskCode" name="taskCode" nbInput
+                                            fullWidth placeholder="task code">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <div class="form-group row">
+
+                                    <!-- <label class="col-sm-12 col-form-label" for="date">Task Assaign Date
+                                        <span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <input required [(ngModel)]="master.date" name="date" id="date"
+                                            [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                                            [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #idatepicker></nb-datepicker>
+                                    </div> -->
+
+
+
+
+                                    <label class="col-sm-12 col-form-label" for="partyId">Task Assaign Date
+                                        <span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <div class="input-group date">
+                                            <input class="col-sm-5" required [(ngModel)]="master.date" name="date"
+                                                id="date" [nbDatepicker]="idatepicker" nbInput fullWidth
+                                                placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                            <nb-datepicker #idatepicker></nb-datepicker>
+                                            <div class="input-group-append col-sm-7">
+                                                <input type="time" required [(ngModel)]="master.atime" name="atime"
+                                                    id="atime" nbInput fullWidth placeholder="time">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <div class="form-group row">
+                                    <!-- <label class="col-sm-12 col-form-label" for="expectedEndDate">Expected End Date
+                                        <span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <input required [(ngModel)]="master.expectedEndDate" name="expectedEndDate"
+                                            id="expectedEndDate" nbInput fullWidth placeholder="Expected End Date"
+                                            [ngModelOptions]="{standalone: true}" [nbDatepicker]="idatepicker2">
+                                        <nb-datepicker #idatepicker2></nb-datepicker>
+                                    </div> -->
+
+                                    <label class="col-sm-12 col-form-label" for="partyId">Expected End Date
+                                        <span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <div class="input-group date">
+                                            <input class="col-sm-5" required [(ngModel)]="master.expectedEndDate"
+                                                name="expectedEndDate" id="expectedEndDate"
+                                                [nbDatepicker]="idatepicker2" nbInput fullWidth
+                                                placeholder="expectedEndDate" [ngModelOptions]="{standalone: true}">
+                                            <nb-datepicker #idatepicker2></nb-datepicker>
+                                            <div class="input-group-append col-sm-7">
+                                                <input type="time" required [(ngModel)]="master.etime" name="etime"
+                                                    id="etime" nbInput fullWidth placeholder="Time">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="taskPriority">Assign
+                                        To<span>*</span></label>
+                                    <div class="col-sm-12">
+                                        <ng-select nbselect (change)="( master.assignToId = this.$event.id);"
+                                            [items]="assignToList" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" name="assignToId" id="assignToId"
+                                            placeholder="Select a employee" appendTo="body"
+                                            [(ngModel)]="assignToIdSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4" hidden>
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="taskPriority">Parent Task
+                                        Name</label>
+                                    <div class="col-sm-12">
+                                        <ng-select nbselect (change)="(master.parentTaskId = this.$event.id);"
+                                            [items]="parentTaskList" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" name="parentTaskId" id="parentTaskId"
+                                            placeholder="Select a parent task" appendTo="body"
+                                            [(ngModel)]="parentTaskSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8 col-md-8 col-sm-8">
+                                <div class="form-group row">
+                                    <label class="col-sm-12 col-form-label" for="description">Description</label>
+                                    <div class="col-sm-12">
+                                        <textarea type="text" class="form-control" required
+                                            [(ngModel)]="master.description" id="description" name="description" nbInput
+                                            fullWidth placeholder="description">{{master.description}}</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4 col-md-4 col-sm-4" hidden>
+                                <div class="form-group row">
+                                    <div class="col-sm-12 validation-checkboxes">
+                                        <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                            <b>Is Active?</b>
+                                        </nb-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <div style="text-align: center !important;">
+                                            <button class="btn btn-success btn-sm m-3" (click)="addRow()">Add To
+                                                List</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Sub-Task Name</th>
+                                        <th>Task Priority</th>
+                                        <th>Task Assaign Date</th>
+                                        <th>Expected End Date</th>
+                                        <th>Assign To</th>
+                                        <th>Description</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of lstMaster; let i = index;">
+                                        <td>{{i+1}}</td>
+                                        <td>{{item.taskName}}</td>
+                                        <td>{{item.priorityName}}</td>
+                                        <td>{{item.date}}</td>
+                                        <td>{{item.expectedEndDate}}</td>
+                                        <td>{{item.assignTo}}</td>
+                                        <td>{{item.description}}</td>
+                                        <td>
+                                            <button (click)="removeRow(rowIndex, item.taskName)"
+                                                class="btn btn-danger btn-sm m-1">
+                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </fieldset>
+            </nb-card-body>
+            <!-- 
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product Name</th>
+                        <th>UOM</th>
+                        <th>Min Order Qty.</th>
+                        <th>Incentive Type</th>
+                        <th>Incentive value</th>
+                        <th>Effective Date</th>
+                        <th>Is Active?</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lstMaster; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.uom}}</td>
+                        <td>{{item.minOrderQty}}</td>
+                        <td>{{item.incentiveType}}</td>
+                        <td>{{item.incentiveValue}}</td>
+                        <td>{{item.expectedEndDate}}</td>
+                        <td>{{item.isActive}}</td>
+                        <td>
+                            <button (click)="removeRow(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+     -->
+        </nb-card>
+        <nb-card-footer>
+            <!-- <div class="row">
+                <div class="col-lg-10 col-md-10 col-sm-10">
+                    <span>{{msg}}</span>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2">
+                    <div style="text-align: center;">
+                        <button class="btn btn-success m-0 !important" nbButton (click)="Save()">Save</button>
+                    </div>
+                </div>
+            </div> -->
+        </nb-card-footer>
+    </div>
+</ng-template>

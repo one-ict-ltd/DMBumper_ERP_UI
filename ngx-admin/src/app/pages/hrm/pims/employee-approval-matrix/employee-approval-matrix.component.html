@@ -1,0 +1,158 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="typeId" class="col-sm-3 col-form-label">Type Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.typeId = this.$event.id);ChnageType();"
+                                    [items]="TypeList" name="typeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="typeId" placeholder="Select Type"
+                                    appendTo="body" [(ngModel)]="master.TypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group row" *ngIf="!showEmp">
+                            <label for="employeeId" class="col-sm-3 col-form-label">Employee Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.employeeId = this.$event.id);GetApproverType(this.$event.id);"
+                                    [items]="EmployeeList" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId" placeholder="Select Employee"
+                                    appendTo="body" [(ngModel)]="master.EmployeeInfoSelected" [virtualScroll]="true">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" *ngIf="!showDpt">
+                            <label for="departmentId" class="col-sm-3 col-form-label">Department Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.departmentId = this.$event.id);"
+                                    [items]="DepartmentList" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="departmentId" placeholder="Select Department" appendTo="body"
+                                    [(ngModel)]="master.DepartmentInfoSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="approverId" class="col-sm-3 col-form-label">Approver
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.approverId = this.$event.id);"
+                                    [items]="EmployeeList" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="approverId" placeholder="Select Approver" appendTo="body"
+                                    [(ngModel)]="master.approverSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="seqNo" class="col-sm-3 col-form-label">Sequence No
+                                <span>*</span></label>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" id="seqNo" required [(ngModel)]="master.seqNo"
+                                    name="seqNo" nbInput fullWidth placeholder="Sequence No">
+                            </div>
+                            <div class="col-sm-3">
+                                <button (click)="addDetails(dialog)" class="btn btn-warning btn-sm"><i
+                                        class="fa fa-plus" aria-hidden="true"></i>
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Approver Details" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Approver</th>
+                                    <th>Sequence No</th>
+                                    <th>Is Active?</th>
+                                    <td>Action</td>
+                                </tr>
+                                <tr *ngFor="let detail of master.lstDetails; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <input [(ngModel)]="detail.approverName" type="text" class="form-control"
+                                            id="approverName" required name="approverName" nbInput fullWidth
+                                            placeholder="Approver Type Name">
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="detail.seqNo" type="text" class="form-control" id="seqNo"
+                                            required name="seqNo" nbInput fullWidth placeholder="Sequence No">
+                                    </td>
+                                    <td>
+                                        <nb-checkbox [(ngModel)]="detail.isActive" id="isActive" name="isActive"
+                                            status="success">
+                                        </nb-checkbox>
+                                    </td>
+                                    <td>
+                                        <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

@@ -1,0 +1,114 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="machineCode">Machine Code<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.machineCode"
+                                    id="machineCode" name="machineCode" nbInput fullWidth placeholder="machine Code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="machineName">Machine Name<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.machineName"
+                                    id="machineName" name="machineName" nbInput fullWidth placeholder=" Machine Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="originCountry">Country Origin<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.originCountry"
+                                    id="originCountry" name="originCountry" nbInput fullWidth placeholder="Country Origin">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="purchaseDate">Purchase 
+                                Date <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.purchaseDate"
+                                    name="purchaseDate" id="purchaseDate" [nbDatepicker]="purchaseDate" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #purchaseDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="startDate">Start
+                                Date <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.startDate"
+                                    name="startDate" id="startDate" [nbDatepicker]="startDate" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #startDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="purchaseAmount">Purchase Amount</label>
+                            <div class="col-sm-12">
+                                <input type="number" class="form-control" required [(ngModel)]="master.purchaseAmount"
+                                    id="purchaseAmount" name="purchaseAmount" nbInput fullWidth placeholder="Enter Amount">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="remarks">Remarks</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.remarks"
+                                    id="remarks" name="remarks" nbInput fullWidth placeholder="Remarks">
+                            </div>
+                        </div>
+                    </div>    
+                      
+                    
+                   
+                </div>
+                <div class="row">
+                   
+                   
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+

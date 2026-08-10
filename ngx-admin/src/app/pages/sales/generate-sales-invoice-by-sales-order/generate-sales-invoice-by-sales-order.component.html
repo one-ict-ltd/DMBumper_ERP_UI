@@ -1,0 +1,378 @@
+<nb-card class="actions-card" *ngIf="!isHideElement">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show" hidden>
+    <!-- "!show"> -->
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <div class="form-group row">
+                            <label for="ApprovalStatus" class="col-sm-12 col-form-label">Approval
+                                Status<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect [items]="ApprovalStatusList"
+                                    (change)="(master.approvalStatus = this.$event.id);" name="ApprovalStatus"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="approvalStatus"
+                                    placeholder="select one" appendTo="body" [(ngModel)]="ApprovalStatusSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Approved Sales Order(s) List" class="btn-tab">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="form-group row">
+                                    <label for="territoryCode" class="col-sm-4 col-form-label"><b>Territory</b></label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect [items]="territoryCodeList"
+                                            (change)="Refresh();(territoryCode = this.$event.id);GetSalesOrderMasterApprovedList();"
+                                            name="territoryCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="territoryCode" placeholder="select one" appendTo="body"
+                                            [(ngModel)]="territoryCodeSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-lg-4 col-md-4 col-sm-4">
+                                <button class="btn btn-sm btn-success m-0 !important"
+                                    (click)="Refresh()">Refresh</button>
+                            </div> -->
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <label for="invDate" class="col-sm-12 col-form-label"><b>Total <span>{{ttlOrder}}</span>
+                                        Order(s)
+                                        Found</b></label>
+                                <div class="form-group row">
+                                    <!-- <label for="invDate" class="col-sm-12 col-form-label"><b>Total {{ttlOrder}} Order(s)     Found</b></label>-->
+
+                                    <!-- <div class="col-sm-8"> -->
+                                    <!-- <input type="text" class="form-control" required [(ngModel)]="salesOrderDate" id="OrderDate" name="OrderDate" nbInput fullWidth placeholder="OrderDate"> -->
+                                    <!-- <label for="of" class="col-sm-12 col-form-label">{{}}</label> -->
+                                    <!-- </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 400px">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Territory</th>
+                                    <th>Order No.</th>
+                                    <th>Order Date</th>
+                                    <th>Party Name</th>
+                                    <!-- <th>Mobile No.</th> -->
+                                    <th>Address</th>
+                                    <!-- <th>Product(s) Name</th> -->
+                                    <th>Amount</th>
+                                    <!-- <th>Status</th> -->
+                                    <th>View Details</th>
+                                    <th>Credit Note Adj.</th>
+                                    <th>Select</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.lstApprovedOrderList; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>
+                                        {{details.territoryName}}
+                                    </td>
+                                    <td>
+                                        {{details.salesOrderNo}}
+                                    </td>
+                                    <td>
+                                        {{details.salesOrderDate}}
+                                    </td>
+                                    <td>
+                                        {{details.partyName}}
+                                    </td>
+                                    <!-- <td>
+                                        {{details.mobileNo}}
+                                    </td> -->
+                                    <!-- <td [innerHTML]="details.productName"></td> -->
+                                    <td>{{details.addressLine}}</td>
+
+                                    <td style="text-align: right;">{{details.grandTotal}}</td>
+                                    <!-- <td>
+                                        {{details.approvalStatus}}
+                                    </td> -->
+                                    <td>
+                                        <button class="btn btn-sm btn-success m-0 !important"
+                                            (click)="ViewDetails(dialog, details.salesOrderId)">Details</button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-warning m-0 !important"
+                                            (click)="ViewCreditNoteDetails(dialogRefCredit, rowIndex)"
+                                            *ngIf="master.lstApprovedOrderList[rowIndex].lstCreditNoteViewModel.length > 0">Credit
+                                            Note</button>
+                                    </td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect" (change)="checkChange($event,rowIndex)">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+<!-- Start details modal -->
+
+<ng-template #dialog let-data let-ref="dialogRef">
+    <div class="col-sm-12 col-md-12 col-lg-12" style="width: 1350px;">
+        <nb-card class="min-height">
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <h4>Order Details</h4>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <div style="text-align: right;">
+                            <button style="text-align: right;" nbButton (click)="ref.close()"><span>X</span></button>
+                        </div>
+                    </div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="grid-wrapper">
+                    <div class="row">
+
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group row">
+                                <label for="invNo" class="col-sm-4 col-form-label"><b>Order No.</b></label>
+                                <div class="col-sm-8">
+                                    <!-- <input type="text" class="form-control" required [(ngModel)]="salesOrderNo"
+                                        id="OrderNo" name="OrderNo" nbInput fullWidth placeholder="OrderNo"> -->
+                                    <label for="invNo"
+                                        class="col-sm-12 col-form-label">{{salesOrderNo}}&nbsp;(<span>{{trTypeShortName}}</span>)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group row">
+                                <label for="invDate" class="col-sm-4 col-form-label"><b>Order Date</b></label>
+                                <div class="col-sm-8">
+                                    <!-- <input type="text" class="form-control" required [(ngModel)]="salesOrderDate" id="OrderDate" name="OrderDate" nbInput fullWidth placeholder="OrderDate"> -->
+                                    <label for="invDate" class="col-sm-12 col-form-label">{{salesOrderDate}}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group row">
+                                <label for="invDate" class="col-sm-4 col-form-label"><b>Territory</b></label>
+                                <div class="col-sm-8">
+                                    <!-- <textarea type="text" class="form-control" required [(ngModel)]="partyName"
+                                        id="partyName" name="partyName" nbInput fullWidth
+                                        placeholder="partyName">{{partyName}}</textarea> -->
+                                    <label for="pName" class="col-sm-12 col-form-label">{{territory}}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group row">
+                                <label for="invDate" class="col-sm-4 col-form-label"><b>Party Name</b></label>
+                                <div class="col-sm-8">
+                                    <!-- <textarea type="text" class="form-control" required [(ngModel)]="partyName"
+                                        id="partyName" name="partyName" nbInput fullWidth
+                                        placeholder="partyName">{{partyName}}</textarea> -->
+                                    <label for="pName" class="col-sm-12 col-form-label">{{partyName}}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group row">
+                                <label for="invDate" class="col-sm-4 col-form-label"><b>Address</b></label>
+                                <div class="col-sm-8">
+                                    <!-- <textarea type="text" class="form-control" required [(ngModel)]="address"
+                                        id="address" name="address" nbInput fullWidth
+                                        placeholder="address">{{address}}</textarea> -->
+                                    <label for="invDate" class="col-sm-12 col-form-label">{{address}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4 col-md-4 col-lg-4">
+                            <div class="form-group row">
+                                <label for="mNo" class="col-sm-4 col-form-label"><b>Mobile No.</b></label>
+                                <div class="col-sm-8">
+                                    <!-- <input type="text" class="form-control" required [(ngModel)]="mobileNo" 
+                                        id="mobileNo" name="mobileNo" nbInput fullWidth placeholder="mobileNo">-->
+                                    <label for="mNo" class="col-sm-12 col-form-label">{{mobileNo}}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <div class="grid-wrapper" style="overflow-y:scroll; overflow-x: scroll; max-height: 500px">
+                            <table class=" table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product Name</th>
+                                        <th>Code</th>
+                                        <!-- <th>UOM</th> -->
+                                        <th><b>Order Qty.</b></th>
+                                        <th>Price</th>
+                                        <th>VAT</th>
+                                        <th>AIT</th>
+                                        <th>Discount</th>
+                                        <th><b>Total Price</b></th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let details of SalesModel; let rowIndex = index">
+                                        <td>
+                                            {{rowIndex+1}}
+                                        </td>
+                                        <td>
+                                            {{details.productName}}
+                                        </td>
+                                        <td>
+                                            {{details.skuNumber}}
+                                        </td>
+                                        <!-- <td>
+                                            {{details.uom}}
+                                        </td> -->
+                                        <td>
+                                            <b style="color: blue;">{{details.orderQty}}</b>
+                                        </td>
+
+                                        <td>
+                                            {{details.price| number : '1.2'}}
+                                        </td>
+                                        <td>
+                                            {{details.vat| number : '1.2'}}
+                                        </td>
+                                        <td>
+                                            {{details.ait| number : '1.2'}}
+                                        </td>
+                                        <td>
+                                            {{details.discountAmount| number : '1.2'}}
+                                        </td>
+                                        <td class="text-right">
+                                            <b> {{details.Total| number : '1.2'}}</b>
+                                        </td>
+                                        <td>
+                                            <button (click)="deleteDetails(rowIndex, details.salesOrderId)"
+                                                class="btn btn-danger btn-sm m-0"
+                                                style="height: 25px; width: 25px; padding: 0 0 0 0;">
+                                                <i class="fa fa-trash" aria-hidden="true"
+                                                    style="font-size: x-small;"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="8" class="text-right"><span>Grand Total</span></th>
+                                        <th colspan="1" class="text-right"><span>{{grandTotal| number : '1.2'}}</span>
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <span>{{msg}}</span>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4" hidden>
+                        <div style="text-align: right;">
+                            <button class="btn btn-success m-0 !important" (click)="UpdateSalesInvoiceDetails()">Update
+                                &
+                                Approve</button>
+                        </div>
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</ng-template>
+
+<!-- End Modal -->
+<!-- Start Credit Note modal -->
+
+<ng-template #dialogRefCredit let-data let-ref="dialogRef">
+    <div class="col-sm-12 col-md-12 col-lg-12" style="width: 1350px;">
+        <nb-card class="actions-card">
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <h4>Credit Note List</h4>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <div style="text-align: right;">
+                            <button style="text-align: right;" nbButton (click)="ref.close()"><span>X</span></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-9"><span><b></b></span></div>
+                    <div class="col-3">Adjust Amount: <span>{{AdjustAmount}}</span></div>
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="col-12">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Credit Note No.</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                *ngFor="let item of master.lstApprovedOrderList[cnRowIndex].lstCreditNoteViewModel; let rowIndex = index">
+                                <td>{{rowIndex+1}}</td>
+                                <td>{{item.expireReturnNumber}}</td>
+                                <td>{{item.returnDate}}</td>
+                                <td>{{item.amount}}</td>
+                                <td style="text-align: center;">
+                                    <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                        [(ngModel)]="item.isSelect"
+                                        (change)="creditCheckChange(cnRowIndex)"></nb-checkbox>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </nb-card-body>
+        </nb-card>
+
+    </div>
+</ng-template>
+
+<!-- End Modal -->

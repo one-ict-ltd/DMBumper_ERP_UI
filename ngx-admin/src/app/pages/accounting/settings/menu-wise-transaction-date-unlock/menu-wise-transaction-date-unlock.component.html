@@ -1,0 +1,102 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-sm-3 col-form-label">Company Name<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="master.companyId = $event ? $event.id : null;getEmployees();"
+                                    [items]="companyItems" name="companyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="companyId" placeholder="Select Company"
+                                    appendTo="body" [(ngModel)]="master.companySelected" [clearable]="true"
+                                    [disabled]="isedit">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="employeeId" class="col-sm-3 col-form-label">Employee Name<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect [items]="employeeItems" bindLabel="name"
+                                    placeholder="Select Employee" [(ngModel)]="master.employeeSelected"
+                                    [virtualScroll]="true" [clearable]="true" [disabled]="isedit"
+                                    (change)="master.employeeId = $event ? $event.id : null;">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="employeeId" class="col-sm-3 col-form-label">Menu Name<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect [items]="menuItems" bindLabel="name" placeholder="Select menu name"
+                                    [(ngModel)]="master.menuSelected" [virtualScroll]="true" [clearable]="true"
+                                    (change)="master.menuName = $event ? $event.id : null;">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="backDays">Back Days<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" required [(ngModel)]="master.backDays"
+                                    id="backDays" name="backDays" nbInput fullWidth placeholder="back Days">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="forwardDays ">Forward Days<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" required [(ngModel)]="master.forwardDays"
+                                    id="forwardDays" name="forwardDays" nbInput fullWidth placeholder="forward Days"
+                                    autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="forwardDays ">Allow Until
+                                DateTime<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="datetime" class="form-control" required [(ngModel)]="master.uptoDate"
+                                    id="uptoDate" name="uptoDate" nbInput fullWidth placeholder="uptoDate">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

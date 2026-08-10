@@ -1,0 +1,319 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="sbuName" class="col-sm-4 col-form-label">Branch Name<span> *</span></label>
+          <div class="col-sm-7">
+            <ng-select id="sbuName" name="sbuName" nbselect [items]="sbuList" bindLabel="name"
+              (change)="(sbuId = this.$event.id);GetAllPartysByTypeId(0, this.$event.id);" [ngModelOptions]="{standalone:
+              true}" [(ngModel)]="sbuSelected" placeholder="Select a Branch" appendTo="body">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="partyId" class="col-4 col-form-label">Customer Name<span> *</span></label>
+          <div class="col-sm-7">
+            <ng-select nbselect (change)="GetPartyWiseSalesInvoiceNo(partyId = this.$event.id);" [items]="partyList"
+              name="partyName" bindLabel="name" [ngModelOptions]="{standalone: true}" id="partyId"
+              placeholder="Select a Customer" appendTo="body" [(ngModel)]="partySelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="salesInvoiceId" class="col-sm-4 col-form-label">Invoice Number<span> *</span></label>
+          <div class="col-sm-7">
+            <ng-select nbselect [items]="salesInvoiceList" name="salesInvoiceNo" bindLabel="name" id="salesInvoiceId"
+              (change)="(salesInvoiceId = this.$event.id);" [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="salesInvoiceSelected" placeholder="Select a Invoice No." appendTo="body">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group row">
+          <label class="col-4 col-form-label" for="fromDate">From Invoice Date<span> *</span></label>
+          <div class="col-sm-7">
+            <input requiredname="fromDate" id="fromDate" nbInput fullWidth placeholder="From Date"
+              [nbDatepicker]="fdatepicker" [(ngModel)]="fromDate" (ngModelChange)="GetSalesUserName()"
+              [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #fdatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group row">
+          <label class="col-4 col-form-label" for="toDate">To Invoice Date<span> *</span></label>
+          <div class="col-sm-7">
+            <input required [(ngModel)]="toDate" name="todate" id="toDate" [nbDatepicker]="tdatepicker"
+              (ngModelChange)="GetSalesUserName()" nbInput fullWidth placeholder="To Date"
+              [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #tdatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="salesUserId" class="col-sm-4 col-form-label">Sales User<span> *</span></label>
+          <div class="col-sm-7">
+            <ng-select id="salesUserId" name="userName" nbselect [items]="salesUserList" bindLabel="name"
+              (change)="(salesUserId = this.$event.id);" [ngModelOptions]="{standalone: true}"
+              [(ngModel)]="salesUserSelected" placeholder="Select a sales user" appendTo="body">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id="simple_table" class="table table-bordered table-striped mb-0">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- ["#", "Customer Name", "Invoice No.", "Mobile No.", "Shipping Address", "Total Amount (TK)"]; -->
+          <tr *ngFor="let item of bodyData; let i = index;" style="width: 100%;"
+            (click)="GenerateSalesReport(item.salesInvoiceId)">
+            <td>{{i+1}}</td>
+            <td>{{item.partyName}}</td>
+            <td>{{item.salesInvoiceNo}}</td>
+            <td>{{item.mobileNo}}</td>
+            <td>{{item.address}}</td>
+            <td>{{this.currencyFormatter(item.grandTotal)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>
+
+
+
+<nb-card style="visibility: hidden;">
+  <nb-card-header>
+    <div id="reportHeader">
+      <ngx-rpt-header></ngx-rpt-header>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <table id="header_table" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th colspan="4">
+              {{rReportHeader}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of params; let i = index;">
+            <td> <strong>{{item.leftLabel}}</strong></td>
+            <td>: {{item.leftValue}}</td>
+            <td><strong>{{item.rightLabel}} </strong></td>
+            <td>: {{item.rightValue}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="body_table" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;" style="width: 100%;">
+            <td>{{i+1}}</td>
+            <td>{{item.partyName}}</td>
+            <td>{{item.salesInvoiceNo}}</td>
+            <td>{{item.mobileNo}}</td>
+            <td>{{item.address}}</td>
+            <td>{{this.currencyFormatter(item.grandTotal)}}</td>
+          </tr>
+          <tr>
+            <td colspan="5">Grand Total</td>
+            <td>{{this.currencyFormatter(this.netTotal)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <ngx-rpt-footer></ngx-rpt-footer>
+  </nb-card-footer>
+</nb-card>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="partyId" class="col-4 col-form-label">SBU Name<span> *</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="sbuList" name="partyId" bindLabel="name" id="partyId"
+                            (change)="getStores(partyId = this.$event.id);" [(ngModel)]="fromSbuSelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select a SBU name" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="salesInvoiceId" class="col-4 col-form-label">Store Name<span> *</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="storeList" name="salesInvoiceId" bindLabel="name" id="salesInvoiceId"
+                            (change)="(salesInvoiceId = this.$event.id);" [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="salesInvoiceNoSelected" placeholder="Select a Store Name" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label class="col-4 col-form-label" for="fromDate">From Transfer
+                        Date<span> *</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="fromDate" name="fromDate" id="fromDate"
+                            [nbDatepicker]="fdatepicker" nbInput fullWidth placeholder="From Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label class="col-4 col-form-label" for="toDate">To Transfer
+                        Date<span> *</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="toDate" name="todate" id="toDate" [nbDatepicker]="tdatepicker"
+                            nbInput fullWidth placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #tdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="">
+            <table id="simple_table" class="table">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;" style="width: 100%;">
+                        <td [attr.rowspan]="item.rowMerge" *ngIf="!item.isHide">{{item.prodTrnNo}}</td>
+                        <td [attr.rowspan]="item.rowMerge" *ngIf="!item.isHide">{{item.prodTrnDate}}</td>
+                        <td>{{i+1}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.transferQty}}</td>
+                        <td>{{item.uomName}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue}}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td [attr.rowspan]="item.rowMerge" *ngIf="!item.isHide" style="vertical-align: middle;">
+                            {{item.prodTrnNo}}</td>
+                        <td [attr.rowspan]="item.rowMerge" *ngIf="!item.isHide" style="vertical-align: middle;">
+                            {{item.prodTrnDate}}</td>
+                        <td>{{i+1}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.transferQty}}</td>
+                        <td>{{item.uomName}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card> -->

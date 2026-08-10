@@ -1,0 +1,109 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <lable class="col-sm-12 col-form-label" for="BudgetCategoryId">Budget Category<span>*</span>
+                            </lable>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.BudgetCategoryId = this.$event.id);"
+                                    [items]="BudgetCategoryList" name="BudgetCategoryName"
+                                    bindLabel="BudgetCategoryName" [ngModelOptions]="{standalone: true}"
+                                    id="BudgetCategoryId" placeholder="Select Budget Category"
+                                    [(ngModel)]="master.BudgetCategorySelected" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="BudgetAmount">Budget
+                                Amount<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="number" class="form-control" required [(ngModel)]="master.BudgetAmount"
+                                    id="BudgetAmount" name="BudgetAmount" nbInput fullWidth placeholder="Budget Amount">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="BudgetYear">Budget Year<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.BudgetYear"
+                                    id="BudgetYear" name="BudgetYear" nbInput fullWidth placeholder="Budget Year">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="text-center">
+                            <button (click)="addDetails(dialog)" class="btn btn-success btn-sm m-3"> Add To
+                                List</button>
+                        </div>
+                    </div>
+
+
+
+
+
+                </div>
+                <div class="grid-wrapper">
+                    <table class=" table table-bordered table-striped">
+                        <tr>
+                            <th>SN</th>
+                            <th>Budget Category</th>
+                            <th>Budget Amount</th>
+                            <th>Budget Year</th>
+
+                        </tr>
+
+                        <tr *ngFor="let detail of master.lstBudgetDetailsViewModel; let rowIndex = index">
+                            <td>{{rowIndex+1}}</td>
+                            <td>
+                                {{detail.BudgetCategoryName}}
+                            </td>
+
+                            <td>
+                                {{detail.BudgetAmount}}
+                            </td>
+                            <td>
+                                {{detail.BudgetYear}}
+                            </td>
+                            <td>
+                                <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

@@ -1,0 +1,302 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="zoneCode">Zone</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="GetAllRegion(zoneCode = $event.id);" [items]="zoneList"
+                            name="zoneCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="zoneCode"
+                            placeholder="Select Zone" appendTo="body" [(ngModel)]="zoneSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="regionCode">Region</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="regionCode = $event.id;getAllArea($event.id);"
+                            [items]="regionList" [virtualScroll]="true" name="regionCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="regionCode" placeholder="Select Region"
+                            appendTo="body" [(ngModel)]="regionSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="areaCode">Area</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="areaCode = $event.id;getAllTerritoryByArea($event.id);"
+                            [items]="areaList" name="areaCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="areaCode" placeholder="Select Area" appendTo="body" [(ngModel)]="areaSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="getAllTerritory(depotCode = $event.id);" [items]="depotList"
+                            name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                            placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="form-group row">
+                  <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                  <div class="col-sm-8">
+                      <ng-select nbselect (change)="getAllTerritory(depotCode = $event.id);" [items]="depotList"
+                          name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                          placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                      </ng-select>
+                  </div>
+              </div>
+          </div> -->
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="territoryCode">Territory</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="(territoryCode = $event.id);GetPartyByTerritoryCode($event.id);"
+                            [items]="territoryList" [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="territoryCode" placeholder="Select territory"
+                            appendTo="body" [(ngModel)]="territorySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label for="checkbox" class="col-sm-4 col-form-label">Product Name <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="productWiseSpecificationId=$event.id" [items]="productSpecList"
+                            [virtualScroll]="true" name="productId" bindLabel="name" id="productId"
+                            [(ngModel)]="productSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Product" [virtualScroll]="true" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+                <label class="col-sm-4 col-form-label" for="territoryCode">Customer Name</label>
+                <div class="col-sm-8">
+                    <ng-select nbselect (change)="(partyId = $event.id)" [items]="parties" [virtualScroll]="true" name="partyId"
+                    bindLabel="name" id="partyId" [(ngModel)]="partySelected" [ngModelOptions]="{standalone: true}"
+                    placeholder="Select Customer" [virtualScroll]="true" appendTo="body">
+                    </ng-select>
+                </div>
+            </div>
+        </div> -->
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="partyId" class="col-2 col-form-label">Customer Name</label>
+                    <div class="col-sm-10">
+                        <ng-select nbselect (change)="(partyId = $event.id)" [items]="parties" [virtualScroll]="true"
+                            name="partyId" bindLabel="name" id="partyId" [(ngModel)]="partySelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Customer" [virtualScroll]="true"
+                            appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" hidden>
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="checkbox" class="col-sm-2 col-form-label">Show Date Range</label>
+                    <div class="col-sm-10">
+                        <div class="validation-checkboxes">
+                            <nb-checkbox [(ngModel)]="showDateRange" name="checkbox" status="success"
+                                (change)="onCheckboxChange($event)">
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="row" *ngIf="showDateRange"> -->
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-sm-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="partyId" class="col-sm-3 col-form-label">
+                        Is Summary
+                    </label>
+                    <div class="col-sm-9">
+                        <nb-checkbox [(ngModel)]="isSummary" name="isSummary" status="success"
+                            (change)="checkAll($event)"> </nb-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<div class="row" *ngIf="showbody">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+            <!-- <nb-card-header>
+              <div class="row">
+                  <div class="col-sm-6"><b>Sales Invoice List For Collection</b></div>
+                  <div class="col-sm-6">Opening Balance: <b>{{openingBalance}}</b></div>
+              </div>
+          </nb-card-header> -->
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 500px">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="5" style="text-align: center; background-color: darkorange;">Product
+                                    </th>
+                                    <th colspan="4" style="text-align: center; background-color: goldenrod;">Sales</th>
+                                    <th colspan="4" style="text-align: center; background-color: darkseagreen;">Bonus
+                                    </th>
+                                    <th colspan="4" style="text-align: center; background-color: darkorange;">Sales
+                                        Return</th>
+                                    <th colspan="5" style="text-align: center; background-color: goldenrod;">Net Sales
+                                    </th>
+                                    <th colspan="4" style="text-align: center; background-color: darkseagreen;">Net
+                                        Bonus
+                                    </th>
+                                </tr>
+                                <tr style="text-align: center; background-color: darkseagreen;">
+                                    <th style="background-color: darkseagreen;">#</th>
+                                    <th style="background-color: darkseagreen;">Code</th>
+                                    <th style="background-color: darkseagreen;">Name</th>
+                                    <th style="background-color: darkseagreen;">Pack Size</th>
+                                    <th style="background-color: darkseagreen;">TP</th>
+
+                                    <th style="background-color: darkorange;">Qty</th>
+                                    <th style="background-color: darkorange;">TP Value</th>
+                                    <th style="background-color: darkorange;">Vat</th>
+                                    <th style="background-color: darkorange;">Total Value</th>
+
+                                    <th style="background-color: goldenrod;">Qty</th>
+                                    <th style="background-color: goldenrod;">TP Value</th>
+                                    <th style="background-color: goldenrod;">Vat</th>
+                                    <th style="background-color: goldenrod;">Total Value</th>
+
+                                    <th style="background-color: darkseagreen;">Qty</th>
+                                    <th style="background-color: darkseagreen;">TP Value</th>
+                                    <th style="background-color: darkseagreen;">Vat</th>
+                                    <th style="background-color: darkseagreen;">Total Value</th>
+
+                                    <th style="background-color: darkorange;">Qty</th>
+                                    <th style="background-color: darkorange;">TP Value</th>
+                                    <th style="background-color: darkorange;">Discount</th>
+                                    <th style="background-color: darkorange;">Vat</th>
+                                    <th style="background-color: darkorange;">Total Value</th>
+
+                                    <th style="background-color: goldenrod;">Qty</th>
+                                    <th style="background-color: goldenrod;">TP Value</th>
+                                    <th style="background-color: goldenrod;">Vat</th>
+                                    <th style="background-color: goldenrod;">Total Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of bodyData; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>{{details.productCode}}</td>
+                                    <td>{{details.productName}}</td>
+                                    <td>{{details.packSize}}</td>
+                                    <td>{{details.tradePrice}}</td>
+
+                                    <td class="numeric">{{details.salesQty}}</td>
+                                    <td class="numeric">{{details.salesTpValue}}</td>
+                                    <td class="numeric">{{details.salesVat}}</td>
+                                    <td class="numeric">{{details.ttlSalesAmonut}}</td>
+
+                                    <td class="numeric">{{details.bonusQty}}</td>
+                                    <td class="numeric">{{details.bonusTpValue}}</td>
+                                    <td class="numeric">{{details.bonusVat}}</td>
+                                    <td class="numeric">{{details.ttlBonusAmonut}}</td>
+
+                                    <td class="numeric">{{details.salesReturnsQty}}</td>
+                                    <td class="numeric">{{details.salesReturnsTpValue}}</td>
+                                    <td class="numeric">{{details.salesReturnsVat}}</td>
+                                    <td class="numeric">{{details.ttlSalesReturnAmonut}}</td>
+
+                                    <td class="numeric">{{details.netSalesQty}}</td>
+                                    <td class="numeric">{{details.netSalesTpValue}}</td>
+                                    <td class="numeric">{{details.netTP}}</td>
+                                    <td class="numeric">{{details.netSalesVat}}</td>
+                                    <td class="numeric">{{details.ttlNetSalesAmonut}}</td>
+
+                                    <td class="numeric">{{details.netBonusQty}}</td>
+                                    <td class="numeric">{{details.netBonusTpValue}}</td>
+                                    <td class="numeric">{{details.netBonusVat}}</td>
+                                    <td class="numeric">{{details.ttlNetBonusAmonut}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="gt" colspan="5">Grand Total :</td>
+
+                                    <td class="gt">{{currencyFormatter(salesQty)}}</td>
+                                    <td class="gt">{{currencyFormatter(salesTpValue)}}</td>
+                                    <td class="gt">{{currencyFormatter(salesVat)}}</td>
+                                    <td class="gt">{{currencyFormatter(ttlSalesAmonut)}}</td>
+
+                                    <td class="gt">{{currencyFormatter(bonusQty)}}</td>
+                                    <td class="gt">{{currencyFormatter(bonusTpValue)}}</td>
+                                    <td class="gt">{{currencyFormatter(bonusVat)}}</td>
+                                    <td class="gt">{{currencyFormatter(ttlBonusAmonut)}}</td>
+
+                                    <td class="gt">{{currencyFormatter(salesReturnsQty)}}</td>
+                                    <td class="gt">{{currencyFormatter(salesReturnsTpValue)}}</td>
+                                    <td class="gt">{{currencyFormatter(salesReturnsVat)}}</td>
+                                    <td class="gt">{{currencyFormatter(ttlSalesReturnAmonut)}}</td>
+
+                                    <td class="gt">{{currencyFormatter(netSalesQty)}}</td>
+                                    <td class="gt">{{currencyFormatter(netSalesTpValue)}}</td>
+                                    <td class="gt">{{currencyFormatter(netTP)}}</td>
+                                    <td class="gt">{{currencyFormatter(netSalesVat)}}</td>
+                                    <td class="gt">{{currencyFormatter(ttlNetSalesAmonut)}}</td>
+
+                                    <td class="gt">{{currencyFormatter(netBonusQty)}}</td>
+                                    <td class="gt">{{currencyFormatter(netBonusTpValue)}}</td>
+                                    <td class="gt">{{currencyFormatter(netBonusVat)}}</td>
+                                    <td class="gt">{{currencyFormatter(ttlNetBonusAmonut)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

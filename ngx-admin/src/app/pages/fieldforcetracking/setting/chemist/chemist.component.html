@@ -1,0 +1,234 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="Code">Chemist Code <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.chemistno"
+                                    id="chemistNo" name="chemistNo" nbInput fullWidth placeholder="Chemist Code">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="Name">Chemist Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.chemistname"
+                                    id="Name" name="Name" nbInput fullWidth placeholder="Chemist Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="partyTypeId" class="col-sm-3 col-form-label">Chemist Type
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.partyTypeId = this.$event.id);" [items]="parties"
+                                    name="partyTypeId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="partyTypeId" placeholder="Select Chemist Type" appendTo="body"
+                                    [(ngModel)]="master.partiesSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="mobile">Mobile No</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.mobileno"
+                                    id="mobileno" name="mobileno" nbInput fullWidth placeholder="Mobile No">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="creditLimit">Credit Limit</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" required [(ngModel)]="master.creditlimit"
+                                    id="creditLimit" name="creditLimit" nbInput fullWidth placeholder="Credit Limit">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="creditDays">Credit Days</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.credit_days"
+                                    id="creditDays" name="creditDays" nbInput fullWidth placeholder="Credit Days">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="longitude">Langitude</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.longitude"
+                                    id="longitude" name="longitude" nbInput fullWidth placeholder="Langitude">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="latitude">Latitude</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.latitude"
+                                    id="latitude" name="latitude" nbInput fullWidth placeholder="Latitude">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="drugLisence">Drug License</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.druglicense"
+                                    id="drugLisence" name="drugLisence" nbInput fullWidth placeholder="Drug License">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="telephone">Telephone No</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.telephone"
+                                    id="telephone" name="telephone" nbInput fullWidth placeholder="Telephone No">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="propritor">Propritor Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.propritor"
+                                    id="propritor" name="propritor" nbInput fullWidth placeholder="Propritor Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="ownerName">Owner Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.ownername"
+                                    id="ownerName" name="ownerName" nbInput fullWidth placeholder="Owner Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="ZoneCode" class="col-sm-3 col-form-label">Zone Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="getdepotbyCode(master.zoneId = this.$event.id);"
+                                    [items]="zoneList" name="zoneId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="zoneId" placeholder="Zone Name"
+                                    appendTo="body" [(ngModel)]="master.zoneSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="depoId" class="col-sm-3 col-form-label">Depo Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="getregionbydepoCode(master.depoId = this.$event.id);"
+                                    [items]="depotList" name="depoId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="depoId" placeholder="Depo Name"
+                                    appendTo="body" [(ngModel)]="master.depotSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="RegionCode" class="col-sm-3 col-form-label">Region Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="getareabyregionCode(master.regionId = this.$event.id);"
+                                    [items]="RegionList" name="regionId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="regionId" placeholder="Region Name"
+                                    appendTo="body" [(ngModel)]="master.regionSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="areaId" class="col-sm-3 col-form-label">Area Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.areaId = this.$event.id);getterritorybyareaCode(this.$event.id);"
+                                    [items]="AreaList" name="areaId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="areaId" placeholder="Area Name"
+                                    appendTo="body" [(ngModel)]="master.areaSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="territoryid" class="col-sm-3 col-form-label">Territory
+                                Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.territoryid = this.$event.id);"
+                                    [items]="TerritoryList" name="territoryid" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="territoryid" placeholder="Territory Name"
+                                    appendTo="body" [(ngModel)]="master.territorySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label for="marketId" class="col-sm-3 col-form-label">Market Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.marketId = this.$event.id);" [items]="MarketList"
+                                    name="marketId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="marketId"
+                                    placeholder="Market Name" appendTo="body" [(ngModel)]="master.marketSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="address">Address</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.address"
+                                    id="address" name="address" nbInput fullWidth placeholder="Address">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

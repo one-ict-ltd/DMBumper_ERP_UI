@@ -1,0 +1,449 @@
+<nb-card class="actions-card">
+  <nb-card-header><b style="color: green;">{{pageNavigation}}</b>
+    <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+  </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+  <nb-card-header class="text-right">
+    <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="salesInvoiceDate">From Date <span>*</span></label>
+          <div class="col-sm-8">
+            <input required [(ngModel)]="loadFromDateShow" name="loadFromDateShow" id="loadFromDateShow"
+              [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #idatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="salesInvoiceDate">To Date <span>*</span></label>
+          <div class="col-sm-8">
+            <input required [(ngModel)]="loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+              [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #idatepicker2></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row !important">
+          <button class="btn btn-info" (click)="GetGridData();">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-wrapper">
+      <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+      </ag-grid-angular>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+<div class="row" *ngIf="!show">
+  <div class="col-md-12">
+    <!-- [ngClass]="formSalesRemittance.get('depotCode').errors?.required && submitted ? 'is-invalid':'is-valid'" -->
+    <form [formGroup]="formSalesRemittance">
+      <nb-card>
+        <nb-card-header>
+          <fieldset>
+            <div class="row">
+              <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="remittanceDate">RS Date<span
+                      class="text-danger">*</span></label>
+                  <div class="col-sm-12">
+                    <input id="remittanceDate" [nbDatepicker]="remittanceDate" nbInput fullWidth placeholder="Date"
+                      formControlName="remittanceDate"
+                      [status]="formSalesRemittance.get('remittanceDate').errors?.required && submitted ? 'danger':''"
+                      readonly>
+                    <!-- <nb-datepicker #remittanceDate [min]="minRsDate" [max]="maxRsDate"></nb-datepicker> -->
+                    <!-- <nb-datepicker #remittanceDate [max]="maxRsDate"></nb-datepicker> -->
+                    <nb-datepicker #remittanceDate [min]="minDate" [max]="maxDate"></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="depotCode">Depot<span
+                      class="text-danger">*</span></label>
+                  <div class="col-sm-12">
+                    <ng-select nbselect [items]="depotList" [virtualScroll]="true"
+                      (change)="bodyData = []; formSalesRemittance.get('selectedAmount').patchValue(0); getCashInHand($event.value); getDepotwiseCollection($event.value)"
+                      formControlName="depotCode" [ngModelOptions]="{standalone: true}" bindValue="value"
+                      [ngClass]="formSalesRemittance.get('depotCode').errors?.required && submitted ? 'is-invalid':'is-valid'"
+                      bindLabel="text" id="depoCode" placeholder="Select Depot" appendTo="body">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="cashInHand">Cash In Hand</label>
+                  <div class="col-sm-12">
+                    <input type="text" class="form-control text-right" id="cashInHand" nbInput fullWidth
+                      placeholder="Cash In Hand" formControlName="cashInHand" readonly>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <hr style="border-color: blue !important;">
+              </div>
+              <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="remittanceTypeId">RS Type<span
+                      class="text-danger">*</span></label>
+                  <div class="col-sm-12">
+                    <ng-select nbselect [items]="rsTypeList" [virtualScroll]="true"
+                      (change)="setBankValidation($event.value)" formControlName="remittanceTypeId"
+                      [ngModelOptions]="{standalone: true}" bindValue="value" bindLabel="text" id="depoCode"
+                      [ngClass]="formSalesRemittance.get('remittanceTypeId').errors?.required && submitted ? 'is-invalid':'is-valid'"
+                      placeholder="Select RS Type" appendTo="body">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="depositAmount">Deposit Amount<span
+                      class="text-danger">*</span></label>
+                  <div class="col-sm-12">
+                    <input type="number" class="form-control text-right" id="depositAmount" nbInput fullWidth
+                      placeholder="000.00" min="0" formControlName="depositAmount"
+                      [status]="(formSalesRemittance.get('depositAmount').errors?.required || formSalesRemittance.get('depositAmount').errors?.min) && submitted ? 'danger':''">
+                  </div>
+                </div>
+              </div> -->
+              <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="depositDate">Deposit Date<span
+                      class="text-danger">*</span></label>
+                  <div class="col-sm-12">
+                    <input id="depositDate" [nbDatepicker]="depositDate" nbInput fullWidth placeholder="Date"
+                      [status]="formSalesRemittance.get('depositDate').errors?.required && submitted ? 'danger':''"
+                      formControlName="depositDate" readonly>
+                    <nb-datepicker #depositDate [max]="maxRsDate"></nb-datepicker>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="depositDate">Remittance Amount<span
+                      class="text-danger">*</span></label>
+                  <div class="col-sm-12">
+                    <input type="number" class="form-control" id="depositAmount" nbInput fullWidth placeholder="0"
+                      min="0" formControlName="depositAmount"
+                      [status]="(formSalesRemittance.get('depositAmount').errors?.required || formSalesRemittance.get('depositAmount').errors?.min) && submitted ? 'danger':''">
+                    <!-- <nb-datepicker #depositDate [max]="maxRsDate"></nb-datepicker> -->
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="inpbank">Bank<span class="text-danger"
+                      *ngIf="bankBranchIsRequired">*</span></label>
+                  <div class="col-sm-12">
+                    <ng-select nbselect [items]="bankList" [virtualScroll]="true" (change)="getBranchList($event.value)"
+                      formControlName="bankId" [ngModelOptions]="{standalone: true}" bindValue="value" bindLabel="text"
+                      [ngClass]="formSalesRemittance.get('bankId').errors?.required && submitted ? 'is-invalid':'is-valid'"
+                      id="inpbank" placeholder="Select Bank" appendTo="body">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="inpbranch">Branch<span class="text-danger"
+                      *ngIf="bankBranchIsRequired">*</span></label>
+                  <div class="col-sm-12">
+                    <ng-select nbselect [items]="branchList" [virtualScroll]="true" formControlName="bankBranchId"
+                      [ngModelOptions]="{standalone: true}" bindValue="value" bindLabel="text" id="inpbranch"
+                      [ngClass]="formSalesRemittance.get('bankBranchId').errors?.required && submitted ? 'is-invalid':'is-valid'"
+                      placeholder="Select Branch" appendTo="body">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="depositRefNo">DS / Reference / Instrument / Advice
+                    No</label>
+                  <div class="col-sm-12">
+                    <input type="text" class="form-control" id="depositRefNo" nbInput fullWidth
+                      placeholder="Instrument No." formControlName="depositRefNo">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="oplTranNo">OPL Transaction No<span
+                      class="text-danger">*</span> </label>
+                  <div class="col-sm-12">
+                    <input type="text" class="form-control" id="oplTranNo" nbInput fullWidth
+                      [status]="(formSalesRemittance.get('oplTranNo').errors?.notUnique || (formSalesRemittance.get('oplTranNo').errors?.required && submitted)) ? 'danger':''"
+                      placeholder="OPL Transaction No." formControlName="oplTranNo">
+                    <small *ngIf="formSalesRemittance.get('oplTranNo').errors?.notUnique" class="text-danger">Please
+                      Enter an Unique No</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group row">
+                  <label class="col-sm-12 col-form-label" for="remarks">Remarks</label>
+                  <div class="col-sm-12">
+                    <textarea rows="1" class="form-control" nbInput fullWidth id="remarks" placeholder="Remarks"
+                      formControlName="remarks"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group row">
+                  <div class="col-lg-6 col-md-6 col-sm-6 text-right">
+                    <button (click)="addMasterToDetails()" class="btn btn-success btn-sm m-3" [hidden]="disabled"> <i
+                        class="fa fa-plus" aria-hidden="true"></i> Add To List </button>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-6 text-center">
+                    <label class="col-sm-12 col-form-label" for="selectedAmount"><b>Total Collection: </b>
+                      <span> {{formSalesRemittance.get('selectedAmount').value}}</span>;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <b>Total
+                        Remittance: </b>
+                      <span>{{ttlDepositAmount}}</span></label>
+                    <!-- <div class="col-sm-12">                      
+                      <input readonly type="number" class="form-control text-right" id="selectedAmount" nbInput
+                        fullWidth placeholder="0" min="0" formControlName="selectedAmount">
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12" [*ngIf]="isShowDetails">
+                <nb-card>
+                  <nb-card-body>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar-for-details">
+                      <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 200px">
+                        <div class="grid-wrapper" formArrayName="salesRemittanceDetails">
+                          <table class=" table table-bordered table-striped">
+                            <tr>
+                              <th>Remitance Date</th>
+                              <th>Remittance Type</th>
+                              <th>Diposit Date</th>
+                              <th>OPL Transaction No</th>
+                              <th>Amount</th>
+                              <th>Bank</th>
+                              <th>Branch</th>
+                              <th>Action</th>
+                            </tr>
+                            <tr *ngFor="let detail of salesRemittanceDetails.controls; let fIndex = index;">
+                              <td>
+                                <!-- <input formControlName="remittanceDate" type="text" class="form-control" id="text"
+                                  name="text" nbInput fullWidth placeholder="Text" readonly> -->
+                                {{detail.get('remittanceDate').value | date : 'dd-MMM-yyyy'}}
+                              </td>
+                              <td>
+                                <!-- <input  formControlName="remittanceTypeId" type="text" class="form-control" id="text"
+                                  name="text" nbInput fullWidth placeholder="Text" readonly> -->
+                                {{getRemittanceTypeName(detail.get('remittanceTypeId').value)}}
+                              </td>
+                              <td>
+                                <!-- <input formControlName="depositDate" type="text" class="form-control" id="text"
+                                  name="text" nbInput fullWidth placeholder="Text" readonly> -->
+                                {{detail.get('depositDate').value | date : 'dd-MMM-yyyy'}}
+                              </td>
+                              <td>
+                                <!-- <input formControlName="depotCode" type="text" class="form-control" id="text"
+                                  name="text" nbInput fullWidth placeholder="Text" readonly> -->
+                                {{detail.get('oplTranNo').value}}
+                              </td>
+                              <td>
+                                <!-- <input formControlName="depositAmount" type="text" class="form-control" id="text"
+                                  name="text" nbInput fullWidth placeholder="Text" readonly> -->
+                                {{detail.get('depositAmount').value}}
+                              </td>
+                              <td>
+                                <!-- <input formControlName="bankId" type="text" class="form-control" id="text" name="text"
+                                  nbInput fullWidth placeholder="Text" readonly> -->
+                                {{getSelectedBank(detail.get('bankId').value)}}
+                              </td>
+                              <td>
+                                <!-- <input formControlName="bankBranchId" type="text" class="form-control" id="text"
+                                  name="text" nbInput fullWidth placeholder="Text" readonly> -->
+                                {{getSelectedBankBranch(detail.get('bankBranchId').value)}}
+                              </td>
+                              <td>
+                                <button class="btn btn-danger" type="button" (click)="removeDetail(fIndex)"><i
+                                    class="fa fa-trash" aria-hidden="true"></i></button>
+                              </td>
+
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                  <nb-card-footer>
+                  </nb-card-footer>
+                </nb-card>
+              </div>
+            </div>
+          </fieldset>
+        </nb-card-header>
+      </nb-card>
+
+      <nb-card>
+        <nb-card-header>
+          <fieldset>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label for="ledgerId" class="col-md-6 col-form-label" style="color: blue;">Remittance Slip
+                    Upload</label>
+                  <div class="col-md-6">
+                    <button (click)="addNewFileUpload()" class="btn btn-success btn-sm m-3" [hidden]="disabled"> <i
+                        class="fa fa-plus" aria-hidden="true"></i> Add a slip</button>
+                  </div>
+                </div>
+
+                <!-- <div class="grid-wrapper" formArrayName="salesRemittanceSlips">
+                  <table class=" table table-bordered table-striped">
+                    <tr>
+                      <th>File Name</th>
+                      <th [hidden]="disabled">Image</th>
+                      <th>Action</th>
+                    </tr>
+                    <tr *ngFor="let detail of salesRemittanceSlips.controls; let fIndex = index;">
+                      <td>
+                        <input formControlName="fileName" type="text" class="form-control" id="text" name="text" nbInput
+                          fullWidth placeholder="Text" readonly>
+                      </td>
+                      <td [hidden]="disabled">
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" [id]="'voucherAttachments-'+ fIndex"
+                            (change)="getFileName($event, fIndex)">
+                          <label class="custom-file-label"
+                            [for]="'voucherAttachments-'+ fIndex">{{detail.get('fileName').value}}</label>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <button (click)="downloadFile(detail.get('remittanceSlipId').value)"
+                          *ngIf="detail.get('remittanceSlipId').value" class="btn btn-success btn-sm m-1">
+                          <i class="fa fa-download" aria-hidden="true"></i>
+                        </button>
+                        <button (click)="deleteFileUpload(fIndex)" class="btn btn-danger btn-sm m-1"
+                          [hidden]="disabled">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                  </table>
+                </div> -->
+                <div class="grid-wrapper" formArrayName="salesRemittanceSlips">
+                  <table class=" table table-bordered table-striped">
+                    <tr>
+                      <th>File Name</th>
+                      <th [hidden]="disabled">Image</th>
+                      <th>Action</th>
+                    </tr>
+                    <tr *ngFor="let detail of salesRemittanceSlips.controls; let fIndex = index;">
+                      <td>
+                        <input formControlName="fileName" type="text" class="form-control" id="text" name="text" nbInput
+                          fullWidth placeholder="Text" readonly value="{{detail.get('fileName').value}}">
+
+                        <!-- <img [src]="detail.get('fileString').value" /> -->
+                      </td>
+                      <td [hidden]="disabled">
+                        <div class="custom-file">
+                          <input type="file" class="custom-file-input" [id]="'voucherAttachments-'+ fIndex"
+                            (change)="getFileName($event, fIndex)">
+                          <label class="custom-file-label"
+                            [for]="'voucherAttachments-'+ fIndex">{{detail.get('fileName').value}}</label>
+                        </div>
+                      </td>
+                      <td class="text-center">
+                        <button (click)="downloadFile(detail.get('remittanceSlipId').value)"
+                          *ngIf="detail.get('remittanceSlipId').value" class="btn btn-success btn-sm m-1">
+                          <i class="fa fa-download" aria-hidden="true"></i>
+                        </button>
+                        <button (click)="deleteFileUpload(fIndex)" class="btn btn-danger btn-sm m-1"
+                          [hidden]="disabled">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </nb-card-header>
+      </nb-card>
+
+    </form>
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <nb-card>
+        <nb-card-body>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group row">
+                <label for="ledgerId" class="col-md-2 col-form-label"><b style="color: blue;">Collection
+                    List</b></label>
+                <!-- <div class="col-md-10 text-right">
+                  <button (click)="addNewFileUpload()" class="btn btn-success btn-sm m-3" [hidden]="disabled"> <i
+                      class="fa fa-plus" aria-hidden="true"></i> Add </button>
+                </div> -->
+              </div>
+            </div>
+          </div>
+
+          <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 300px">
+              <table class=" table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Collection Number</th>
+                    <th>Collection date</th>
+                    <th>Collection Amount</th>
+                    <th>
+                      <!-- <nb-checkbox name="isSelectAll" id="isSelectAll" status="success"
+                                      [(ngModel)]="isSelectAll" (change)="checkChange($event)">
+                                    </nb-checkbox> -->
+                      Select
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let details of bodyData; let rowIndex = index">
+                    <td>
+                      {{rowIndex+1}}
+                    </td>
+                    <td>{{details.collectionNumber}}</td>
+                    <td>{{details.collectionDate}}</td>
+                    <td>{{details.collectionAmount}}</td>
+                    <td style="text-align: center;">
+                      <nb-checkbox name="isSelect" id="isSelect" status="success" [(ngModel)]="details.isSelect"
+                        (change)="onCheckBoxChange($event, rowIndex)"></nb-checkbox>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</div>

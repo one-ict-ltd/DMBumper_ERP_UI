@@ -1,0 +1,335 @@
+<nb-card class="actions-card" style="background-color:red ;">
+    <nb-card-header>
+        <h5>{{pageNavigation}}</h5>
+        <!-- <ngx-report-button (click)="RptButtonAction()"></ngx-report-button> -->
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group row">
+                    <label for="Date" class="col-sm-3 col-form-label">Date
+                        <span>*</span></label>
+                    <div class="col-sm-9">
+                        <input required [(ngModel)]="master.Date" (ngModelChange)="GetDashboardData();"
+                            [nbDatepicker]="fdatepicker" nbInput fullWidth id="Date" name="Date" placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <!-- </div>
+
+        <div class="row"> -->
+
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group row">
+                    <label for="ZoneCode" class="col-sm-3 col-form-label">Zone</label>
+                    <div class="col-sm-9">
+                        <ng-select nbselect (change)="ZoneChange(master.ZoneId = this.$event.id);" [items]="ZoneList"
+                            name="ZoneCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="ZoneCode"
+                            placeholder="Zone name" appendTo="body" [(ngModel)]="ZoneCodeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group row">
+                    <label for="RegionCode" class="col-sm-3 col-form-label">Region</label>
+                    <div class="col-sm-9">
+                        <ng-select nbselect (change)="RegionChange(master.RegionId = this.$event.id);"
+                            [items]="RegionList" name="RegionCode" bindLabel="name" placeholder="Region name"
+                            [ngModelOptions]="{standalone: true}" id="RegionCode" placeholder="RegionCode"
+                            appendTo="body" [(ngModel)]="RegionCodeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div class="form-group row">
+                    <label for="AreaCode" class="col-sm-3 col-form-label">Area</label>
+                    <div class="col-sm-9">
+                        <ng-select nbselect (change)="AreaChange(master.AreaId = this.$event.id);" [items]="AreaList"
+                            name="AreaCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="AreaCode"
+                            placeholder="Area name" appendTo="body" [(ngModel)]="AreaCodeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+
+<nb-card class="actions-card" style="background-color:red ;">
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <nb-card>
+                    <nb-card-header>Attendance Report
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th *ngFor="let item of thAttendance; let i = index;">{{item}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of attendanceBodyData; let i = index;">
+                                        <td>{{item.POSTING_LOCATION}}</td>
+                                        <td (click)="GetDashboardAttendanceDetails(showAttModal, item.Flag, 'Total')">
+                                            {{item.TOTALEMPLOYEE}}</td>
+                                        <td (click)="GetDashboardAttendanceDetails(showAttModal, item.Flag, 'Present')">
+                                            {{item.TOTALPRESENT}}</td>
+                                        <td (click)="GetDashboardAttendanceDetails(showAttModal, item.Flag, 'Absent')">
+                                            {{item.TOTALABSENT}}</td>
+                                        <td>{{item.AbsentPercent}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </nb-card-body>
+                    <!-- <nb-card-footer>
+    </nb-card-footer> -->
+                </nb-card>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <nb-card>
+                    <nb-card-header>Daily Activity
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th *ngFor="let item of thDailyActivity; let i = index;">{{item}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of dailyActivityBodyData; let i = index;">
+                                        <td>{{item.Title}}</td>
+                                        <td>{{item.Plan}}</td>
+                                        <td (click)="GetRxDetails(rxModal, item.Title, 'Daily')">{{item.Done}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </nb-card-body>
+                    <!-- <nb-card-footer>
+    </nb-card-footer> -->
+                </nb-card>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <nb-card>
+                    <nb-card-header>Monthy Target vs Achivement
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                                <thead>
+                                    <tr>
+                                        <th *ngFor="let item of thMonthlyTA; let i = index;">{{item}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of monthlyTABodyData; let i = index;">
+                                        <td>{{item.Title}}</td>
+                                        <td>{{item.Plan}}</td>
+                                        <td>{{item.Done}}</td>
+                                        <td (click)="GetRxDetails(rxModal, item.Title, 'Monthly')">{{item.Achievement}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </nb-card-body>
+                    <!-- <nb-card-footer>
+    </nb-card-footer> -->
+                </nb-card>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+
+<!-- Attendance modal popup start -->
+<ng-template #showAttModal let-data let-ref="dialogRef">
+    <div class="col-sm-12 col-md-12 col-lg-12" style="max-width: 1800px !important;">
+        <nb-card>
+            <nb-card-header>
+                {{AttModalHeader}}
+            </nb-card-header>
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table id="simple_table" class="table table-bordered table-striped mb-0">
+                        <thead>
+                            <th>#</th>
+                            <th>Emp. Code</th>
+                            <th>Name</th>
+                            <th>Posting Location</th>
+                            <th>Zone</th>
+                            <th>Region</th>
+                            <th>Area</th>
+                            <th>Territory</th>
+                            <th>Time</th>
+                            <th>Address</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of attDetailsData; let i = index;">
+                                <td>{{i+1}}</td>
+                                <td>{{item.employeeno}}</td>
+                                <td>{{item.employee_name}}</td>
+                                <td>{{item.POSTING_LOCATION}}</td>
+                                <td>{{item.ZONE_CODE}}</td>
+                                <td>{{item.REGION_CODE}}</td>
+                                <td>{{item.AREA_CODE}}</td>
+                                <td>{{item.TERRITORY_CODE}}</td>
+                                <td>{{item.Time}}</td>
+                                <td>{{item.Address}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-11"><b>Total <span>{{totalRecords}}</span> Record(s) Found</b></div>
+                    <div class="col-1">
+                        <button style="text-align: right;" nbButton (click)="ref.close()">X</button>
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</ng-template>
+<!-- Attendance modal popup end  -->
+
+<!-- Rx modal popup start -->
+<ng-template #rxModal let-data let-ref="dialogRef">
+    <div class="col-sm-12 col-md-12 col-lg-12" style="width: 1800px !important;">
+        <!-- max-height: 700px !important; -->
+        <nb-card class="min-height">
+            <nb-card-header>
+                {{AttModalHeader}}
+            </nb-card-header>
+            <nb-card-body>
+                <fieldset [disabled]="disabled ? 'disabled' : null">
+                    <nb-tabset (changeTab)="ModalTabChange($event)">
+                        <nb-tab tabTitle="Employee Wise" class="btn-tab">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="simple_table" class="table table-bordered table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Emp. Code</th>
+                                            <th>Emp Name</th>
+                                            <th>Zone Code</th>
+                                            <th>Zone Name</th>
+                                            <th>Region Code</th>
+                                            <th>Region Name</th>
+                                            <th>Area Code</th>
+                                            <th>Area Name</th>
+                                            <th>Territory Code</th>
+                                            <th>Territory Name</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of empData; let i = index;">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.employeeNo}}</td>
+                                            <td>{{item.fullName}}</td>
+                                            <td>{{item.ZoneCode}}</td>
+                                            <td>{{item.ZoneName}}</td>
+                                            <td>{{item.RegionCode}}</td>
+                                            <td>{{item.RegionName}}</td>
+                                            <td>{{item.AreaCode}}</td>
+                                            <td>{{item.AreaName}}</td>
+                                            <td>{{item.TerritoryCode}}</td>
+                                            <td>{{item.TerritoryName}}</td>
+                                            <td>{{item.Total}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </nb-tab>
+                        <nb-tab tabTitle="Doctor Wise" class="btn-tab">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="simple_table" class="table table-bordered table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Emp. Code</th>
+                                            <th>Emp Name</th>
+                                            <th>Zone Code</th>
+                                            <th>Zone Name</th>
+                                            <th>Region Code</th>
+                                            <th>Region Name</th>
+                                            <th>Area Code</th>
+                                            <th>Area Name</th>
+                                            <th>Territory Code</th>
+                                            <th>Territory Name</th>
+                                            <th>DoctorName</th>
+                                            <th>DoctorCategoryName</th>
+                                            <th>OPL Category</th>
+                                            <th>Speciality</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of doctorData; let i = index;">
+                                            <td>{{i+1}}</td>
+                                            <td>{{item.employeeNo}}</td>
+                                            <td>{{item.fullName}}</td>
+                                            <td>{{item.ZoneCode}}</td>
+                                            <td>{{item.ZoneName}}</td>
+                                            <td>{{item.RegionCode}}</td>
+                                            <td>{{item.RegionName}}</td>
+                                            <td>{{item.AreaCode}}</td>
+                                            <td>{{item.AreaName}}</td>
+                                            <td>{{item.TerritoryCode}}</td>
+                                            <td>{{item.TerritoryName}}</td>
+                                            <td>{{item.DoctorName}}</td>
+                                            <td>{{item.DoctorCategoryName}}</td>
+                                            <td>{{item.OplPotential}}</td>
+                                            <td>{{item.Speciality}}</td>
+                                            <td>{{item.Total}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </nb-tab>
+                        <nb-tab tabTitle="Doctor Wise Items" class="btn-tab">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="simple_table" class="table table-bordered table-striped mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th *ngFor="let item of itemDataHeader; let i = index;">{{item}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of itemData; let i = index;">
+                                            <td *ngFor="let keyName of itemDataHeader; let i = index;">{{item[keyName]}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </nb-tab>
+                    </nb-tabset>
+                </fieldset>
+            </nb-card-body>
+            <nb-card-footer>
+                <div class="row">
+                    <div class="col-11"><b>Total <span>{{totalRecords}}</span> Record(s) Found</b></div>
+                    <div class="col-1">
+                        <button style="text-align: right; color: red !important;" nbButton
+                            (click)="ref.close()">X</button>
+                    </div>
+                </div>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</ng-template>
+<!-- Attendance modal popup end  -->

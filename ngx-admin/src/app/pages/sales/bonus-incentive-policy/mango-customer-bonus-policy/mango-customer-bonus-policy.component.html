@@ -1,0 +1,121 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <div class="row" hidden>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="fDate">From
+                            Date <span>*</span></label>
+                        <div class="col-sm-8">
+                            <input required [(ngModel)]="fDate" (ngModelChange)="LoadData();" name="fDate" id="fDate"
+                                [nbDatepicker]="fdatepicker" nbInput fullWidth placeholder="From Date"
+                                [ngModelOptions]="{standalone: true}">
+                            <nb-datepicker #fdatepicker></nb-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="tDate">To
+                            Date <span>*</span></label>
+                        <div class="col-sm-8">
+                            <input required [(ngModel)]="tDate" (ngModelChange)="LoadData();" name="tDate" id="tDate"
+                                [nbDatepicker]="tdatepicker" nbInput fullWidth placeholder="To Date"
+                                [ngModelOptions]="{standalone: true}">
+                            <nb-datepicker #tdatepicker></nb-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group row">
+                        <button style="text-align: right;" nbButton (click)="LoadData();">Load Data</button>
+                    </div>
+                </div>
+            </div>
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label" for="fromMonth">From Month<span>*</span></label>
+                            <div class="col-sm-6">
+                                <ng-select nbselect (change)="( master.fromMonth = this.$event.id);" [items]="monthList"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" name="fromMonth"
+                                    id="fromMonth" placeholder="Select a month" appendTo="body"
+                                    [(ngModel)]="fMonthSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label" for="toMonth">To Month<span>*</span></label>
+                            <div class="col-sm-6">
+                                <ng-select nbselect (change)="( master.toMonth = this.$event.id);" [items]="monthList"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" name="toMonth" id="toMonth"
+                                    placeholder="Select a month" appendTo="body" [(ngModel)]="tMonthSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label" for="percentValue">Percent
+                                Value <span>*</span></label>
+                            <div class="col-sm-4">
+                                <input type="number" min="0" class="form-control text-right" required
+                                    [(ngModel)]="master.percentValue" id="percentValue" name="percentValue" nbInput
+                                    fullWidth placeholder="Percent Value">
+                            </div><span>%</span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label" for="paymentDate">Payment
+                                Date <span>*</span></label>
+                            <div class="col-sm-6">
+                                <input required [(ngModel)]="master.paymentDate" name="paymentDate" id="paymentDate"
+                                    [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

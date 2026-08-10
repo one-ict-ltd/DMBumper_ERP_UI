@@ -1,0 +1,240 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="companyId" class="col-4 col-form-label">Company Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect (change)="getBranch(this.$event.id);" [items]="companies" name="companyId"
+                            bindLabel="name" id="companyId" [(ngModel)]="ddlSelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="BranchId" class="col-4 col-form-label">Branch Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="branchs" name="BranchId" bindLabel="name" id="BranchId"
+                            [(ngModel)]="branchSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Branch" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="accountNatureId" class="col-sm-4 col-form-label">Group Nature</label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect
+                            (change)="(natureId = this.$event.id);getDdlAccountGroupData(this.$event.id)"
+                            [items]="groupNatureItems" name="accountNatureId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="natureId" placeholder="Select Group Nature"
+                            appendTo="body" [(ngModel)]="natureSelected">
+                        </ng-select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+
+                <div class="form-group row">
+                    <label for="accountGroupId" class="col-sm-4 col-form-label">Account Group</label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect (change)="(groupId = this.$event.id);getLedgersFilter(this.$event.id)"
+                            [items]="accountGroupItems" name="accountGroupId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="groupId" placeholder="Select Group"
+                            appendTo="body" [(ngModel)]="accountGroupSelected">
+                        </ng-select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="BranchId" class="col-4 col-form-label">Ledger Name</label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="ledgers" name="ledgerId" bindLabel="name" id="ledgerId"
+                            [(ngModel)]="ledgerSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Ledger" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="costCentreCategoryId" class="col-4 col-form-label">Cost Centre Category</label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="CostCentreCategoryList"
+                            (change)="LoadCostCentreByCategoryIdandLocationId();" name="costCentreCategoryId"
+                            bindLabel="name" id="costCentreCategoryId" [(ngModel)]="costCentreCategorySelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Cost Centre Category"
+                            appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="costCentreLocationId" class="col-4 col-form-label">Cost Centre Location</label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="CostCentreLocationList"
+                            (change)="LoadCostCentreByCategoryIdandLocationId();" name="costCentreLocationId"
+                            bindLabel="name" id="costCentreLocationId" [(ngModel)]="costCentreLocationSelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select cost Centre Location"
+                            appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="BranchId" class="col-4 col-form-label">Cost Centre Name<span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="costCentres" name="CostCentreId" bindLabel="name" id="CostCentreId"
+                            [(ngModel)]="costCentreSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Cost Centre" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="fromdateSelected" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input required [(ngModel)]="todateSelected" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+
+        <!-- <div class="grid-wrapper">
+      <ag-grid-angular #simple_table style="height: 500px;" id="simple_table" class="ag-theme-alpine" [modules]="modules"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)" (rowClicked)="onRowClicked($event)"
+        rowSelection="multiple" pagination='true'>
+      </ag-grid-angular>
+    </div> -->
+
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <!-- <th>#</th>
+                <th>Account Code</th>
+                <th>Account Name</th>
+                <th style="text-align: right;">Debit Amount</th>
+                <th style="text-align: right;">Credit Amount</th> -->
+                        <th *ngFor="let item of tableHeaderP; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+
+                        <td>
+
+                            {{item.natureName}}
+                        </td>
+                        <td>
+
+                            {{item.groupName}}
+                        </td>
+
+                        <td>
+
+                            {{item.accountName}}
+                        </td>
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{this.currencyFormatter(item[itemx])}}
+                        </td>
+                        <!-- <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td><strong>Cost Centre Wise Report</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue }}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+
+                        <th *ngFor="let item of tableHeaderP; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+
+                        <td>
+
+                            {{item.natureName}}
+                        </td>
+                        <td>
+
+                            {{item.groupName}}
+                        </td>
+
+                        <td>
+
+                            {{item.accountName}}
+                        </td>
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{this.currencyFormatter(item[itemx])}}
+                        </td>
+                        <!-- <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

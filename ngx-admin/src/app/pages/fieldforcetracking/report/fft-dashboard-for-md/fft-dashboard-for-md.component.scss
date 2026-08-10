@@ -1,0 +1,48 @@
+span {
+    color: black;
+}
+
+pre {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    font-family: Arial, Helvetica, sans-serif;
+    // word-break: break-all;
+    white-space: pre-wrap;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 440px;
+    overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+
+/* Just common table stuff. Really. */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    padding: 8px 16px;
+}
+
+th {
+    background: #eee;
+}
+
+tr,
+td {
+    white-space: pre-wrap;
+}

@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <!-- <link rel="stylesheet" href="style.css" /> -->
+    <title>One Pharma Expense
+        Analysis</title>
+</head>
+
+<body>
+    <!-- start title header section  -->
+    <section class="container-fluid title-header my-4" *ngIf="isDetails">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="custom-primary m-0"><i class="fa-solid fa-arrow-left"
+                        (click)="getToMainDashboard();"></i>Expense Analysis</h2>
+                <!-- <p class="custom-gray fw-light">Welcome back, Sana!</p> -->
+            </div>
+        </div>
+    </section>
+    <!-- end title header section  -->
+
+    <!-- start national expense summary section  -->
+    <div *ngIf="isDetailsOfLocationWiseExpense" class="scrollable-vertical-details detailsHeader">
+        <table class="table table-striped" style="font-size: 5px;">
+            <thead>
+                <tr>
+                    <th *ngFor="let header of tableHeadersLE">{{ header }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr *ngFor="let item of locationWiseExpenseDetails">
+                    <td>{{item.locationName}}</td>
+                    <td>{{item.costHeadOne}}</td>
+                    <td>{{item.costHeadTwo}}</td>
+                    <td>{{item.costHeadThree}}</td>
+                    <td>{{item.costHeadFour}}</td>
+                    <td>{{item.costHeadFive}}</td>
+                    <td>{{item.costHeadSix}}</td>
+                    <td class="total-expense">{{item.totalExpense}}</td>
+                    <td class="total-sells">{{item.totalSales}}</td>
+                    <td class="roi positive"
+                    //[ngClass]="{'roi positive':detail[RIO]>=0, 'roi negative' : 0>detail[RIO]>=0 }"//
+                        [ngClass]="{'roi positive': item.roiPercent>=0, 'roi negative' : 0>item.roiPercent }">
+                        {{item.roiPercent}}%</td>
+                </tr> -->
+                <tr *ngFor="let detail of locationWiseExpenseDetails">
+                    <td *ngFor="let header of tableHeadersLE">{{ detail[header] }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div *ngIf="isDetailsOfDepotOverview" class="scrollable-vertical-details detailsHeader">
+        <table class="table table-striped" style="font-size: 5px;">
+            <thead>
+                <tr>
+                    <th *ngFor="let header of depotOverviewDetailsHeaders">{{ header }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- <tr *ngFor="let item of locationWiseExpenseDetails">
+                        <td>{{item.locationName}}</td>
+                        <td>{{item.costHeadOne}}</td>
+                        <td>{{item.costHeadTwo}}</td>
+                        <td>{{item.costHeadThree}}</td>
+                        <td>{{item.costHeadFour}}</td>
+                        <td>{{item.costHeadFive}}</td>
+                        <td>{{item.costHeadSix}}</td>
+                        <td class="total-expense">{{item.totalExpense}}</td>
+                        <td class="total-sells">{{item.totalSales}}</td>
+                        <td class="roi positive"
+                            [ngClass]="{'roi positive': item.roiPercent>=0, 'roi negative' : 0>item.roiPercent }">
+                            {{item.roiPercent}}%</td>
+                    </tr> -->
+                <tr *ngFor="let detail of depotOverviewDetails">
+                    <td *ngFor="let header of depotOverviewDetailsHeaders">{{ detail[header] }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- start category wise expense summary section  -->
+    <div *ngIf="isDetailsOfCategoryWiseExpense" class="scrollable-vertical-details detailsHeader">
+        <table class="table table-striped" style="font-size: 5px;">
+            <thead>
+                <tr>
+                    <th *ngFor="let header of categoryOverviewDetailsHeaders">{{ header }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let detail of categoryOverviewDetails">
+                    <td *ngFor="let header of categoryOverviewDetailsHeaders">{{ detail[header] }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <section class="container-fluid expense-summary my-4" *ngIf="!isDetails">
+        <div class="card shadow-sm border rounded p-3">
+            <div class="row">
+                <div class="col-md-9">
+                    <h3 class="fw-light">{{expeseFor}} Expense</h3>
+                    <h2 class="m-0">TK.{{expenseSummaryValue}}</h2>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex flex-row justify-content-end gap-2">
+                        <div class="btn-group">
+                            <button class="btn btn-default border dropdown-toggle fw-light rounded-3" type="button"
+                                (click)="OpenModal(dialog)">
+                                Data Filter
+                            </button>
+                            <div class="dropdown-menu p-4 mt-5">
+                                <div class="card">
+                                    <h5>Dropdown body will go here</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-danger" (click)="this.isDetails = true">
+                            <i class="fa-solid fa-square-arrow-up-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Modal -->
+
+        <ng-template #dialog let-data let-ref="dialogRef">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="width: 880px;">
+                <nb-card class="min-height">
+                    <nb-card-header>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <h4>Query Filter</h4>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <button style="text-align: right;" nbButton
+                                    (click)="ref.close();"><span>X</span></button>
+                            </div>
+                        </div>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-6 col-sm-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label" for="nationalExpenseLocationId">Location
+                                        Type</label>
+                                    <div class="col-sm-10">
+                                        <ng-select nbselect [items]="nationalExpenseLocationTypeList"
+                                            [virtualScroll]="true"
+                                            (change)="this.nationalExpenseLocationId=this.$event.id; setFiltersEL(this.$event.id)"
+                                            name="nationalExpenseLocationId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="nationalExpenseLocationId"
+                                            placeholder="Select location" appendTo="body"
+                                            [(ngModel)]="nationalExpenseLocationTypeSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowZoneEL">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="zoneCode">Zone</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="GetAllRegion();" [items]="zoneList"
+                                            name="zoneCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="zoneCode" placeholder="Select Zone" appendTo="body"
+                                            [(ngModel)]="zoneSelected" [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowRegionEL">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="regionCode">Region</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="regionCode = $event.id;getAllArea();"
+                                            [items]="regionList" [virtualScroll]="true" name="regionCode"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="regionCode"
+                                            placeholder="Select Region" appendTo="body" [(ngModel)]="regionSelected"
+                                            [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowAreaEL">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="areaCode">Area</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="areaCode = $event.id;getAllTerritory();"
+                                            [items]="areaList" name="areaCode" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="areaCode"
+                                            placeholder="Select Area" appendTo="body" [(ngModel)]="areaSelected"
+                                            [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowTerritoryEL">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="territoryCode">Territory</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="territoryChange($event)" [items]="territoryList"
+                                            [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="territoryCode"
+                                            placeholder="Select Territory" appendTo="body"
+                                            [(ngModel)]="territorySelected" [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date</label>
+                                    <div class="col-sm-8">
+                                        <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput
+                                            fullWidth placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #fdatepicker></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="todateSelected" class="col-sm-4 col-form-label">To Date</label>
+                                    <div class="col-sm-8">
+                                        <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput
+                                            fullWidth placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #datepicker></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </nb-card-body>
+                    <nb-card-footer>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <span>{{msg}}</span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: -45px;">
+                                <div style="text-align: center;">
+                                    <button class="btn btn-danger m-0 !important"
+                                        (click)="getNationalExpeseSumamry();ref.close()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </nb-card-footer>
+                </nb-card>
+            </div>
+        </ng-template>
+
+        <!-- End Modal -->
+
+
+    </section>
+    <!-- end national expense summary section  -->
+
+    <!-- start location wise expense section  -->
+    <section class="container-fluid location-wise-expense my-4" *ngIf="!isDetails">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title d-flex justify-content-between">
+                            <h4 class="fw-normal">National Expense Comparison</h4>
+                            <!-- <div style="width: 150px;">
+                                <ng-select [items]="costHeadFilterList" nbselect [virtualScroll]="true"
+                                    name="costHeadFilter" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="costHeadFilter" placeholder="Filter" appendTo="body"
+                                    [(ngModel)]="costHeadFilterSelected">
+                                </ng-select>
+
+                            </div> -->
+                            <div class="col-md-3">
+                                <div class="d-flex flex-row justify-content-end gap-2">
+                                    <div class="btn-group">
+                                        <button class="btn btn-default border dropdown-toggle fw-light rounded-3"
+                                            type="button" (click)="OpenModal(dialogForNationalComparison)">
+                                            Data Filter
+                                        </button>
+                                        <div class="dropdown-menu p-4 mt-5">
+                                            <div class="card">
+                                                <h5>Dropdown body will go here</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <canvas class="w-100" id="myChart3" width="1320" height="750"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title d-flex justify-content-between">
+                            <h4 class="fw-normal">Expense Location: {{expenseLocation}}</h4>
+                            <div class="col-md-3">
+                                <div class="d-flex flex-row justify-content-end gap-2">
+                                    <div class="btn-group">
+                                        <button class="btn btn-default border dropdown-toggle fw-light rounded-3"
+                                            type="button" (click)="OpenModal(dialogForELF)">
+                                            Data Filter
+                                        </button>
+                                        <div class="dropdown-menu p-4 mt-5">
+                                            <div class="card">
+                                                <h5>Dropdown body will go here</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-container scrollable-vertical">
+                            <table
+                                style="width:100%; height: fit-content; border-collapse: collapse; text-align: left;">
+                                <thead>
+                                    <tr>
+                                        <th>Location</th>
+                                        <th>Value</th>
+                                        <th>Vs Previous</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of locationWiseExpenseSummary">
+                                        <td>{{item.locationName}}</td>
+                                        <td>{{item.Value}}</td>
+                                        <!-- <td>{{item.GrowthPercentage}}%</td> -->
+                                        <td>
+                                            <span class="badge badge-green" *ngIf="item.GrowthPercentage>=0">↑
+                                                {{item.GrowthPercentage}}%</span>
+                                            <span class="badge badge-red" *ngIf="0>item.GrowthPercentage">↓
+                                                {{item.GrowthPercentage}}%</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" style="margin-top: 10px;" class="btn btn-outline-danger btn-sm float-end"
+                            (click)="this.isDetailsOfLocationWiseExpense = true;this.isDetails=true;getLocationWiseExpense();">
+                            Details | <i class="fa-solid fa-square-arrow-up-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Expense Location Filter Modal -->
+
+        <ng-template #dialogForELF let-data let-ref="dialogRef">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="width: 880px;">
+                <nb-card class="min-height">
+                    <nb-card-header>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <h4>Query Filter</h4>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <button style="text-align: right;" nbButton
+                                    (click)="ref.close();"><span>X</span></button>
+                            </div>
+                        </div>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-6 col-sm-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label" for="expenseLocationId">Location
+                                        Type</label>
+                                    <div class="col-sm-10">
+                                        <ng-select nbselect [items]="expenseLocationTypeList" [virtualScroll]="true"
+                                            (change)="this.expenseLocationId=this.$event.id; setFiltersEL(this.$event.id)"
+                                            name="expenseLocationId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="expenseLocationId"
+                                            placeholder="Select location" appendTo="body"
+                                            [(ngModel)]="expenseLocationTypeSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowZoneEL">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="zoneCode">Zone</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="GetAllRegionEL();" [items]="zoneListEL"
+                                            name="zoneCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="zoneCode" placeholder="Select Zone" appendTo="body"
+                                            [(ngModel)]="zoneSelectedEL" [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowRegionEL">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="regionCode">Region</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="regionCodeEL = $event.id;getAllAreaEL();"
+                                            [items]="regionListEL" [virtualScroll]="true" name="regionCode"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="regionCode"
+                                            placeholder="Select Region" appendTo="body" [(ngModel)]="regionSelectedEL"
+                                            [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowAreaEL">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="areaCodeEL">Area</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="areaCodeEL = $event.id;getAllTerritoryEL();"
+                                            [items]="areaListEL" name="areaCodeEL" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="areaCodeEL"
+                                            placeholder="Select Area" appendTo="body" [(ngModel)]="areaSelectedEL"
+                                            [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowTerritoryEL">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="territoryCode">Territory</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="territoryChangeEL($event)"
+                                            [items]="territoryListEL" [virtualScroll]="true" name="territoryCodeEL"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="territoryCodeEL"
+                                            placeholder="Select Territory" appendTo="body"
+                                            [(ngModel)]="territorySelectedEL" [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date</label>
+                                    <div class="col-sm-8">
+                                        <input required [(ngModel)]="fDateEL" [nbDatepicker]="fdatepicker" nbInput
+                                            fullWidth placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #fdatepicker></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="todateSelected" class="col-sm-4 col-form-label">To Date</label>
+                                    <div class="col-sm-8">
+                                        <input required [(ngModel)]="tDateEL" [nbDatepicker]="datepicker" nbInput
+                                            fullWidth placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #datepicker></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </nb-card-body>
+                    <nb-card-footer>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <span>{{msg}}</span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: -45px;">
+                                <div style="text-align: center;">
+                                    <button class="btn btn-danger m-0 !important"
+                                        (click)="this.getLocationWiseExpense();ref.close()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </nb-card-footer>
+                </nb-card>
+            </div>
+        </ng-template>
+
+        <!-- End Modal -->
+
+        <!-- Start National comparison Filter Modal -->
+
+        <ng-template #dialogForNationalComparison let-data let-ref="dialogRef">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="width: 880px;">
+                <nb-card class="min-height">
+                    <nb-card-header>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <h4>Query Filter</h4>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <button style="text-align: right;" nbButton
+                                    (click)="ref.close();"><span>X</span></button>
+                            </div>
+                        </div>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="customYearId">Year</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="setCustomYearFilter(this.$event)"
+                                            [items]="customYearFilterList" [virtualScroll]="true" name="customYearId"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="customYearId"
+                                            placeholder="Select year" appendTo="body" [(ngModel)]="customYearSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="isCustomYear">
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label" for="customYearRange">Custom
+                                        Year<span>*</span></label>
+                                    <div class="col-8">
+                                        <input type="text" class="form-control" [(ngModel)]="customYearRange"
+                                            id="customYearRange" name="customYearRange" nbInput fullWidth
+                                            placeholder="Enter years, i.e. 2021,2022">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </nb-card-body>
+                    <nb-card-footer>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <span>{{msg}}</span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: -45px;">
+                                <div style="text-align: center;">
+                                    <button class="btn btn-danger m-0 !important"
+                                        (click)="setComparisonYear();getNationalExpenseComparisonMonthly();ref.close()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </nb-card-footer>
+                </nb-card>
+            </div>
+        </ng-template>
+
+        <!-- End Modal -->
+    </section>
+    <!-- end location wise expense section  -->
+
+    <!-- end location wise expense section  -->
+
+    <!-- start cost head section  -->
+    <section class="container-fluid location-wise-expense my-4" *ngIf="!isDetails">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title d-flex justify-content-between">
+                            <h4 class="fw-normal">Cost Head</h4>
+                            <!-- <div style="width: 150px;">
+                                <ng-select [items]="nationalExpenseComparisonFilterList" nbselect [virtualScroll]="true"
+                                    (change)="onChangeNationalExpenseFilter($event)" name="nationalExpenseComparison"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="nationalExpenseComparison" placeholder="Filter" appendTo="body"
+                                    [(ngModel)]="nationalExpenseComparisonSelected">
+                                </ng-select>
+                            </div> -->
+                            <div class="col-md-3">
+                                <div class="d-flex flex-row justify-content-end gap-2">
+                                    <div class="btn-group">
+                                        <button class="btn btn-default border dropdown-toggle fw-light rounded-3"
+                                            type="button" (click)="OpenModal(dialogForCostHeadFilter)">
+                                            Data Filter
+                                        </button>
+                                        <div class="dropdown-menu p-4 mt-5">
+                                            <div class="card">
+                                                <h5>Dropdown body will go here</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <canvas class="w-100" id="myChart4" width="1320" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start National comparison Filter Modal -->
+
+        <ng-template #dialogForCostHeadFilter let-data let-ref="dialogRef">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="width: 880px;">
+                <nb-card class="min-height">
+                    <nb-card-header>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <h4>Query Filter</h4>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <button style="text-align: right;" nbButton
+                                    (click)="ref.close();"><span>X</span></button>
+                            </div>
+                        </div>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="customYearId">Year</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="setCustomYearFilterCostHead(this.$event)"
+                                            [items]="customYearFilterList" [virtualScroll]="true" name="customYearId"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="customYearId"
+                                            placeholder="Select a year" appendTo="body"
+                                            [(ngModel)]="costHeadCustomYearSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="isCostHeadCustomYear">
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label" for="customYear">Custom
+                                        Year<span>*</span></label>
+                                    <div class="col-8">
+                                        <input type="number" class="form-control text-left" [(ngModel)]="customYear"
+                                            id="customYear" name="customYear" nbInput fullWidth
+                                            placeholder="Enter year, i.e. 2024">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </nb-card-body>
+                    <nb-card-footer>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <span>{{msg}}</span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: -45px;">
+                                <div style="text-align: center;">
+                                    <button class="btn btn-danger m-0 !important"
+                                        (click)="setComparisonYearCostHead();getNationalExpenseComparison();ref.close()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </nb-card-footer>
+                </nb-card>
+            </div>
+        </ng-template>
+
+        <!-- End Modal -->
+
+    </section>
+    <!-- end cost head section  -->
+
+    <!-- start depot and expense report section  -->
+    <section class="container-fluid location-wise-expense my-4" *ngIf="!isDetails">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title d-flex justify-content-between">
+                            <h4 class="fw-normal">Depot Overview</h4>
+                            <div>
+                                <button class="btn btn-default border" (click)="toggleDepotOverview()"
+                                    *ngIf="!isDeptotOverViewList"><i class="fa-solid fa-list-ul"></i></button>
+                                <button class="btn btn-default border" (click)="toggleDepotOverview()"
+                                    *ngIf="isDeptotOverViewList"><i class="fa fa-pie-chart"
+                                        aria-hidden="true"></i></button>
+                                <div class="btn-group">
+                                    <div style="width: 150px;">
+                                        <!-- <ng-select [items]="depotOverviewFilterList" nbselect [virtualScroll]="true"
+                                            name="partyId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="partyId" placeholder="Filter" appendTo="body"
+                                            [(ngModel)]="depotOverviewFilterSelected">
+                                        </ng-select> -->
+                                        <div class="btn-group">
+                                            <button class="btn btn-default border dropdown-toggle fw-light rounded-3"
+                                                type="button" (click)="OpenModal(dialogForDepotOverview)">
+                                                Data Filter
+                                            </button>
+                                            <div class="dropdown-menu p-4 mt-5">
+                                                <div class="card">
+                                                    <h5>Dropdown body will go here</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- chart -->
+                        <canvas class="w-100" id="myChart" width="1320" height="750"
+                            *ngIf="!this.isDeptotOverViewList"></canvas>
+                        <!-- table view -->
+                        <div class="scrollable-vertical" *ngIf="this.isDeptotOverViewList">
+                            <div style="max-height: auto; overflow-y: auto;">
+                                <table style="width:100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of depotOverviewSummary">
+                                            <td>{{item.DepotName}}</td>
+                                            <td>{{item.amount}}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <button type="button" style="margin-top: 10px;" class="btn btn-outline-danger btn-sm float-end"
+                            (click)="this.isDetails = true; this.isDetailsOfDepotOverview = true;getDepotOverview();"
+                            *ngIf="this.isDeptotOverViewList">View
+                            Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title d-flex justify-content-between">
+                            <h4 class="fw-normal">Expense Categories</h4>
+                            <div>
+                                <button class="btn btn-default border" (click)="toggleExpenseCategotyView()"
+                                    *ngIf="!isExpenseCategoryList">
+                                    <i class="fa-solid fa-list-ul"></i>
+                                </button>
+                                <button class="btn btn-default border" (click)="toggleExpenseCategotyView()"
+                                    *ngIf="isExpenseCategoryList">
+                                    <i class="fa fa-pie-chart" aria-hidden="true"></i>
+                                </button>
+                                <div class="btn-group">
+                                    <div style="width: 150px;">
+                                        <!-- <ng-select [items]="expenseCategoryFilterList" nbselect [virtualScroll]="true"
+                                            name="partyId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="partyId" placeholder="Filter" appendTo="body"
+                                            [(ngModel)]="expenseCategoryFilterSelected">
+                                        </ng-select> -->
+                                        <div class="btn-group">
+                                            <!-- <button class="btn btn-default border dropdown-toggle fw-light rounded-3"
+                                                type="button" (click)="OpenModal(dialogForExpenseCategory)">
+                                                Data Filter
+                                            </button> -->
+                                            <button class="btn btn-default border dropdown-toggle fw-light rounded-3"
+                                                type="button" (click)="OpenModal(dialogForExpenseCategory)">
+                                                Data Filter
+                                            </button>
+                                            <div class="dropdown-menu p-4 mt-5">
+                                                <div class="card">
+                                                    <h5>Dropdown body will go here</h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <canvas class="w-100" id="myChart2" width="1320" height="750"
+                            *ngIf="!this.isExpenseCategoryList"></canvas>
+                        <!-- <div class="scrollable-vertical" *ngIf="this.isExpenseCategoryList">
+                            <div style="max-height: auto; overflow-y: auto;">
+                                <table style="width:100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Marketing</td>
+                                            <td>Tk.244.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Salary</td>
+                                            <td>Tk.326.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>LC</td>
+                                            <td>Tk.408.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Incentive</td>
+                                            <td>Tk.628.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Logistic</td>
+                                            <td>Tk.166.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Food Cost</td>
+                                            <td>Tk.250.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Electricity</td>
+                                            <td>Tk.144.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Internet Bill</td>
+                                            <td>Tk.408.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Incentive</td>
+                                            <td>Tk.628.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Logistic</td>
+                                            <td>Tk.166.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Food Cost</td>
+                                            <td>Tk.250.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Electricity</td>
+                                            <td>Tk.144.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Internet Bill</td>
+                                            <td>Tk.408.00</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> -->
+                        <div class="scrollable-vertical" *ngIf="this.isExpenseCategoryList">
+                            <div style="max-height: auto; overflow-y: auto;">
+                                <table style="width:100%; border-collapse: collapse; text-align: left;">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of categoryOverviewSummary">
+                                            <td>{{item.expenseCategoryName}}</td>
+                                            <td>{{item.value}}</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <button type="button" style="margin-top: 10px;" class="btn btn-outline-danger btn-sm float-end"
+                            (click)="this.isDetails = true; this.isDetailsOfCategoryWiseExpense=true;this.getcategoryOverview();"
+                            *ngIf="this.isExpenseCategoryList">View
+                            Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start National comparison Filter Modal -->
+
+        <ng-template #dialogForDepotOverview let-data let-ref="dialogRef">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="width: 880px;">
+                <nb-card class="min-height">
+                    <nb-card-header>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <h4>Query Filter</h4>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <button style="text-align: right;" nbButton
+                                    (click)="ref.close();"><span>X</span></button>
+                            </div>
+                        </div>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="customYearId">Year</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="setCustomYearFilterDepotOverview(this.$event)"
+                                            [items]="customYearFilterList" [virtualScroll]="true" name="customYearId"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="customYearId"
+                                            placeholder="Select year" appendTo="body"
+                                            [(ngModel)]="customYearSelectedDepotOverview">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="isCustomYearDepotOverview">
+                                <div class="form-group row">
+                                    <label class="col-4 col-form-label" for="customYearRange">Custom
+                                        Year<span>*</span></label>
+                                    <div class="col-8">
+                                        <input type="number" class="form-control text-left"
+                                            [(ngModel)]="customYearDepotOverview" id="customYearRange"
+                                            name="customYearRange" nbInput fullWidth
+                                            placeholder="Enter years, i.e.2022">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </nb-card-body>
+                    <nb-card-footer>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <span>{{msg}}</span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: -45px;">
+                                <div style="text-align: center;">
+                                    <button class="btn btn-danger m-0 !important"
+                                        (click)="setComparisonYearCostHeadDepotVoerview();getDepotOverview();ref.close()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </nb-card-footer>
+                </nb-card>
+            </div>
+        </ng-template>
+
+        <ng-template #dialogForExpenseCategory let-data let-ref="dialogRef">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="width: 880px;">
+                <nb-card class="min-height">
+                    <nb-card-header>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <h4>Query Filter</h4>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <button style="text-align: right;" nbButton
+                                    (click)="ref.close();"><span>X</span></button>
+                            </div>
+                        </div>
+                    </nb-card-header>
+                    <nb-card-body>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-6 col-sm-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label" for="expenseLocationId">Location
+                                        Type</label>
+                                    <div class="col-sm-10">
+                                        <ng-select nbselect [items]="expenseLocationTypeList" [virtualScroll]="true"
+                                            (change)="this.expenseLocationId=this.$event.id; setFiltersEC(this.$event.id)"
+                                            name="expenseLocationId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="expenseLocationId"
+                                            placeholder="Select location" appendTo="body"
+                                            [(ngModel)]="expenseCategoryTypeSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowZoneEC">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="zoneCode">Zone</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="GetAllRegionEC();" [items]="zoneListEC"
+                                            name="zoneCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="zoneCode" placeholder="Select Zone" appendTo="body"
+                                            [(ngModel)]="zoneSelectedEC" [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowRegionEC">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="regionCode">Region</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="regionCodeEC = $event.id;getAllAreaEC();"
+                                            [items]="regionListEC" [virtualScroll]="true" name="regionCode"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="regionCode"
+                                            placeholder="Select Region" appendTo="body" [(ngModel)]="regionSelectedEC"
+                                            [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowAreaEC">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="areaCodeEC">Area</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="areaCodeEC = $event.id;getAllTerritoryEC();"
+                                            [items]="areaListEC" name="areaCodeEC" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="areaCodeEL"
+                                            placeholder="Select Area" appendTo="body" [(ngModel)]="areaSelectedEC"
+                                            [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowTerritoryEC">
+                                <div class="form-group row">
+                                    <label class="col-sm-4 col-form-label" for="territoryCodeEC">Territory</label>
+                                    <div class="col-sm-8">
+                                        <ng-select nbselect (change)="territoryChangeEC($event)"
+                                            [items]="territoryListEC" [virtualScroll]="true" name="territoryCodeEC"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="territoryCodeEC"
+                                            placeholder="Select Territory" appendTo="body"
+                                            [(ngModel)]="territorySelectedEC" [multiple]="true">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date</label>
+                                    <div class="col-sm-8">
+                                        <input required [(ngModel)]="fDateEC" [nbDatepicker]="fdatepicker" nbInput
+                                            fullWidth placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #fdatepicker></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group row">
+                                    <label for="todateSelected" class="col-sm-4 col-form-label">To Date</label>
+                                    <div class="col-sm-8">
+                                        <input required [(ngModel)]="tDateEC" [nbDatepicker]="datepicker" nbInput
+                                            fullWidth placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                                        <nb-datepicker #datepicker></nb-datepicker>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </nb-card-body>
+                    <nb-card-footer>
+                        <div class="row">
+                            <div class="col-lg-11 col-md-11 col-sm-11">
+                                <span>{{msg}}</span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: -45px;">
+                                <div style="text-align: center;">
+                                    <button class="btn btn-danger m-0 !important"
+                                        (click)="this.getcategoryOverview();ref.close()">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </nb-card-footer>
+                </nb-card>
+            </div>
+        </ng-template>
+
+        <!-- End Modal -->
+
+    </section>
+    <!-- end depot and expense report section  -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

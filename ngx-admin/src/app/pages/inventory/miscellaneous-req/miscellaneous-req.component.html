@@ -1,0 +1,234 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true' nbInput>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="RmPmMiscReqDate">Date <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.RmPmMiscReqDate" name="RmPmMiscReqDate"
+                                    id="RmPmMiscReqDate" [nbDatepicker]="idatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label for="chargeTypeId" class="col-sm-12 col-form-label">Material
+                                Type<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect
+                                    (change)="(master.productTypeId  = this.$event.id); GetTypeWiseProductSpec(this.$event.id);"
+                                    [items]="materialsTypeList" name="productTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="productTypeId" placeholder="Select type"
+                                    appendTo="body" [(ngModel)]="materialsTypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label for="miscReqTypeId" class="col-sm-12 col-form-label">Req. Type<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.miscReqTypeId = this.$event.id);"
+                                    [items]="miscReqTypeList" name="miscReqTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="miscReqTypeId"
+                                    placeholder="Select Req. Type" appendTo="body" [(ngModel)]="miscReqTypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="reqFrom">Req. From<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" [(ngModel)]="master.reqFrom" id="reqFrom"
+                                    name="reqFrom" placeholder="reqFrom" required nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="reqPurpose">Req. Purpose<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" [(ngModel)]="master.reqPurpose" id="reqPurpose"
+                                    name="reqPurpose" placeholder="reqPurpose" required nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="gatePassNo">Gate Pass No<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" [(ngModel)]="master.gatePassNo" id="gatePassNo"
+                                    name="gatePassNo" placeholder="gatePassNo" required nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="RmPmMiscReqDate">Gate pass date
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.gatePassDate" name="gatePassDate"
+                                    id="RmPmMiscReqDate" [nbDatepicker]="idatepickerGP" nbInput fullWidth
+                                    placeholder="gatePassDate" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepickerGP></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Details" class="btn-tab">
+                        <div class="row">
+
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <label class="col-form-label" for="productWiseSpecificationId">Material
+                                            Name <span>*</span></label>
+                                        <ng-select nbselect
+                                            (change)="(productWiseSpecificationId = this.$event.id); getProductSpecDetails();"
+                                            [items]="detailsProductSpecList" name="productWiseSpecificationId"
+                                            bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="productWiseSpecificationId" placeholder="Select a product"
+                                            [virtualScroll]="true" appendTo="body"
+                                            [(ngModel)]="detailsProductSpecSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="currentStock">Current Stock
+                                            <span>*</span></label>
+                                        <input type="number" class="form-control text-left" [(ngModel)]="currentStock"
+                                            id="currentStock" name="currentStock" fullWidth placeholder="currentStock"
+                                            nbInput readonly>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="uomName">UOM Name <span>*</span></label>
+                                        <input type="text" class="form-control" required [(ngModel)]="uomName"
+                                            id="uomName" name="uomName" readonly nbInput fullWidth
+                                            placeholder="UOM Name">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="reqQty">Qty.
+                                            <span>*</span></label>
+                                        <input type="number" class="form-control text-left" [(ngModel)]="reqQty"
+                                            id="reqQty" name="reqQty" fullWidth placeholder="Qty."
+                                            (ngModelChange)="validateQty();" nbInput required>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="reqQty">Remarks
+                                            <span>*</span></label>
+                                        <input [(ngModel)]="remarks" type="text" class="form-control text-right"
+                                            id="remark" required name="remark" nbInput fullWidth placeholder="remarks">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <div style="text-align: center;">
+                                            <button (click)="addToDetailsGrid(dialog)"
+                                                class="btn btn-success btn-sm m-3"> <i class="fa fa-plus"
+                                                    aria-hidden="true"></i> Add </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Material Name</th>
+                                    <!-- <th>Current Stock</th> -->
+                                    <th>Req. Qty.</th>
+                                    <th>UOM</th>
+                                    <th>Remarks</th>
+                                    <th>Action</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.lstDetail; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <div>{{details.productName}}</div>
+                                    </td>
+                                    <!-- <td>
+                                        {{details.currentStock}}
+                                    </td> -->
+                                    <td>
+                                        <input [(ngModel)]="details.reqQty" type="number" class="form-control text-left"
+                                            id="reqQty" name="reqQty" nbInput fullWidth placeholder="Qty."
+                                            (ngModelChange)="calculateTotal(rowIndex);" readonly>
+                                    </td>
+                                    <td>
+                                        {{details.uomName}}
+                                    </td>
+                                    <td>
+                                        <input [(ngModel)]="details.remarks" type="text" class="form-control text-right"
+                                            id="remarks" required name="remarks" nbInput fullWidth
+                                            placeholder="remarks">
+                                    </td>
+                                    <td>
+                                        <button (click)="deleteDetails(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

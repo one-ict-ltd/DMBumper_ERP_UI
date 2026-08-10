@@ -1,0 +1,167 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="form-group col-6">
+                <label class="col-sm-4 col-form-label" for="depotCode">Depot<span>*</span></label>
+                <div class="col-sm-8">
+                    <ng-select nbselect (change)="(depotCode= this.$event.id);getCustomerList();" [items]="depotList"
+                        name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                        placeholder="Select a Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                    </ng-select>
+                </div>
+            </div>
+            <div class="form-group col-6">
+                <label class="col-sm-4 col-form-label" for="depotCode"></label>
+                <div class="col-sm-12">
+                    <button (click)="LoadGridData()" class="btn btn-success btn-sm m-3">View Data </button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="productWiseSpecificationId" class="col-sm-3 col-form-label">Select
+                                Item<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.productWiseSpecificationId = this.$event.id);LoadPrice()"
+                                    [items]="productSpecList" [virtualScroll]="true" name="productWiseSpecificationId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="productWiseSpecificationId" placeholder="Select " appendTo="body"
+                                    [(ngModel)]="productSpecListSelected" required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="partyId" class="col-sm-3 col-form-label">Select Customer<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="parties" nbselect (change)="(master.partyId = this.$event.id);"
+                                    [virtualScroll]="true" name="partyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="partyId" placeholder="Select Customer"
+                                    appendTo="body" [(ngModel)]="master.partiesSelected" required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="discountType" class="col-sm-3 col-form-label">Discount
+                                Type<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.discountType = this.$event.id);calculateAmount()"
+                                    [items]="discountTypeList" name="discountType" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="discountType" placeholder="Select type"
+                                    appendTo="body" [(ngModel)]="master.discountTypeSelected" required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="price">Price (<span> VAT =
+                                    {{unitVat}}</span>)</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" [(ngModel)]="master.price" id="price"
+                                    name="price" nbInput fullWidth placeholder="price">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="fromDate">Start Date <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input required [(ngModel)]="master.fromDate" [nbDatepicker]="fromDate" nbInput
+                                    fullWidth placeholder="start Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #fromDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="endDate">End Date <span>*</span> </label>
+                            <div class="col-sm-9">
+                                <input required [(ngModel)]="master.endDate" [nbDatepicker]="endDate" nbInput fullWidth
+                                    placeholder="end Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #endDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="leaveDays">Percentage Amount</label>
+                            <div class="col-sm-9">
+                                <input type="number" (keyup)="calculateAmount()" class="form-control"
+                                    [(ngModel)]="master.percentAmount" id="percentAmount" name="percentAmount" nbInput
+                                    fullWidth placeholder="Percent Amount" [disabled]="isEnableP ? null : 'disabled'">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="discountAmount">Discount Amount</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" (keyup)="calculateAmount()"
+                                    [(ngModel)]="master.discountAmount" id="discountAmount" name="discountAmount"
+                                    nbInput fullWidth placeholder="Discount Amount"
+                                    [disabled]="isEnable ? null : 'disabled'">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="remarks">Amount</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" [(ngModel)]="master.amount" id="amount"
+                                    name="amount" nbInput fullWidth placeholder="Amount" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="" class="col-sm-5 col-form-label"> Is Active ?</label>
+                            <div class="col-sm-7">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

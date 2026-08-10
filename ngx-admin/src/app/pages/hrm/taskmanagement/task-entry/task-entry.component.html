@@ -1,0 +1,268 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="fDate">From
+                            Date <span>*</span></label>
+                        <div class="col-sm-8">
+                            <input required [(ngModel)]="fDate" (ngModelChange)="LoadData();" name="fDate" id="fDate"
+                                [nbDatepicker]="fdatepicker" nbInput fullWidth placeholder="From Date"
+                                [ngModelOptions]="{standalone: true}">
+                            <nb-datepicker #fdatepicker></nb-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group row">
+                        <label class="col-sm-4 col-form-label" for="tDate">To
+                            Date <span>*</span></label>
+                        <div class="col-sm-8">
+                            <input required [(ngModel)]="tDate" (ngModelChange)="LoadData();" name="tDate" id="tDate"
+                                [nbDatepicker]="tdatepicker" nbInput fullWidth placeholder="To Date"
+                                [ngModelOptions]="{standalone: true}">
+                            <nb-datepicker #tdatepicker></nb-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                    <div class="form-group row">
+                        <button style="text-align: right;" nbButton (click)="LoadData();">Load Data</button>
+                    </div>
+                </div>
+            </div>
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="taskType">Task Type<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="( master.taskTypeId = this.$event.id);"
+                                    [items]="taskTypeList" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    name="taskType" id="taskType" placeholder="Select a task type" appendTo="body"
+                                    [(ngModel)]="taskTypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="taskPriority">Task
+                                Priority<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="( master.taskPriorityId = this.$event.id);"
+                                    [items]="taskPriorityList" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    name="taskPriority" id="taskPriority" placeholder="Select a task priority"
+                                    appendTo="body" [(ngModel)]="taskPrioritySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="taskCode">Task Code <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required readonly [(ngModel)]="master.taskCode"
+                                    id="taskCode" name="taskCode" nbInput fullWidth placeholder="task code">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="taskName">Task Name <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.taskName"
+                                    id="taskName" name="taskName" nbInput fullWidth placeholder="Task Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- </div>
+                <div class="row"> -->
+
+                    <!-- </div>
+                <div class="row"> -->
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <!-- <label class="col-sm-12 col-form-label" for="date">Task Assaign Date
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.date" name="date" id="date"
+                                    [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div> -->
+
+                            <label class="col-sm-12 col-form-label" for="partyId">Task Assaign Date & Time
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <div class="input-group date">
+                                    <input class="col-sm-5" required [(ngModel)]="master.date" name="date" id="date"
+                                        [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                                        [ngModelOptions]="{standalone: true}">
+                                    <nb-datepicker #idatepicker></nb-datepicker>
+                                    <div class="input-group-append col-sm-7">
+                                        <input type="time" required [(ngModel)]="master.atime" name="atime" id="atime"
+                                            nbInput fullWidth placeholder="time">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <!-- <label class="col-sm-12 col-form-label" for="expectedEndDate">Expected End Date
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.expectedEndDate" name="expectedEndDate"
+                                    id="expectedEndDate" nbInput fullWidth placeholder="Expected End Date"
+                                    [ngModelOptions]="{standalone: true}" [nbDatepicker]="idatepicker2">
+                                <nb-datepicker #idatepicker2></nb-datepicker>
+                            </div> -->
+                            <label class="col-sm-12 col-form-label" for="partyId">Expected End Date & Time
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <div class="input-group date">
+                                    <input class="col-sm-5" required [(ngModel)]="master.expectedEndDate"
+                                        name="expectedEndDate" id="expectedEndDate" [nbDatepicker]="idatepicker2"
+                                        nbInput fullWidth placeholder="expectedEndDate"
+                                        [ngModelOptions]="{standalone: true}">
+                                    <nb-datepicker #idatepicker2></nb-datepicker>
+                                    <div class="input-group-append col-sm-7">
+                                        <input type="time" required [(ngModel)]="master.etime" name="etime" id="etime"
+                                            nbInput fullWidth placeholder="Time">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="taskPriority">Assign To<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="( master.assignToId = this.$event.id);"
+                                    [items]="assignToList" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    name="assignToId" id="assignToId" placeholder="Select a employee" appendTo="body"
+                                    [(ngModel)]="assignToIdSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="taskPriority">Parent Task
+                                Name</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.parentTaskId = this.$event.id);"
+                                    [items]="parentTaskList" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    name="parentTaskId" id="parentTaskId" placeholder="Select a parent task"
+                                    appendTo="body" [(ngModel)]="parentTaskSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="description">Description <span>*</span></label>
+                            <div class="col-sm-12">
+                                <textarea type="text" class="form-control" required [(ngModel)]="master.description"
+                                    id="description" name="description" nbInput fullWidth
+                                    placeholder="description">{{master.description}}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <div style="text-align: center !important;">
+                                    <button class="btn btn-success btn-sm m-3" (click)="addRow()">Add
+                                        To List</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Assign To</th>
+                        <th>Task Name</th>
+                        <th>Task Priority</th>
+                        <th>Description</th>
+                        <th>Task Assaign Date</th>
+                        <th>Expected End Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of lstMaster; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.assignTo}}</td>
+                        <td>{{item.taskName}}</td>
+                        <td>{{item.priorityName}}</td>
+                        <td>{{item.description}}</td>
+                        <td>{{item.date}}</td>
+                        <td>{{item.expectedEndDate}}</td>
+                        <td>
+                            <button (click)="removeRow(rowIndex, item.taskName)" class="btn btn-danger btn-sm m-1">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+</nb-card>

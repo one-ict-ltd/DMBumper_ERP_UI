@@ -1,0 +1,236 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="depotCode">Depot <span>*</span></label>
+                    <div class="col-sm-9">
+                        <ng-select nbselect (change)="getAllTerritory(depotCode = this.$event.id);" [items]="depotList"
+                            name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                            placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="partyId">Territory <span>*</span></label>
+                    <div class="col-sm-9">
+                        <ng-select nbselect (change)="(territoryCode = this.$event.id);GetAllMIOByTerritory();"
+                            [items]="territoryList" [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="territoryCode" placeholder="Select territory"
+                            appendTo="body" [(ngModel)]="territorySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" hidden>
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="partyId" class="col-2 col-form-label">Customer Name <span>*</span></label>
+                    <div class="col-sm-10">
+                        <ng-select nbselect [items]="parties" [virtualScroll]="true" name="partyId" bindLabel="name"
+                            id="partyId" [(ngModel)]="partySelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Customer" [virtualScroll]="true" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" hidden>
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="checkbox" class="col-sm-2 col-form-label">Show Date Range</label>
+                    <div class="col-sm-10">
+                        <div class="validation-checkboxes">
+                            <nb-checkbox [(ngModel)]="showDateRange" name="checkbox" status="success"
+                                (change)="onCheckboxChange($event)">
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="row" *ngIf="showDateRange"> -->
+        <div class="row" hidden>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-sm-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-sm-3 col-form-label">Date From<span>*</span></label>
+                    <div class="col-sm-4">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+
+                    <label for="todateSelected" class="col-sm-1 col-form-label">To<span>*</span></label>
+                    <div class="col-sm-4">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="mioCode" class="col-3 col-form-label">MIO Name <span>*</span></label>
+                    <div class="col-sm-9">
+                        <ng-select nbselect [items]="mioList" (change)="(mioCode = this.$event.id);" name="mioCode"
+                            bindLabel="name" id="mioCode" [(ngModel)]="mioSelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select a MIO" [virtualScroll]="true"
+                            appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<div class="row" *ngIf="showbody">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+            <!-- <nb-card-header>
+                <div class="row">
+                    <div class="col-sm-6"><b>Sales Invoice List For Collection</b></div>
+                    <div class="col-sm-6">Opening Balance: <b>{{openingBalance}}</b></div>
+                </div>
+            </nb-card-header> -->
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 500px">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="8" style="text-align: center; background-color: goldenrod;"></th>
+                                    <th colspan="5" style="text-align: center; background-color: darkseagreen;">Dues
+                                        Adjust Amount</th>
+                                    <th style="text-align: center; background-color: darkorange;"></th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; background-color: goldenrod;">#</th>
+                                    <th style="text-align: center; background-color: goldenrod;">Customer Code & Name
+                                    </th>
+                                    <th style="text-align: center; background-color: goldenrod;">Address</th>
+                                    <th style="text-align: center; background-color: goldenrod;">Territory Officer</th>
+                                    <!-- <th style="text-align: center; background-color: goldenrod;">Terri. Code & Name</th> -->
+                                    <th style="text-align: center; background-color: goldenrod;">Opening Balance</th>
+                                    <th style="text-align: center; background-color: goldenrod;">Invoice</th>
+                                    <th style="text-align: center; background-color: goldenrod;">Return</th>
+                                    <th style="text-align: center; background-color: goldenrod;">Net Sale</th>
+
+                                    <th style="text-align: center; background-color: darkseagreen;">Collection</th>
+                                    <th style="text-align: center; background-color: darkseagreen;">Discount</th>
+                                    <th style="text-align: center; background-color: darkseagreen;">Incentive</th>
+                                    <th style="text-align: center; background-color: darkseagreen;">Gross Return</th>
+                                    <th style="text-align: center; background-color: darkseagreen;">Total</th>
+                                    <th style="text-align: center; background-color: darkorange;">Closing Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of bodyData; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.partyName}}</td>
+                                    <td>{{details.addressLine}}</td>
+                                    <td>{{details.toName}}</td>
+                                    <td style="text-align: right;">{{details.openingBalance}}</td>
+                                    <td style="font-weight: bold; text-align: right;">{{details.netSalesAmount}}</td>
+                                    <td style="text-align: right;">{{details.returnAmount}}</td>
+                                    <td style="text-align: right;">{{details.netSalesAmount-details.grossRetAmount}}
+                                    </td>
+
+                                    <td style="text-align: right;">{{details.collectionAmount}}</td>
+                                    <td style="text-align: right;">{{details.discountAmount}}</td>
+                                    <td style="text-align: right;">{{details.incentiveAmount}}</td>
+                                    <td style="text-align: right;">{{details.grossRetAmount}}</td>
+
+                                    <td style="font-weight: bold; text-align: right;">{{details.totalCollection}}</td>
+                                    <td style="font-weight: bold; text-align: right;">{{details.closingBalance}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; text-align: right;" colspan="4">Territory / Officer
+                                        Wise Total :
+                                    </td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(ttlOpeningBalance)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalNetSalesAmt)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalReturnAmt)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalNetSalesAmt-totalReturnAmt)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalCollection)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalDiscount)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(ttlIncentiveAmount)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalGrossRet)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalNetCollectionAmt)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalclosingBalance)}}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight: bold; text-align: right;" colspan="4">Grand Total :
+                                    </td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(ttlOpeningBalance)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalNetSalesAmt)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalReturnAmt)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalNetSalesAmt-totalReturnAmt)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalCollection)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalDiscount)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(ttlIncentiveAmount)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalGrossRet)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalNetCollectionAmt)}}</td>
+                                    <td style="font-weight: bold; text-align: right;">
+                                        {{currencyFormatter(totalclosingBalance)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

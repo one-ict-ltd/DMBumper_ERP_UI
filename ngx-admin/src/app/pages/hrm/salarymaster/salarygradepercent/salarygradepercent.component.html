@@ -1,0 +1,91 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salaryGradeId" class="col-sm-3 col-form-label">Grade Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salaryGradeItems"
+                                    (change)="(master.salaryGradeId = this.$event.id);getDuplicate();"
+                                    name="salaryGradeId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="salaryGradeId" placeholder="Select Grade Name" appendTo="body"
+                                    [(ngModel)]="master.salaryGradeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salaryHeadId" class="col-sm-3 col-form-label">Head Name <span>*</span>
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salaryHeadItems"
+                                    (change)="(master.salaryHeadId = this.$event.id);getDuplicate();"
+                                    name="salaryHeadId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="salaryHeadId" placeholder="Select Head Name" appendTo="body"
+                                    [(ngModel)]="master.salaryHeadSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salaryCalulationTypeId" class="col-sm-3 col-form-label">Calulation Type
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select [items]="salaryCalculationTypeItems"
+                                    (change)="(master.salaryCalulationTypeId = this.$event.id);"
+                                    name="salaryCalulationTypeId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="salaryCalulationTypeId" placeholder="Select Head Name" appendTo="body"
+                                    [(ngModel)]="master.salaryCalulationTypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="percentAmount" class="col-sm-3 col-form-label">Percentage/Amount
+                            </label>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" id="percentAmount" required
+                                    [(ngModel)]="master.percentAmount" name="percentAmount" nbInput fullWidth
+                                    placeholder="Percentage/Amount">
+                            </div>
+                            <div class="col-sm-3 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

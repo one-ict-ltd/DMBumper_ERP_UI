@@ -1,0 +1,296 @@
+span {
+    color: rgb(7, 7, 7);
+}
+
+pre {
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    font-family: Arial, Helvetica, sans-serif;
+    white-space: pre-wrap;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 440px;
+    overflow: auto;
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    padding: 8px 16px;
+}
+
+th {
+    background: #eee;
+}
+
+.green-button {
+    background-color: green;
+    color: white;
+}
+
+.button-container {
+    text-align: right;
+}
+
+table.table tr:hover {
+    background-color: #c9c5c5;
+    cursor: pointer;
+}
+
+.larger-dropdown {
+    width: 100%;
+}
+
+.celebration-button {
+    background-color: #cedff8;
+    color: #FF4500;
+    padding: 10px 20px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.celebration-button:hover {
+    border-color: #000;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fireworks {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+
+    5% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(10);
+        opacity: 0;
+    }
+}
+
+.fireworks-effect {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: fireworks 2s ease-in-out infinite;
+}
+
+.fireworks-effect:nth-child(1) {
+    background: radial-gradient(circle, #FF0000, transparent);
+    animation-delay: 0s;
+}
+
+.fireworks-effect:nth-child(2) {
+    background: radial-gradient(circle, #00FF00, transparent);
+    animation-delay: 0.2s;
+}
+
+.fireworks-effect:nth-child(3) {
+    background: radial-gradient(circle, #0000FF, transparent);
+    animation-delay: 0.4s;
+}
+
+.fireworks-red {
+    background: #FF0000;
+}
+
+.fireworks-green {
+    background: #00FF00;
+}
+
+.fireworks-blue {
+    background: #0000FF;
+}
+
+.fireworks-yellow {
+    background: #FFFF00;
+}
+
+.celebration-button {
+    position: relative;
+}
+
+.multicolor-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 20px);
+    gap: 2px;
+}
+
+.color-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+}
+
+.red {
+    background-color: #FF0000;
+}
+
+.green {
+    background-color: #00FF00;
+}
+
+.blue {
+    background-color: #0000FF;
+}
+
+.yellow {
+    background-color: #FFFF00;
+}
+
+.fireworks-container {
+    display: flex;
+    align-items: center;
+}
+
+.fireworks-effect {
+    width: 10px;
+    height: 10px;
+    background: #FFD700;
+    border-radius: 50%;
+    animation: fireworks 1.0s ease-in-out infinite;
+    margin-right: 2px;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.fireworks-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.top-fireworks {
+    animation: fireworks 2s ease-in-out infinite;
+}
+
+.bottom-fireworks {
+    animation: fireworks 2s ease-in-out infinite;
+    top: auto;
+    bottom: 0;
+}
+
+.fireworks-lower {
+    animation-delay: 0.2s;
+}
+
+// image cropper styles
+/* container for cropper + preview */
+.cropper-layout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* left: cropper area */
+.cropper-box {
+    flex: 1 1 auto;
+    /* take remaining space */
+    min-width: 280px;
+    /* don't collapse too small */
+    max-width: calc(100vw - 300px);
+    /* leave room for preview */
+}
+
+/* inner wrapper gives a fixed max height based on viewport */
+.cropper-inner {
+    width: 100%;
+    height: calc(100vh - 220px);
+    /* modal header/footer ~220px (adjust if needed) */
+    max-height: 600px;
+    /* extra safety */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 4px;
+}
+
+/* force the cropper to size responsively inside wrapper */
+::ng-deep image-cropper,
+::ng-deep image-cropper * {
+    display: block;
+    max-width: 100%;
+    /* responsive horizontally */
+    max-height: 60vh;
+    /* fits inside viewport without scrolling */
+    margin: 0 auto;
+    /* center horizontally */
+    background: transparent;
+    /* remove covering background */
+}
+
+::ng-deep image-cropper canvas {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* right: preview + controls */
+.preview-box {
+    flex: 0 0 300px;
+    max-width: 300px;
+    margin: auto;
+}
+
+.preview-box h6 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* responsive: stack on small screens */
+@media (max-width: 768px) {
+    .cropper-layout {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .cropper-box {
+        max-width: 100%;
+    }
+
+    .preview-box {
+        max-width: 100%;
+        flex: none;
+        margin-top: 12px;
+        text-align: center;
+    }
+
+    .cropper-inner {
+        height: calc(100vh - 360px);
+        /* allow more vertical space on small screens */
+    }
+}

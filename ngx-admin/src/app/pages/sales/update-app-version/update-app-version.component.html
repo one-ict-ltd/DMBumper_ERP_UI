@@ -1,0 +1,42 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <!-- "!show"> -->
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label for="AppVersion" class="col-sm-12 col-form-label">Company
+                                <span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect [items]="AppVersionList"
+                                    (change)="( master.appVersion= this.$event.id);" name="AppVersion" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="approvalStatus" placeholder="select one"
+                                    appendTo="body" [(ngModel)]="AppVersionSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="newVersion">New
+                                Version<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.newVersion"
+                                    id="newVersion" name="newVersion" nbInput fullWidth
+                                    placeholder="Enter new App version">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

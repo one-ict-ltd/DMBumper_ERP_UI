@@ -1,0 +1,251 @@
+<nb-card class="actions-card">
+    <nb-card-header><b>{{pageNavigation}}</b>
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group row">
+                    <label class="col-4 col-form-label" for="grdFromDate">From Date <span>*</span></label>
+                    <div class="col-8">
+                        <input required [(ngModel)]="grdFromDate" name="grdFromDate" id="grdFromDate"
+                            [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label class="col-4 col-form-label" for="grdToDate">To Date <span>*</span></label>
+                    <div class="col-8">
+                        <input required [(ngModel)]="grdToDate" name="grdToDate" id="grdToDate"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row !important">
+                    <button class="btn btn-info" (click)="GetGridData();">Search</button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card class="actions-card" *ngIf="!show">
+    <!-- <nb-card-header>
+        <div class="row">
+            <div class="col-2"><b>Invoice Details</b></div>
+            <div class="col-10"><span>{{discountType}}</span></div>
+        </div>
+    </nb-card-header> -->
+    <nb-card-body>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="moneyReceiptDate">Receipt Date
+                                <span>*</span></label>
+                            <div class="col-8">
+                                <input required [(ngModel)]="master.moneyReceiptDate" (ngModelChange)="ChangeNumber();"
+                                    [nbDatepicker]="moneyReceiptDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #moneyReceiptDate [min]="minDate" [max]="maxDate"></nb-datepicker>
+                                <!-- [min]="minDate" [max]="maxDate" -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="moneyReceiptNo">Receipt Number<span>
+                                    *</span></label>
+                            <div class="col-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.moneyReceiptNo"
+                                    id="moneyReceiptNo" name="moneyReceiptNo" nbInput fullWidth
+                                    placeholder="Money Receipt Number" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                            <div class="col-8">
+                                <ng-select nbselect
+                                    (change)="(master.depotCode = $event.id);getAllTerritory($event.id);"
+                                    [items]="depotList" name="depotCode" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="depotCode" placeholder="Select Depot Name"
+                                    appendTo="body" [(ngModel)]="depotSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="partyId">Territory <span> *</span></label>
+                            <div class="col-8">
+                                <ng-select nbselect
+                                    (change)="(master.territoryCode = $event.id);GetAllMIOByTerritory();"
+                                    [items]="territoryList" [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="territoryCode"
+                                    placeholder="Select territory" appendTo="body" [(ngModel)]="territorySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="mioCode" class="col-4 col-form-label">MIO Name <span> *</span></label>
+                            <div class="col-8">
+                                <ng-select nbselect [items]="mioList" (change)="(master.mioCode = $event.id);"
+                                    name="mioCode" bindLabel="name" id="mioCode" [(ngModel)]="mioSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select a MIO"
+                                    [virtualScroll]="true" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="mrTypeId" class="col-4 col-form-label">Money Receipt Type <span>
+                                    *</span></label>
+                            <div class="col-8">
+                                <ng-select nbselect [items]="mrTypeList" (change)="(master.mrTypeId = $event.id);"
+                                    name="mrTypeId" bindLabel="name" id="mrTypeId" [(ngModel)]="mrTypeSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select a receipt type"
+                                    [virtualScroll]="true" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="collectionAmountInput" class="col-4 col-form-label">Amount <span>
+                                    *</span></label>
+                            <div class="col-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.amount"
+                                    id="collectionAmountInput" name="collectionAmountInput" fullWidth
+                                    placeholder="Input Collection Amount" min="1">
+                                <!-- oninput="this.value = Math.abs(this.value)" -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="receivedFromPerson" class="col-4 col-form-label">Received From Person
+                                <span> *</span></label>
+                            <div class="col-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.receivedFromPerson"
+                                    id="receivedFromPerson" name="receivedFromPerson" fullWidth
+                                    placeholder="Received From Person">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group row">
+                            <label for="remarks" class="col-2 col-form-label">Remarks</label>
+                            <div class="col-10">
+                                <input type="text" class="form-control" [(ngModel)]="master.remarks" id="remarks"
+                                    name="remarks" fullWidth placeholder="Remarks">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="paymentModeId" class="col-4 col-form-label">Payment Mode<span> *</span></label>
+                            <div class="col-8">
+                                <ng-select nbselect
+                                    (change)="(master.paymentModeId = this.$event.id);ChangePaymentMode();"
+                                    [items]="PaymentModeList" name="paymentModeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="paymentModeId"
+                                    placeholder="Select Payment Mode" appendTo="body" [(ngModel)]="PaymentModeSelected"
+                                    required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="trxNo" class="col-4 col-form-label">Transaction / Ref. No.</label>
+                            <div class="col-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.trxNo" id="trxNo"
+                                    name="trxNo" fullWidth placeholder="Reference / Transaction No.">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-6">
+                <div class="form-group row">
+                    <label for="remarks" class="col-4 col-form-label">Remarks <span>*</span></label>
+                    <div class="col-8">
+                        <input type="text" class="form-control" [(ngModel)]="master.remarks" id="remarks" name="remarks"
+                            fullWidth placeholder="Remarks">
+                    </div>
+                </div>
+            </div> -->
+                    <!-- <div class="col-6">
+            
+            </div> -->
+                </div>
+                <div class="row" *ngIf="!showChk" [disabled]="disabled ? 'disabled' : null">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="bankName">Bank Name</label>
+                            <div class="col-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.bankName" id="bankName"
+                                    name="bankName" nbInput fullWidth placeholder="Bank Name">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="branchName">Branch Name</label>
+                            <div class="col-8">
+                                <input required [(ngModel)]="master.branchName" id="branchName" name="branchName"
+                                    nbInput fullWidth placeholder="Branch Name" [ngModelOptions]="{standalone: true}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="chequeNo">Cheque Number</label>
+                            <div class="col-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.chequeNo" id="chequeNo"
+                                    name="chequeNo" nbInput fullWidth placeholder="Number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="chequeDate">Cheque Date
+                            </label>
+                            <div class="col-8">
+                                <input required [(ngModel)]="master.chequeDate" [nbDatepicker]="chequeDate"
+                                    id="chequeDate" name="chequeDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #chequeDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-body>
+</nb-card>

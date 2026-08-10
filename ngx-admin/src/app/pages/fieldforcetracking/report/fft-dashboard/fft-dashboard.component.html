@@ -1,0 +1,334 @@
+<nb-card>
+  <nb-card-header>
+    <!-- <fieldset>    </fieldset> -->
+    <form #masterForm="ngForm">
+
+      <div class="card-body">
+
+        <div class="row">
+          <!-- 1st Column -->
+
+          <div class="col-3" style="border: 1px; border-style: dotted; border-color: cornflowerblue;">
+            <br>
+            <div class="form-group row">
+              <label for="DateT" class="col-sm-3 col-form-label">Date</label>
+              <div class="col-sm-9">
+                <input required [(ngModel)]="masterT.DateT" name="Date" id="DateT" nbInput fullWidth placeholder="Date"
+                  [ngModelOptions]="{standalone: true}" [nbDatepicker]="idatepicker">
+                <nb-datepicker #idatepicker></nb-datepicker>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="ZONE_CODET" class="col-sm-3 col-form-label">Zone</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(masterT.ZONE_CODET = this.$event.id);DropdownChange('Z', 'T');"
+                  [items]="ZONE_CODETList" id="ZONE_CODET" name="ZONE_CODET" [(ngModel)]="ZONE_CODETSelected"
+                  placeholder="Select a Zone" bindLabel="name" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row" hidden>
+              <label for="DEPOT_CODET" class="col-sm-3 col-form-label">Depo</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(masterT.DEPOT_CODET = this.$event.id);DropdownChange('D', 'T');"
+                  [items]="DEPOT_CODETList" id="DEPOT_CODET" name="DEPOT_CODET" [(ngModel)]="DEPOT_CODETSelected"
+                  placeholder="Select a Depot" bindLabel="name" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="REGION_CODET" class="col-sm-3 col-form-label">Region</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(masterT.REGION_CODET = this.$event.id);DropdownChange('R', 'T');"
+                  [items]="REGION_CODETList" id="REGION_CODET" name="REGION_CODET" [(ngModel)]="REGION_CODETSelected"
+                  placeholder="Select a
+                  REGION" bindLabel="name" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="AREA_CODET" class="col-sm-3 col-form-label">Area</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(masterT.AREA_CODET = this.$event.id);DropdownChange('A', 'T');"
+                  bindLabel="name" [items]="AREA_CODETList" id="AREA_CODET" name="AREA_CODET"
+                  [(ngModel)]="AREA_CODETSelected" placeholder="Select a
+                  AREA" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="TERRITORY_CODET" class="col-sm-3 col-form-label">Territory</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(masterT.TERRITORY_CODET = this.$event.id);DropdownChange('T', 'T');"
+                  bindLabel="name" [items]="TERRITORY_CODETList" id="TERRITORY_CODET" name="TERRITORY_CODET"
+                  [(ngModel)]="TERRITORY_CODETSelected" placeholder="Select a
+                  TERRITORY" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="userIdT" class="col-sm-3 col-form-label">Emp. Name</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(masterT.userIdT = this.$event.id);DropdownChange('', 'T');"
+                  bindLabel="name" [items]="userListT" id="userIdT" name="userIdT" [(ngModel)]="userIdTSelected"
+                  placeholder="Select a Employee" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+
+
+          </div>
+
+          <!-- 2nd Column -->
+          <div class="col-3" style="border: 1px; border-style: dotted; border-color: cornflowerblue;">
+            <br>
+            <div class="form-group row">
+              <label for="TE" class="col-sm-7 col-form-label">TOTAL EMPLOYEE</label>
+              <div class="col-sm-5">
+                <!-- <input type="text" data-parsley-trigger="keyup" onclick="getDeatilTE('TE')" class="form-control"                  style="background-color: #5edb8a;font-weight:bolder;color: red;text-align: right;cursor:pointer"                  readonly name="Date" id="TE" placeholder="" value="" /> -->
+                <input type="text" class="form-control" required [(ngModel)]="TE" id="TE" name="TE"
+                  (click)="addDetails(dialog, 'TE')" nbInput fullWidth readonly>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="PI" class="col-sm-7 col-form-label">PUNCH IN</label>
+              <div class="col-sm-5">
+                <!-- <input type="text" data-parsley-trigger="keyup" class="form-control" style="    background-color: #28a745;        font-weight: 900;        color: #0c9d0a;        text-align: right;cursor:pointer    " readonly name="Date" onclick="getDeatilPI('PI')" id="PI" placeholder="" value=""> -->
+                <input type="text" class="form-control" required [(ngModel)]="PI" id="PI" name="PI"
+                  (click)="addDetails(dialog, 'PI')" nbInput fullWidth readonly>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="LP" class="col-sm-7 col-form-label">LATE PUNCH</label>
+              <div class="col-sm-5">
+                <!-- <input type="text" data-parsley-trigger="keyup" class="form-control" style="    background-color: #f6c23e;        font-weight: 900;        color: red;        text-align: right;cursor:pointer    " readonly name="Date" id="LP" onclick="getDeatilLP('LP')" placeholder="" value=""> -->
+                <input type="text" class="form-control" required [(ngModel)]="LP" id="LP" name="LP"
+                  (click)="addDetails(dialog, 'LP')" nbInput fullWidth readonly>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="OD" class="col-sm-7 col-form-label">OFF DAY</label>
+              <div class="col-sm-5">
+                <!-- <input type="text" data-parsley-trigger="keyup" class="form-control" style="    background-color: #5edb8a;        font-weight: 900;        color: #0c9d0a;        text-align: right;cursor:pointer    " readonly name="Date" id="OD" onclick="getDeatilDO('DO')" placeholder="" value=""> -->
+                <input type="text" class="form-control" required [(ngModel)]="OD" id="OD" name="OD"
+                  (click)="addDetails(dialog, 'DO')" nbInput fullWidth readonly>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="PO" class="col-sm-7 col-form-label">PUNCH OUT</label>
+              <div class="col-sm-5">
+                <!-- <input type="text" data-parsley-trigger="keyup" class="form-control" style="        background-color: #0c9d0a;font-weight: 900;color: white;text-align: right;cursor:pointer" readonly name="Date" id="PO" onclick="getDeatilPO('PO')" placeholder="" value=""> -->
+                <input type="text" class="form-control" required [(ngModel)]="PO" id="PO" name="PO"
+                  (click)="addDetails(dialog, 'PO')" nbInput fullWidth readonly>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="NOP" class="col-sm-7 col-form-label">NOT PUNCHED</label>
+              <div class="col-sm-5">
+                <!-- <input type="text" data-parsley-trigger="keyup" class="form-control" tyle="background-color: #d71414;font-weight: 900;color: white;        text-align: right;cursor:pointer    " readonly name="Date" id="NOP" onclick="getDeatilNOP('NOP')" placeholder="" value=""> -->
+                <input type="text" class="form-control" required [(ngModel)]="NOP" id="NOP" name="NOP"
+                  (click)="addDetails(dialog, 'NOP')" nbInput fullWidth readonly>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-11" id="chartContainer" style="height: 100px; width: 80px;"></div>
+            </div>
+          </div>
+
+          <!-- 3rd Column -->
+          <div class="col-6" style="border: 1px; border-style: dotted; border-color: cornflowerblue;">
+            <div class="form-group row">
+              <div class="col-sm-11" id="SalesVsCollectionChart" style="margin:20px 20px 20px 20px;">
+              </div>
+            </div>
+          </div>
+
+          <!-- 3rd Column -->
+          <!-- <div class="col-3" style="border: 1px; border-style: dotted; border-color: cornflowerblue;">
+            <div class="form-group row">
+              <div id="pieChartTotalStock" style="margin-left:30px; height: 300px;width:300px;">
+              </div>
+            </div>
+          </div> -->
+          <!-- 4th Column -->
+          <!-- <div class="col-3" style="border: 1px; border-style: dotted; border-color: cornflowerblue;">
+            <div class="form-group row">
+              <div id="pieChartTotalSales" style="margin-left:30px; height: 300px; width: 300px;"></div>
+            </div>
+          </div> -->
+
+        </div>
+        <br>
+        <div class="row">
+          <!-- 2nd Row 1st Column -->
+
+          <div class="col-3" style="border: 1px; border-style: dotted; border-color: cornflowerblue;">
+            <br>
+            <div class="form-group row" hidden>
+              <label for="Date" class="col-sm-3 col-form-label">Date</label>
+              <div class="col-sm-9">
+                <input required [(ngModel)]="master.Date" name="Date" id="Date" nbInput fullWidth placeholder="Date"
+                  [ngModelOptions]="{standalone: true}" [nbDatepicker]="idatepicker">
+                <nb-datepicker #idatepicker></nb-datepicker>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="ZONE_CODE" class="col-sm-3 col-form-label">Zone</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(master.ZONE_CODE = this.$event.id);DropdownChange('Z', '');"
+                  [items]="ZONE_CODEList" id="ZONE_CODE" name="ZONE_CODE" [(ngModel)]="ZONE_CODESelected"
+                  placeholder="Select a Zone" bindLabel="name" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row" hidden>
+              <label for="DEPOT_CODE" class="col-sm-3 col-form-label">Depo</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(master.DEPOT_CODE = this.$event.id);DropdownChange('D', '');"
+                  [items]="DEPOT_CODEList" id="DEPOT_CODE" name="DEPOT_CODE" [(ngModel)]="DEPOT_CODESelected"
+                  placeholder="Select a Depot" bindLabel="name" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="REGION_CODE" class="col-sm-3 col-form-label">Region</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(master.REGION_CODE = this.$event.id);DropdownChange('R', '');"
+                  [items]="REGION_CODEList" id="REGION_CODE" name="REGION_CODE" [(ngModel)]="REGION_CODESelected"
+                  placeholder="Select a
+                  REGION" bindLabel="name" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="AREA_CODE" class="col-sm-3 col-form-label">Area</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(master.AREA_CODE = this.$event.id);DropdownChange('A', '');"
+                  bindLabel="name" [items]="AREA_CODEList" id="AREA_CODE" name="AREA_CODE"
+                  [(ngModel)]="AREA_CODESelected" placeholder="Select a
+                  AREA" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="TERRITORY_CODE" class="col-sm-3 col-form-label">Territory</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(master.TERRITORY_CODE = this.$event.id);DropdownChange('T', '');"
+                  bindLabel="name" [items]="TERRITORY_CODEList" id="TERRITORY_CODE" name="TERRITORY_CODE"
+                  [(ngModel)]="TERRITORY_CODESelected" placeholder="Select a
+                  TERRITORY" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="userId" class="col-sm-3 col-form-label">Emp. Name</label>
+              <div class="col-sm-9">
+                <ng-select nbselect (change)="(master.userId = this.$event.id);ChnageEnployee()" bindLabel="name"
+                  [items]="userList" id="userId" name="userId" [(ngModel)]="userIdSelected"
+                  placeholder="Select a Employee" [ngModelOptions]="{standalone: true}" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="count" class="col-sm-3 col-form-label">Total Employee</label>
+              <div class="col-sm-9">
+                <input readonly type="text" class="form-control text-right" id="tEmpCount" required
+                  [(ngModel)]="TotalEmployees" name="tEmpCount" nbInput fullWidth value="0" />
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col-9" style="border: 1px; border-style: ridge; border-color: cornflowerblue;">
+            <div class="form-group">
+              <div id='map' class="row col-sm-12" style="width:100%; height:100%;"></div>
+              <!-- <ng-mapbox id='map' class="row col-sm-12" style="width:100%; height:100%;"></ng-mapbox> -->
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+    </form>
+  </nb-card-header>
+</nb-card>
+
+
+<!-- Modal Popup -->
+<!-- <ng-template #dialog let-data let-ref="dialogRef">
+  <nb-card>
+    <nb-card-header>
+      {{mpHeader}} <button style="text-align: right;" nbButton (click)="ref.close()"><span>X</span></button>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="grid-wrapper">
+        <ag-grid-angular #agGrid style="height: 500px; width: 100%;" id="myGrid" class="ag-theme-alpine"
+          [modules]="modules" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true"
+          [rowData]="rowData" [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+          (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+        </ag-grid-angular>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</ng-template> -->
+
+<ng-template #dialog let-data let-ref="dialogRef">
+
+  <nb-card class="min-height">
+    <nb-card-header>
+      <div class="row">
+        <div class="col-7">
+          <h4>{{mpHeader}}</h4>
+        </div>
+        <div class="col-5 text-right">
+          <button (click)=" ButtonAction('excel')" class="btn-success btn-sm">Save as Excel</button>
+        </div>
+      </div>
+    </nb-card-header>
+    <nb-card-body>
+      <div class="row" style="width: 1000px;">
+        <ag-grid-angular #agGrid style="height: 550px; width: 100%;" id="myGrid" class="ag-theme-alpine"
+          [modules]="modules" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true"
+          [rowData]="rowData" [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+          rowSelection="multiple" pagination='true'>
+        </ag-grid-angular>
+      </div>
+    </nb-card-body>
+    <nb-card-footer>
+      <div class="row">
+        <div class="col-11">
+        </div>
+        <div class="col-1">
+          <button style="text-align: right;" nbButton (click)="ref.close()"><span>X</span></button>
+        </div>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+
+</ng-template>
+<!-- End Modal Popup -->
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>

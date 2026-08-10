@@ -1,0 +1,201 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <fieldset>
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="startDate" class="col-3 col-form-label">Attendance Date <span>*</span></label>
+                            <div class="col-sm-3">
+                                <input id="startDate" required [(ngModel)]="master.startDate" name="startDate"
+                                    [nbDatepicker]="startDate" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #startDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label for="endDate" class="col-3 col-form-label">To Date <span>*</span></label>
+                            <div class="col-sm-3">
+                                <input id="endDate" required [(ngModel)]="master.endDate" name="endDate"
+                                    [nbDatepicker]="endDate" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #endDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-3 col-form-label">Company Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect [items]="companyItems"
+                                    (change)="(master.companyId = this.$event.id);getSBU(this.$event.id)"
+                                    name="companyId" bindLabel="name" id="companyId" [(ngModel)]="companySelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group row">
+                            <label for="sbuId" class="col-sm-3 col-form-label">Job Location</label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.sbuId = this.$event.id);" [items]="SbuList"
+                                    name="sbuId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="sbuId"
+                                    placeholder="Select Branch" appendTo="body" [(ngModel)]="SbuSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group row">
+                            <label for="departmentId" class="col-sm-3 col-form-label">Department
+                            </label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.departmentId = this.$event.id);"
+                                    [items]="DepartmentList" name="departmentId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="departmentId"
+                                    placeholder="Select Department" appendTo="body" [(ngModel)]="DepartmentSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+        <label><b>Total <span>{{totalEmployee}}</span> Employee(s)</b></label>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.employeeNo}}</td>
+                        <td>{{item.fullName}}</td>
+                        <td>{{item.currentDesignation}}</td>
+                        <td>{{item.currentDepartment}}</td>
+                        <td>{{item.attendanceDate}}</td>
+                        <td>{{item.startTime}}</td>
+                        <td>{{item.endTime}}</td>
+                        <!-- <td>{{item.workingTime}}</td> -->
+                        <td>{{item.workingTimeTest}}</td>
+                        <!-- <td>{{item.latetime}}</td> -->
+                        <td>{{item.latetimeTest}}</td>
+                        <td>{{item.status}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="11">
+                            <br>
+                            <!-- <hr> -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">Summary</th>
+                        <th colspan="2">Total Employee</th>
+                        <th colspan="2">Total Present</th>
+                        <th colspan="2">Total Leave</th>
+                        <th colspan="2">Total Absent</th>
+                        <th colspan="2">Total Late</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">{{ttlEmp}}</td>
+                        <td colspan="2">{{ttlPresent}}</td>
+                        <td colspan="2">{{ttlLeave}}</td>
+                        <td colspan="2">{{ttlAbsent}}</td>
+                        <td colspan="2">{{ttlLate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th colspan="4">
+                            {{rReportHeader}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Attendance Date : {{attendanceDate}}</td>
+                        <td>Branch : {{Branch}}</td>
+                        <td>Department : {{Department}}</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.employeeNo}}</td>
+                        <td>{{item.fullName}}</td>
+                        <td>{{item.currentDesignation}}</td>
+                        <td>{{item.currentDepartment}}</td>
+                        <td>{{item.attendanceDate}}</td>
+                        <td>{{item.startTime}}</td>
+                        <td>{{item.endTime}}</td>
+                        <td>{{item.workingTimeTest}}</td>
+                        <td>{{item.latetimeTest}}</td>
+                        <td>{{item.status}}</td>
+                    </tr>
+                    <!-- <tr>
+                        <td colspan="11"></td>
+                    </tr> -->
+                    <tr>
+                        <th rowspan="2">Summary</th>
+                        <th colspan="2">Total Employee</th>
+                        <th colspan="2">Total Present</th>
+                        <th colspan="2">Total Late</th>
+                        <th colspan="2">Total Absent</th>
+                        <th colspan="2">Total Leave</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">{{ttlEmp}}</td>
+                        <td colspan="2">{{ttlPresent}}</td>
+                        <td colspan="2">{{ttlLate}}</td>
+                        <td colspan="2">{{ttlAbsent}}</td>
+                        <td colspan="2">{{ttlLeave}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

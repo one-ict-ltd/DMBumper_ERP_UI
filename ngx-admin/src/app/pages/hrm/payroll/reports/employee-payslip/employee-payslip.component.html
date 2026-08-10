@@ -1,0 +1,38 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    <fieldset>
+      <form #masterForm="ngForm" novalidate>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group row">
+              <label for="salaryPeriodId" class="col-4 col-form-label">Salary Period
+                <span>*</span></label>
+              <div class="col-sm-8">
+                <ng-select nbselect [items]="salaryPeriodItems"
+                  (change)="(master.salaryPeriodId = $event.id);LoadType()" name="salaryPeriodId" bindLabel="name"
+                  id="salaryPeriodId" [(ngModel)]="master.salaryPeriodSelected" [ngModelOptions]="{standalone: true}"
+                  placeholder="Select Salary Period" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="form-group row">
+              <label for="empId" class="col-4 col-form-label">Employee Name<span>*</span></label>
+              <div class="col-sm-8">
+                <ng-select nbselect [items]="empItems" bindLabel="name" id="empId" name="empId"
+                  (change)="(master.empId = $event.id);" [(ngModel)]="master.empSelected"
+                  [ngModelOptions]="{standalone: true}" placeholder="Select Employee" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-body>
+</nb-card>

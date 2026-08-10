@@ -1,0 +1,101 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <!-- "!show"> -->
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label for="approvalStatus" class="col-sm-12 col-form-label">Approval
+                                Status<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect [items]="ApprovalStatusList"
+                                    (change)="(master.approvalStatus = this.$event.id);" name="approvalStatus"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="approvalStatus"
+                                    placeholder="select approval Status" appendTo="body"
+                                    [(ngModel)]="ApprovalStatusSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Employee Final Settlement Approval" class="btn-tab">
+                        <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 300px">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Action</th>
+                                    <th>Employee Name</th>
+                                    <th>Designation</th>
+                                    <th>Department</th>
+                                    <th>Joining Date</th>
+                                    <th>Resignation Date</th>
+                                    <th>Length Of Service</th>
+                                    <th>Last Month Salary</th>
+                                    <th>Remarks</th>
+                                    <th>Report</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.finalSettlementApprovalModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect">
+                                        </nb-checkbox>
+                                    </td>
+                                    <td>
+                                        {{details.fullName}}
+                                    </td>
+                                    <td>
+                                        {{details.currentDesignation}}
+                                    </td>
+                                    <td>
+                                        {{details.currentDepartment}}
+                                    </td>
+                                    <td>
+                                        {{details.joiningDate}}
+                                    </td>
+                                    <td> {{details.resignationDate}}
+                                    </td>
+                                    <td>
+                                        {{details.lengthOfService}}
+                                    </td>
+                                    <td>
+                                        {{details.lastMonthSalary}}
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" [(ngModel)]="details.remarks"
+                                            id="remarks" name="remarks" nbInput fullWidth placeholder="Remarks">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-success"
+                                            (click)="generateCrReport(rowIndex);">Print</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

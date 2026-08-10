@@ -1,0 +1,62 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <fieldset>
+            <form #masterForm="ngForm" novalidate>
+                <!-- <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryPeriodId" class="col-4 col-form-label">Salary Period
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="salaryPeriodItems"
+                                    (change)="(master.salaryPeriodId = $event.id);" name="salaryPeriodId"
+                                    bindLabel="name" id="salaryPeriodId" [(ngModel)]="master.salaryPeriodSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Salary Period"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            </form>
+        </fieldset>
+    </nb-card-body>
+</nb-card>
+
+<!-- <nb-card *ngIf="showbody">
+    <nb-card-header>
+        <label><b>Total Employee: {{totalEmployee}}</b></label>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th style="text-align: right;">Bank Payable</th>
+                        <th style="text-align: right;">Cash Payable</th>
+                        <th style="text-align: right;">Net Payable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;"
+                        (click)="GetRptPayslip(item.employeeId,item.salaryPeriodId)">
+                        <td>{{i+1}}</td>
+                        <td>{{item.fullName}}</td>
+                        <td>{{item.designation}}</td>
+                        <td align="right">{{currencyFormatter(item.bankPayable)}}</td>
+                        <td align="right">{{currencyFormatter(item.cashPayable)}}</td>
+                        <td align="right">{{currencyFormatter(item.netPayable)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card> -->

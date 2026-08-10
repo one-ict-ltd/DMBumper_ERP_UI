@@ -1,0 +1,16 @@
+span {
+    color: red;
+}
+
+.table-container {
+    max-height: 700px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+}

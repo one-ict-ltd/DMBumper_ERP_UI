@@ -1,0 +1,498 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="ZoneCode" class="col-sm-12 col-form-label">Report Name<span>*</span></label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="master.reportId = $event.id;" [items]="reportTypeList"
+                            name="Zone Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="reportId"
+                            placeholder="Select a report" appendTo="body" [(ngModel)]="master.reportSelected"
+                            (ngModelChange)="reportChange($event)">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="ZoneCode" class="col-sm-12 col-form-label">Zone</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="master.ZoneId = $event.id;GetAllRegion(zoneCode = $event.id);"
+                            [items]="ZoneList" name="Zone Code" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="ZoneCode" placeholder="Zone Code" appendTo="body" [(ngModel)]="master.ZoneCodeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="DepotCode" class="col-sm-12 col-form-label">Depo</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="GetRegion(master.DepoId = this.$event.id);" [items]="DepoList"
+                            name="Depo Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="DepotCode"
+                            placeholder="Depo Code" appendTo="body" [(ngModel)]="master.DepoCodeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="RegionCode" class="col-sm-12 col-form-label">Region</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="GetArea(master.RegionId = this.$event.id);" [items]="RegionList"
+                            name="Region Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="RegionCode"
+                            placeholder="Region Code" appendTo="body" [(ngModel)]="master.RegionCodeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="Area Code" class="col-sm-12 col-form-label">Area</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="GetTerritory(master.AreaId = this.$event.id);" [items]="AreaList"
+                            name="Area Code" bindLabel="name" [ngModelOptions]="{standalone: true}" id="Area Code"
+                            placeholder="Area Code" appendTo="body" [(ngModel)]="master.AreaCodeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="Territory Code" class="col-sm-12 col-form-label">Territory</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="GetMIO(master.TerritoryID = this.$event.id);"
+                            [items]="TerritoryList" name="Territory Code" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="Territory Code" placeholder="Territory Code"
+                            appendTo="body" [(ngModel)]="master.TerritoryCodeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="MIOCode" class="col-sm-12 col-form-label">Employee Name</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="(master.MIOCode = this.$event.id);" [items]="MIOList"
+                            name="MIOCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="MIOCode"
+                            placeholder="Employee Name" appendTo="body" [(ngModel)]="master.MIOSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div> -->
+            <div class="col-lg-4 col-md-8 col-sm-12" hidden>
+                <div class="form-group row">
+                    <label for="BrandId" class="col-sm-12 col-form-label">Brand Name</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (change)="(master.BrandId = this.$event.id);" [items]="BrandList"
+                            name="BrandId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="BrandId"
+                            placeholder="Brand Name" appendTo="body" [(ngModel)]="master.BrandSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-8 col-sm-12">
+
+            </div>
+
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="fromDate" class="col-sm-12 col-form-label">From Date
+                        <span>*</span></label>
+                    <div class="col-sm-12">
+                        <input required [(ngModel)]="master.fromDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}" name="fromDate">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="toDate" class="col-sm-12 col-form-label">To Date
+                        <span>*</span></label>
+                    <div class="col-sm-12">
+                        <input required [(ngModel)]="master.toDate" [nbDatepicker]="tdatepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}" name="toDate">
+                        <nb-datepicker #tdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered mb-0">
+                <thead *ngIf="isDoctotVisitDcrSummaryReport">
+                    <tr style="text-align: center;">
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th colspan="2" style="text-align: center;" *ngFor="let item of tableHeaderP; let i = index;">
+                            {{item}}</th>
+                        <th colspan="9">MTD Exe Total</th>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <th rowspan="3">RSM</th>
+                        <th rowspan="3">AM</th>
+                        <th rowspan="3">MIO</th>
+                        <th rowspan="3">MIO Name</th>
+                        <th rowspan="3">HQ</th>
+                        <th colspan="2">DCL</th>
+                        <th colspan="2">1</th>
+                        <th colspan="2">2</th>
+                        <th colspan="2">3</th>
+                        <th colspan="2">4</th>
+                        <th colspan="2">5</th>
+                        <th colspan="2">6</th>
+                        <th colspan="2">7</th>
+                        <th colspan="2">8</th>
+                        <th colspan="2">9</th>
+                        <th colspan="2">10</th>
+                        <th colspan="2">11</th>
+                        <th colspan="2">12</th>
+                        <th colspan="2">13</th>
+                        <th colspan="2">14</th>
+                        <th colspan="2">15</th>
+                        <th colspan="2">16</th>
+                        <th colspan="2">17</th>
+                        <th colspan="2">18</th>
+                        <th colspan="2">19</th>
+                        <th colspan="2">20</th>
+                        <th colspan="2">21</th>
+                        <th colspan="2">22</th>
+                        <th colspan="2">23</th>
+                        <th colspan="2">24</th>
+                        <th colspan="2">25</th>
+                        <th colspan="2">26</th>
+                        <th colspan="2">27</th>
+                        <th colspan="2">28</th>
+                        <th colspan="2">29</th>
+                        <th colspan="2">30</th>
+                        <th colspan="2">31</th>
+                        <th colspan="2">Plan</th>
+                        <th colspan="2">Exe</th>
+                        <th colspan="2">Gr%</th>
+                        <th rowspan="3">Cov%</th>
+                    </tr>
+                    <tr>
+                        <th>DOC</th>
+                        <th>Covg</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>Plan</th>
+                        <th>Exe</th>
+                        <th>CM</th>
+                        <th>LM</th>
+                        <th>CM</th>
+                        <th>LM</th>
+                        <th>Plan vs Exe</th>
+                        <th>Plan vs Gr%</th>
+                    </tr>
+                </thead>
+                <thead *ngIf="isDoctotVisitDcrDetailsReport">
+                    <tr style="text-align: center;">
+                        <th>RSM</th>
+                        <th>AM</th>
+                        <th>MIO</th>
+                        <th>MIO Name</th>
+                        <th>HQ</th>
+                        <th>Doctor Code</th>
+                        <th>Doctor Name</th>
+                        <th>Mobile</th>
+                        <th>Degree</th>
+                        <th>Designation</th>
+                        <th>Plan Time</th>
+                        <th>Period</th>
+                        <th>Execution Time</th>
+                        <th>Visit Place</th>
+                    </tr>
+                </thead>
+                <thead *ngIf="isChemistVisitDcrDetailsReport">
+                    <tr style="text-align: center;">
+                        <th>RSM</th>
+                        <th>AM</th>
+                        <th>MIO</th>
+                        <th>MIO Name</th>
+                        <th>HQ</th>
+                        <th>Chemist Code</th>
+                        <th>Chemist Name</th>
+                        <th>Mobile</th>
+                        <th>Visit Plan Time</th>
+                        <th>Period</th>
+                        <th>Execution Time</th>
+                        <th>Visit Place</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="isDoctotVisitDcrSummaryReport">
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{item.RSM}}</td>
+                        <td>{{item.AM}}</td>
+                        <td>{{item.MIO}}</td>
+                        <td>{{item.MIOName}}</td>
+                        <td>{{item.HQ}}</td>
+                        <td>{{item.Doc}}</td>
+                        <td>{{item.Covg}}</td>
+                        <td>{{item.P01}}</td>
+                        <td>{{item.E01}}</td>
+                        <td>{{item.P02}}</td>
+                        <td>{{item.E02}}</td>
+                        <td>{{item.P03}}</td>
+                        <td>{{item.E03}}</td>
+                        <td>{{item.P04}}</td>
+                        <td>{{item.E04}}</td>
+                        <td>{{item.P05}}</td>
+                        <td>{{item.E05}}</td>
+                        <td>{{item.P06}}</td>
+                        <td>{{item.E06}}</td>
+                        <td>{{item.P07}}</td>
+                        <td>{{item.E07}}</td>
+                        <td>{{item.P08}}</td>
+                        <td>{{item.E08}}</td>
+                        <td>{{item.P09}}</td>
+                        <td>{{item.E09}}</td>
+                        <td>{{item.P10}}</td>
+                        <td>{{item.E10}}</td>
+                        <td>{{item.P11}}</td>
+                        <td>{{item.E11}}</td>
+                        <td>{{item.P12}}</td>
+                        <td>{{item.E12}}</td>
+                        <td>{{item.P13}}</td>
+                        <td>{{item.E13}}</td>
+                        <td>{{item.P14}}</td>
+                        <td>{{item.E14}}</td>
+                        <td>{{item.P15}}</td>
+                        <td>{{item.E15}}</td>
+                        <td>{{item.P16}}</td>
+                        <td>{{item.E16}}</td>
+                        <td>{{item.P17}}</td>
+                        <td>{{item.E17}}</td>
+                        <td>{{item.P18}}</td>
+                        <td>{{item.E18}}</td>
+                        <td>{{item.P19}}</td>
+                        <td>{{item.E19}}</td>
+                        <td>{{item.P20}}</td>
+                        <td>{{item.E20}}</td>
+                        <td>{{item.P21}}</td>
+                        <td>{{item.E21}}</td>
+                        <td>{{item.P22}}</td>
+                        <td>{{item.E22}}</td>
+                        <td>{{item.P23}}</td>
+                        <td>{{item.E23}}</td>
+                        <td>{{item.P24}}</td>
+                        <td>{{item.E24}}</td>
+                        <td>{{item.P25}}</td>
+                        <td>{{item.E25}}</td>
+                        <td>{{item.P26}}</td>
+                        <td>{{item.E26}}</td>
+                        <td>{{item.P27}}</td>
+                        <td>{{item.E27}}</td>
+                        <td>{{item.P28}}</td>
+                        <td>{{item.E28}}</td>
+                        <td>{{item.P29}}</td>
+                        <td>{{item.E29}}</td>
+                        <td>{{item.P30}}</td>
+                        <td>{{item.E30}}</td>
+                        <td>{{item.P31}}</td>
+                        <td>{{item.E31}}</td>
+                        <td>{{item.CMPlan}}</td>
+                        <td>{{item.LMPlan}}</td>
+                        <td>{{item.CMExe}}</td>
+                        <td>{{item.LMExe}}</td>
+                        <td>{{item.PLvsExe}}</td>
+                        <td>{{item.ExeGr}}</td>
+                        <td>{{item.Cov}}</td>
+
+
+                    </tr>
+                </tbody>
+                <tbody *ngIf="isDoctotVisitDcrDetailsReport">
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{item.RSM}}</td>
+                        <td>{{item.AM}}</td>
+                        <td>{{item.MIO}}</td>
+                        <td>{{item.MIOName}}</td>
+                        <td>{{item.HQ}}</td>
+                        <td>{{item.DoctorNo}}</td>
+                        <td>{{item.DoctorName}}</td>
+                        <td>{{item.MobileNo}}</td>
+                        <td>{{item.Degree}}</td>
+                        <td>{{item.Designation}}</td>
+                        <td>{{item.visitDateTime}}</td>
+                        <td>{{item.Period}}</td>
+                        <td>{{item.visitedDateTime}}</td>
+                        <td>{{item.lladdress}}</td>
+                    </tr>
+                </tbody>
+                <tbody *ngIf="isChemistVisitDcrDetailsReport">
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{item.RSM}}</td>
+                        <td>{{item.AM}}</td>
+                        <td>{{item.MIO}}</td>
+                        <td>{{item.MIOName}}</td>
+                        <td>{{item.HQ}}</td>
+                        <td>{{item.DoctorNo}}</td>
+                        <td>{{item.DoctorName}}</td>
+                        <td>{{item.MobileNo}}</td>
+                        <td>{{item.visitDateTime}}</td>
+                        <td>{{item.Period}}</td>
+                        <td>{{item.visitedDateTime}}</td>
+                        <td>{{item.lladdress}}</td>
+                    </tr>
+                </tbody>
+                <!-- <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;"
+                        [ngClass]="{'highlighted-row-sl-1': item.SL === 1,'highlighted-row-sl-2': item.SL ===2,'highlighted-row-sl-3': item.SL === 3,'highlighted-row-sl-4': item.SL === 4}">
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td>
+                    </tr>
+                </tbody> -->
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Sales Report</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td>Zone Name :</td>
+                        <td>{{ZoneName}}</td>
+                        <td>Depot Name :</td>
+                        <td>{{DepotName}}</td>
+                        <td>Region Name :</td>
+                        <td>{{RegionName}}</td>
+                    </tr>
+                    <tr>
+                        <td>Area Name :</td>
+                        <td>{{AreaName}}</td>
+                        <td>Territory Name :</td>
+                        <td>{{TerritoryName}}</td>
+                        <td>Emp. Name :</td>
+                        <td>{{MioName}}</td>
+                    </tr>
+                    <tr>
+                        <td>From Date :</td>
+                        <td>{{FromDate}}</td>
+                        <td>To Date :</td>
+                        <td>{{ToDate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- DoctorScheduleID	RosterID	DoctorID	VisitDate	VisitTime	Opinion	MIOID	ImageUrl	ExecuteTime	Latitude	Longitude	Remarks	CompanyID	LLAddress	EndTime	IsExecuted	StartTime	DoctorName	DoctorNo	doctorPromotionalItemId	productWiseSpecificationId	invoiceQty	productName	uomName -->
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.VisitDate}}</td>
+                        <td>{{item.DoctorName}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.invoiceQty}}</td>
+                        <td>{{item.uomName}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

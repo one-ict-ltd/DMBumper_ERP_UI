@@ -1,0 +1,75 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+</nb-card>
+<nb-card *ngIf="show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="FromTerritoryId" class="col-sm-4 col-form-label">From
+                                Territory<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="TerritoryList"
+                                    (ngModelChange)="GetFromTerritoryDetails(this.$event);this.master.fromTerritoryCode=this.$event.id"
+                                    name="FromTerritoryId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="FromTerritoryId" placeholder="Select From Territory" appendTo="body"
+                                    [(ngModel)]="master.FromTerritorySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="ToTerritoryId" class="col-sm-4 col-form-label">To Territory<span>*</span>
+                            </label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="TerritoryList"
+                                    (ngModelChange)="GetToTerritoryDetails(this.$event);this.master.toTerritoryCode=this.$event.id"
+                                    name="ToTerritoryId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="ToTerritoryId" placeholder="Select To Territory" appendTo="body"
+                                    [(ngModel)]="master.ToTerritorySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="FromTerritoryDetails">From Territory
+                                Details</label>
+                            <div class="col-8">
+                                <textarea type="text" class="form-control" required
+                                    [(ngModel)]="master.FromTerritoryDetails" id="FromTerritoryDetails"
+                                    name="FromTerritoryDetails" nbInput fullWidth placeholder="From Territory Details"
+                                    readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label" for="ToTerritoryDetails">To Territory Details</label>
+                            <div class="col-8">
+                                <textarea type="text" class="form-control" required
+                                    [(ngModel)]="master.ToTerritoryDetails" id="ToTerritoryDetails"
+                                    name="ToTerritoryDetails" nbInput fullWidth placeholder="To Territory Details"
+                                    readonly></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12" style="text-align: center;">
+                    <button class="btn btn-success btn-sm m-3" (click)="Transfer()" id="Transfer">
+                        <i class="fa fa-save" aria-hidden="true"></i>Transfer</button>
+                </div>
+            </form>
+        </fieldset>
+
+    </nb-card-header>
+
+</nb-card>

@@ -1,0 +1,302 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+  </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+  <nb-card-header class="text-right">
+    <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+        [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+      </ag-grid-angular>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+  <nb-card-header>
+    <fieldset [disabled]="disabled ? 'disabled' : null">
+      <form #masterForm="ngForm">
+        <div class="row">
+
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label for="ZoneCode" class="col-sm-12 col-form-label">Zone<span>*</span></label>
+              <div class="col-sm-12">
+                <ng-select nbselect (change)="GetDepo(zoneCode = this.$event.id);" [items]="ZoneList" name="Zone Code"
+                  bindLabel="name" [ngModelOptions]="{standalone: true}" id="ZoneCode" placeholder="Zone Code"
+                  appendTo="body" [(ngModel)]="ZoneCodeSelected">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label for="depoCode" class="col-sm-12 col-form-label">Depot</label>
+              <div class="col-sm-12">
+                <ng-select nbselect (change)="(depoCode = this.$event.id); GetInvoiceList();" [items]="DepoList"
+                  name="depoCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depoCode"
+                  placeholder="Depo" appendTo="body" [(ngModel)]="DepotSelected">
+                </ng-select>
+                <!-- (ngModelChange)="GetInvoiceList()" -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="distributionDate">Distribution Date
+                <span>*</span></label>
+              <div class="col-sm-12">
+                <input required [(ngModel)]="master.distributionDate" (ngModelChange)="getMaxNo();"
+                  name="distributionDate" id="distributionDate" [nbDatepicker]="idatepicker" nbInput fullWidth
+                  placeholder="Date" [ngModelOptions]="{standalone: true}">
+                <nb-datepicker #idatepicker></nb-datepicker>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="distributionNumber">Distribution
+                No.<span>*</span></label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.distributionNumber"
+                  id="distributionNumber" name="distributionNumber" nbInput fullWidth placeholder="Distribution Number"
+                  readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="deliveryManName">Delivery Man Name</label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.deliveryManName"
+                  id="deliveryManName" name="deliveryManName" nbInput fullWidth placeholder="Delivery Man Name">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="deliveryManMobile">Delivery Man Mobile
+                No.</label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.deliveryManMobile"
+                  id="deliveryManMobile" name="deliveryManMobile" nbInput fullWidth placeholder="Delivery Man Mobile">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="driverName">Driver Name </label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.driverName" id="driverName"
+                  name="driverName" nbInput fullWidth placeholder="Driver Name">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="vehicleNo">Vehicle No. </label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.vehicleNo" id="vehicleNo"
+                  name="vehicleNo" nbInput fullWidth placeholder="Vehicle No.">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="driverMobileNo">Driver Mobile No. </label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" required [(ngModel)]="master.driverMobileNo" id="driverMobileNo"
+                  name="driverMobileNo" nbInput fullWidth placeholder="driver mobile No.">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6">
+            <div class="form-group row">
+              <label class="col-sm-12 col-form-label" for="purpose">Delivery Address</label>
+              <div class="col-sm-12">
+                <textarea type="text" class="form-control" required [(ngModel)]="master.deliveryAddress"
+                  id="deliveryAddress" name="deliveryAddress" nbInput fullWidth
+                  placeholder="Delivery Address"></textarea>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="!show">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <nb-card class="min-height">
+      <fieldset [disabled]="disabled ? 'disabled' : null">
+        <nb-tabset>
+          <nb-tab tabTitle="Sales Distribution Details" class="btn-tab">
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group row">
+                  <label class="col-form-label col-sm-8" for="salesInvoiceId">Sales Invoice
+                    No.<span>*</span></label>
+                  <div class="col-sm-8">
+                    <ng-select nbselect (change)="(salesInvoiceId = this.$event.id);getSalesInvoiceDetails();"
+                      [items]="salesInvoiceList" name="salesInvoiceId" bindLabel="name"
+                      [ngModelOptions]="{standalone: true}" id="salesInvoiceId" placeholder="Select a Invoice"
+                      appendTo="body" [(ngModel)]="salesInvoiceSelected">
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="form-group row">
+                  <div class="col-sm-12">
+                    <div style="text-align: center;">
+                      <button (click)="refeshDetails()" class="btn btn-warning btn-sm"> <i class="fa fa-refresh"
+                          aria-hidden="true"></i> Refresh </button>
+                      <button (click)="addToDetailsGrid(dialog)" class="btn btn-success btn-sm m-3"> <i
+                          class="fa fa-plus" aria-hidden="true"></i> Add </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid-wrapper">
+              <table class=" table table-bordered table-striped">
+                <tr>
+                  <th>#</th>
+                  <th>Invoice No.</th>
+                  <th>Product Name</th>
+                  <th>Invoice Qty.</th>
+                  <th>Distribution Qty.</th>
+                  <th>UOM</th>
+                  <th style="width: 90px;">Action</th>
+                </tr>
+
+                <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+                  <td>
+                    {{rowIndex+1}}
+                  </td>
+                  <td>
+                    {{details.salesInvoiceNo}}
+                  </td>
+                  <td>
+                    {{details.productName}}
+                  </td>
+                  <td>
+                    {{details.invoiceQty}}
+                  </td>
+                  <td>
+                    <input [(ngModel)]="details.distributionQty" type="number" class="form-control text-right"
+                      id="distributionQty" required name="distributionQty" nbInput fullWidth
+                      placeholder="distributionQty" (ngModelChange)="calculateTotal(rowIndex);">
+                  </td>
+                  <td>
+                    {{details.uomName}}
+                  </td>
+                  <td>
+                    <nb-checkbox hidden name="isSelect" id="isSelect" status="success" [(ngModel)]="details.isSelect">
+                    </nb-checkbox>
+                    <button (click)="deleteDetails(rowIndex)" class="btn btn-danger btn-sm m-1">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </nb-tab>
+        </nb-tabset>
+      </fieldset>
+    </nb-card>
+  </div>
+</div>
+
+
+<!-- Start HTML Report  -->
+
+<nb-card style="visibility: hidden;">
+  <nb-card-header>
+    <div id="reportHeader">
+      <ngx-rpt-header></ngx-rpt-header>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <table id="header_table" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th colspan="4">
+              <h3 style="text-align:center">
+                {{rReportHeader}} {{rApprovalStatus}}
+              </h3>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of params; let i = index;">
+            <td> <strong>{{item.leftLabel}}</strong></td>
+            <td>: {{item.leftValue}}</td>
+            <td><strong>{{item.rightLabel}} </strong></td>
+            <td>: {{item.rightValue}}</td>
+          </tr>
+          <tr>
+            <td>Delivery Address:</td>
+            <td colspan="3">: {{rDeliveryAddress}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="body_table" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let details of bodyData; let rowIndex = index">
+            <td>{{rowIndex+1}}</td>
+            <td>
+              {{details.productName}}
+            </td>
+            <td>
+              {{details.distributionQty}}
+            </td>
+            <td>
+              {{details.uomName}}
+            </td>
+          </tr>
+          <tr>
+            <td class="text-right" colspan="2">Net Total=</td>
+            <td>
+              {{rgrandTotal}}
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <ngx-rpt-footer></ngx-rpt-footer>
+  </nb-card-footer>
+</nb-card>
+
+<!-- End HTML Report  -->

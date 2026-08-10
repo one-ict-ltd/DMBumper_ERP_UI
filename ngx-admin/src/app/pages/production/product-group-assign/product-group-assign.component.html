@@ -1,0 +1,193 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true' nbInput>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+             
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="groupName">Group Name <span>*</span></label>
+                            <div class="col-sm-8">
+                                <!-- <input type="text" class="form-control" [(ngModel)]="master.groupName" id="groupName"
+                                    name="groupName" placeholder="Group Name" required nbInput fullWidth> -->
+
+                                <ng-select nbselect
+                                    (change)="(master.phGroupMasterId = this.$event.id); getGroupWiseProductSpec();"
+                                    [items]="processGroupList" name="phGroupMasterId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="phGroupMasterId" placeholder="Select a product"
+                                    appendTo="body" [(ngModel)]="processGroupSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="!show">
+
+
+
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <nb-card-body>
+                <div class="row">
+
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+        
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                        <div class="form-group row">
+                            <label for="voucherNo" class="col-sm-4 col-form-label">Search</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="searchText" required [(ngModel)]="searchText"
+                                    name="searchText" nbInput fullWidth placeholder="Search...">
+                            </div>
+                        </div>
+                    </div>
+        
+                </div>
+                <fieldset [disabled]="disabled ? 'disabled' : null">
+                    <nb-tabset>
+                        <nb-tab tabTitle="Products" class="btn-tab">
+                            <div class="grid-wrapper">
+                                <table class=" table table-bordered table-striped">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product Code</th>
+                                        <th>Product Name</th>
+                                        <th>  
+                                            <nb-checkbox id="selectAll" name="selectAll" status="success"
+                                                title="Toggle check or Uncheck all" [(ngModel)]="isCheckedAll"
+                                                (change)="ToggleSelectUnSelect()">
+                                            </nb-checkbox>
+                                            &nbsp; &nbsp; Select All
+                                        </th>
+                                    </tr>
+
+                                    <tr *ngFor="let details of master.lstDetailsViewModel  | filter: searchText; let rowIndex = index">
+                                        <td>{{rowIndex+1}}</td>
+                                        <td>
+                                            <div>{{details.productCode}}</div>
+                                        </td>
+                                        <td>
+                                            <div>{{details.productName}}</div>
+                                        </td>
+                                        <td>
+                                            <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                                [(ngModel)]="details.isSelect">
+                                                <!-- [disabled]="details.isEdit ? null : 'disabled'"  -->
+                                            </nb-checkbox>
+                                        </td>
+                                    </tr>
+                                    
+                                </table>
+                            </div>
+                        </nb-tab>
+                    </nb-tabset>
+                </fieldset>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>
+
+<!-- Start HTML Report  -->
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th colspan="4">
+                            <h3 style="text-align:center">
+                                {{rReportHeader}}
+                            </h3>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>: {{item.leftValue}}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>: {{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let details of bodyData; let rowIndex = index">
+                        <td>{{rowIndex+1}}</td>
+                        <td>
+                            <div>{{details.bomProductSpecName}}</div>
+                        </td>
+                        <td>
+                            {{details.qty}}
+                        </td>
+                        <td>
+                            {{details.wastage}}
+                        </td>
+                        <td>
+                            {{details.totalQty}}
+                        </td>
+                        <td>
+                            {{details.uomName}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                        </td>
+                        <td class="text-right">Grand Total:</td>
+                        <td>
+                            {{rgrandTotal}}
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>
+
+<!-- End HTML Report  -->

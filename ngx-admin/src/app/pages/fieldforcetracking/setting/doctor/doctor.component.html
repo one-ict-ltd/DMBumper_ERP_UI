@@ -1,0 +1,357 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="DoctorNo">Doctor No<span
+                                    style="color: red;">*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.DoctorNo"
+                                    id="DoctorNo" name="DoctorNo" nbInput fullWidth placeholder="Doctor No">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="Address">Address<span
+                                    style="color: red;">*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.Address"
+                                    id="Address" name="Address" nbInput fullWidth placeholder="Doctor No">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="Designation">Designation<span
+                                    style="color: red;">*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.Designation"
+                                    id="Designation" name="Designation" nbInput fullWidth placeholder="Doctor Designation">
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="DoctorName">Doctor Name </label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.DoctorName"
+                                    id="DoctorName" name="DoctorName" nbInput fullWidth placeholder="DoctorName">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="MobileNo">Mobile No</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.MobileNo"
+                                    id="MobileNo" name="MobileNo" nbInput fullWidth placeholder="MobileNo">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="Speciality">Speciality</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.Speciality"
+                                    id="Speciality" name="Speciality" nbInput fullWidth placeholder="Speciality">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="Degree">Degree</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.Degree"
+                                    id="Degree" name="Degree" nbInput fullWidth placeholder="Degree">
+                            </div>
+                        </div>
+                    </div>
+                   
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="Latitude">Latitude</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.Latitude"
+                                    id="Latitude" name="Latitude" nbInput fullWidth placeholder="Latitude">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="Institude">Institude</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.Institude"
+                                    id="Institude" name="Institude" nbInput fullWidth placeholder="Institude">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="NoOfPatient">No Of Patient</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.NoOfPatient"
+                                    id="NoOfPatient" name="NoOfPatient" nbInput fullWidth placeholder="No Of Patient">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="Longitude">Longitude</label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.Longitude"
+                                    id="Longitude" name="Longitude" nbInput fullWidth placeholder="Longitude">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="ZoneCode" class="col-sm-12 col-form-label">Doctor Category<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.DoctorCategoryID = this.$event.id);"
+                                    [items]="DoctorCategoryList" name="Doctor category" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="DoctorCategoryID"
+                                    placeholder="Doctor category" appendTo="body"
+                                    [(ngModel)]="master.DoctorCategorySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="ZoneCode" class="col-sm-12 col-form-label">Zone<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="GetDepo(master.ZoneId = this.$event.id);"
+                                    [items]="ZoneList" name="Zone Code" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="ZoneCode"
+                                    placeholder="Zone Code" appendTo="body"
+                                    [(ngModel)]="master.ZoneCodeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="DepotCode" class="col-sm-12 col-form-label">Depo</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="GetRegion(master.DepoId = this.$event.id);"
+                                    [items]="DepoList" name="Depo Code" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="DepotCode"
+                                    placeholder="Depo Code" appendTo="body"
+                                    [(ngModel)]="master.DepoCodeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="RegionCode" class="col-sm-12 col-form-label">Region</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="GetArea(master.RegionId = this.$event.id);"
+                                    [items]="RegionList" name="Region Code" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="RegionCode"
+                                    placeholder="Region Code" appendTo="body"
+                                    [(ngModel)]="master.RegionCodeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="Area Code" class="col-sm-12 col-form-label">Area</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="GetTerritory(master.AreaId = this.$event.id);"
+                                    [items]="AreaList" name="Area Code" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="Area Code"
+                                    placeholder="Area Code" appendTo="body"
+                                    [(ngModel)]="master.AreaCodeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="Territory Code" class="col-sm-12 col-form-label">Territory</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="GetMarket(master.TerritoryID = this.$event.id);"
+                                    [items]="TerritoryList" name="Territory Code" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="Territory Code"
+                                    placeholder="Territory Code" appendTo="body"
+                                    [(ngModel)]="master.TerritoryCodeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="Market Code" class="col-sm-12 col-form-label">Market</label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.MarketID = this.$event.id);"
+                                    [items]="MarketList" name="Market Code" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="Market Code"
+                                    placeholder="Market Code" appendTo="body"
+                                    [(ngModel)]="master.MarketCodeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.IsActive" name="IsActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row" *ngIf="!show">
+                    <div class="col-md-12 col-lg-12">
+                      <nb-card class="min-height">
+                        <fieldset [disabled]="disabled ? 'disabled' : null">
+                          <nb-tabset>
+                            <nb-tab tabTitle="Sales Invoice Details" class="btn-tab">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="form-group row">
+                                    <div class="col-sm-8">
+                                      <label class="col-form-label" for="productWiseSpecificationId">Product
+                                        Name<span>*</span></label>
+                                      <ng-select nbselect
+                                        (change)="(master.productWiseSpecificationId = this.$event.id);getProductSpecDetails(); "
+                                        [items]="productSpecList" name="productName" bindLabel="name"
+                                        [ngModelOptions]="{standalone: true}" id="productWiseSpecificationId" placeholder="Select product"
+                                        appendTo="body" [(ngModel)]="master.productSpecSelected">
+                                      </ng-select>
+                                    </div>
+                                   
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="form-group row">
+                                   
+                  
+                                    <div class="col-sm-4">
+                                      <label class="col-form-label" for="Invoice">Quantity<span>*</span></label>
+                                      <div class="input-group" id="Invoice">
+                                        <input type="number" class="form-control text-right" required [(ngModel)]="master.Quantity"
+                                          id="Quantity" name="Quantity" fullWidth style="width: 85%;" nbInput
+                                          placeholder="Quantity." aria-describedby="uomName" >
+                                       
+                                      </div>
+                                    </div>
+                  
+                                   
+                                  </div>
+                                </div>
+                              </div>
+                             
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <div class="form-group row">
+                                    <div class="col-md-12">
+                                      <div style="text-align: center;">
+                                        <button (click)="refesh()" class="btn btn-warning btn-sm"> <i class="fa fa-refresh"
+                                            aria-hidden="true"></i> Refresh </button>
+                                        <button (click)="addToDetailsGrid(dialog)" class="btn btn-success btn-sm m-3"> <i
+                                            class="fa fa-plus" aria-hidden="true"></i> Add </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                  
+                              <div class="grid-wrapper">
+                                <table class=" table table-bordered table-striped">
+                                  <tr>
+                                    <th>#</th>
+                                    <th>Product Name</th>
+                                  
+                                    <th>Invoice Qty.</th>
+                                   
+                                    <th style="width: 90px;">Action</th>
+                                  </tr>
+                  
+                                  <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                      <div>{{details.productName}}</div>
+                                   
+                                    </td>
+                                   
+                                    <td>
+                                      <!-- <input [(ngModel)]="details.Quantity" type="number" class="form-control text-right"
+                                        id="Quantity1" required name="Quantity1" nbInput fullWidth placeholder="Quantity"> -->
+                                        <div>{{details.Quantity}}</div>
+                                    </td>
+                                  
+                                    <td>
+                                      <nb-checkbox name="isSelect" id="isSelect" status="success" [(ngModel)]="details.isSelect">
+                                      </nb-checkbox> &nbsp;&nbsp; <button (click)="deleteDetails(rowIndex)"
+                                        class="btn btn-danger btn-sm m-1">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                      </button>
+                                    </td>
+                                  </tr>
+                               
+                                </table>
+                              </div>
+                            </nb-tab>
+                          </nb-tabset>
+                        </fieldset>
+                      </nb-card>
+                    </div>
+                  </div>
+                  
+                
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+

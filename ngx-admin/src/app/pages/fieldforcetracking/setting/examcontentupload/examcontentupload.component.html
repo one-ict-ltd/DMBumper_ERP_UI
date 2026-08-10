@@ -1,0 +1,86 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+
+                <div class="row">
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="description">Content Topic</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" [(ngModel)]="master.description"
+                                    id="description" name="description" nbInput fullWidth placeholder="Content Topic">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="fileName">Content Pdf</label>
+                            <div class="col-sm-9">
+                                <input type="file" id="fileName" (change)="uploadFileDetail($event.target.files, 0)">
+                                <img [src]="" style="height: 100px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="fromDate">Start Date <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input required [(ngModel)]="master.fromDate" [nbDatepicker]="fromDate" nbInput
+                                    fullWidth placeholder="start Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #fromDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="endDate">End Date <span>*</span> </label>
+                            <div class="col-sm-9">
+                                <input required [(ngModel)]="master.endDate" [nbDatepicker]="endDate" nbInput fullWidth
+                                    placeholder="end Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #endDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="" class="col-sm-5 col-form-label"> Is Active ?</label>
+                            <div class="col-sm-7">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

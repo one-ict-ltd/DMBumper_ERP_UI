@@ -1,0 +1,427 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="FromDate">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadFromDateShow" name="loadFromDateShow" id="loadFromDateShow"
+                            [nbDatepicker]="idatepicker" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="ToDate">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row !important">
+                    <button class="btn btn-info" (click)="GetGridData();">Search</button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true' nbInput>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="transferDate">Transfer
+                                Date</label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.transferDate" (ngModelChange)="getMaxNo();"
+                                    name="transferDate" id="transferDate" [nbDatepicker]="transferDate" nbInput
+                                    fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #transferDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Transfer No.</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.transferNoteNo"
+                                    id="transferNoteNo" name="transferNoteNo" placeholder="Transfer Note No." required
+                                    nbInput fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-3">
+                        <nb-checkbox name="isRePack" id="isRePack" status="success" [(ngModel)]="master.isRePack">
+                        </nb-checkbox> &nbsp;
+                        <label class="col-form-label" for="isRePack">Re Pack</label>
+                    </div>
+                    <div class="col-2">
+                        <!-- <nb-checkbox name="isComplete" id="isComplete" status="success" [(ngModel)]="master.isComplete">
+                        </nb-checkbox> &nbsp;
+                        <label class="col-form-label" for="isComplete">Complete</label> -->
+                    </div>
+                    <!-- <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <nb-checkbox class="chbox" [(ngModel)]="master.isRePack" name="checkbox" status="success">
+                            </nb-checkbox>
+                            <label class="col-sm-4 col-form-label" for="isRePack">Re Pack
+                            </label>
+
+                        </div>
+                    </div> -->
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Batch No. <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.productionPlanId = this.$event.id); getBatchDetails($event);(master.batchNo=this.$event.batchNo)"
+                                    [items]="productionPlanList" id="productionPlanId" name="productionPlanId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Select Batch Name" appendTo="body"
+                                    [(ngModel)]="master.productionPlanSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> BOM Product Name</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.productName"
+                                    id="productName" name="productName" placeholder="Product Name" required nbInput
+                                    fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Std. Batch Size</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.stdBatchSize"
+                                    id="stdBatchSize" name="stdBatchSize" placeholder="Batch Size" required nbInput
+                                    fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="">Batch Type <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.batchTypeName"
+                                    id="batchTypeName" name="batchTypeName" placeholder="Batch Type" required nbInput
+                                    fullWidth>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Std. Box Qty.</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="stdBoxQty" id="stdBoxQty"
+                                    name="stdBoxQty" placeholder="" required nbInput fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for=""> Std. Batch Weight</label>
+                            <div class="col-sm-8">
+                                <input type="number" [(ngModel)]="master.batchWeight" id="batchWeight"
+                                    name="batchWeight" placeholder="Batch Weight" required nbInput readonly>
+                                <label class="col-form-label" for="batchWeight">&nbsp;{{master.batchWeightUOM}}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="weightPerPack">
+                                Std. Weight/Pack</label>
+                            <div class="col-sm-8">
+                                <input type="number" [(ngModel)]="master.weightPerPack" id="weightPerPack"
+                                    name="weightPerPack" placeholder="weight/Pack" required nbInput readonly>
+                                <label class="col-form-label"
+                                    for="weightPerPack">&nbsp;{{master.weightPerPackUOM}}</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="productCode"> S Product
+                                Code</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.productCode"
+                                    id="productCode" name="productCode" placeholder="S Product No" required nbInput
+                                    fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label for="bomTypeId" class="col-sm-4 col-form-label">Transfer to Batch
+                                Type<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.batchTypeName = this.$event.name);batchwiseProductlist()"
+                                    [items]="batchTypeList" name="bomtypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="bomTypeId"
+                                    placeholder="Select Transfer to Batch Type" appendTo="body"
+                                    [(ngModel)]="master.batchTypeName" [disabled]="disabled ? 'disabled' : null">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="manufacturingDate">Manufacturing Date</label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.mfgDate" name="manufacturingDate"
+                                    id="manufacturingDate" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}" readonly>
+                                <!-- <nb-datepicker #manufacturingDate></nb-datepicker> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="ExpireDate">Expire
+                                Date </label>
+                            <div class="col-sm-8">
+                                <input required [(ngModel)]="master.expDate" name="ExpireDate" id="ExpireDate" nbInput
+                                    fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                                <!-- <nb-datepicker #ExpireDate></nb-datepicker> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label">Transfer to Pack Size<span>*</span></label>
+                            <div class="col-sm-10">
+                                <ng-select nbselect
+                                    (change)="(master.SecndproductWiseSpecificationId = this.$event.id); (master.packSizeForPM=this.$event.qtyPerPack); (master.sWeightPerPack=this.$event.sWeightPerPack);getTransferQtyInPcs();"
+                                    [items]="SecondaryProductList" name="SecndproductWiseSpecificationId"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="SecndproductWiseSpecificationId" placeholder="Transfer to Pack Size"
+                                    appendTo="body" [(ngModel)]="SecondaryProductSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Weight/Pack<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" [(ngModel)]="master.sWeightPerPack" id="sWeightPerPack"
+                                    name="sWeightPerPack" placeholder="Weight/Pack" required nbInput><label
+                                    class="col-form-label"
+                                    for="sWeightPerPack">&nbsp;{{master.weightPerPackUOM}}</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Qty. per Box<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.packSizeForPM"
+                                    id="packSizeForPM" name="packSizeForPM" placeholder="Pack Size" required nbInput
+                                    fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="form-group row">
+                                <label class="col-sm-4 col-form-label" for="isComplete">Batch Status</label>
+                                <div class="col-sm-8">
+                                    <nb-checkbox name="isComplete" id="isComplete" status="success" [(ngModel)]="master.isComplete">
+                                    </nb-checkbox> <label class="col-form-label" for="isComplete"> <span>&nbsp;
+                                            Complete</span></label>
+                                </div>
+                            </div> -->
+                    <!-- <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> <span> Weight</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.qty" id="wight"
+                                    name="wight" placeholder="Wight" required nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div> -->
+
+
+
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <!-- <label class="col-sm-4 col-form-label">Qty/Shipper</label> -->
+                            <label class="col-sm-4 col-form-label">Box/Master Carton<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.qtyPerShipper"
+                                    id="qtyPerShipper" name="qtyPerShipper" placeholder="Box/Master Carton" required
+                                    nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">Transfer Qty(Box)<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.noOfBox" id="noOfBox"
+                                    name="noOfBox" placeholder="Transfer Qty(Box)" required nbInput fullWidth
+                                    (ngModelChange)="getTransferQtyInPcs();">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Loose Qty</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.looseqty" id="looseqty"
+                                    name="looseqty" placeholder="Loose Qty" required nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Transfer Qty (Pcs)</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.transferQty"
+                                    id="transferQty" name="transferQty" placeholder="" required nbInput fullWidth
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6" hidden>
+                        <div class="form-group row">
+                            <label for="batchWeightUOM" class="col-sm-4 col-form-label">UOM
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect (change)="(master.weightUOMId = this.$event.id);" [items]="UomList"
+                                    name="weightUOMId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                    id="weightUOMId" placeholder="Select UOM" appendTo="body"
+                                    [(ngModel)]="WeightPerPackUOMSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Equivalent Weight</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.equivalentWeight"
+                                    id="equivalentWeight" name="equivalentWeight" placeholder="" required nbInput
+                                    fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6" hidden>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Total Commercial Qty (Pcs)</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.totalCommercialQty"
+                                    id="totalCommercialQty" name="totalCommercialQty" placeholder="Total Commercial Qty"
+                                    required nbInput fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Issued By<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" [(ngModel)]="master.transferIssuedBy"
+                                    id="transferIssuedBy" name="transferIssuedBy" placeholder="Issued By" required
+                                    nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Already Transfered (Pcs)</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.transfered"
+                                    id="transfered" name="transfered" placeholder="transfered" required nbInput
+                                    fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label"> Remaining Qty (Pcs)</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" [(ngModel)]="master.remainQty" id="remainQty"
+                                    name="remainQty" placeholder="" required nbInput fullWidth readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label">MRP<span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="number" [(ngModel)]="master.MRP" id="MRP" name="MRP" placeholder="MRP"
+                                    required nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="form-group row">
+                            <label class="col-sm-2 col-form-label"> Remarks</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" [(ngModel)]="master.remarks" id="remarks"
+                                    name="remarks" placeholder="Remarks" required nbInput fullWidth>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-4">
+                        <!-- <label class="col-form-label" for="isComplete">Complete</label>
+                        <nb-checkbox name="isComplete" id="isComplete" status="success" [(ngModel)]="master.isComplete">
+                        </nb-checkbox> &nbsp; -->
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="isComplete">Batch Status</label>
+                            <div class="col-sm-8">
+                                <nb-checkbox name="isComplete" id="isComplete" status="success"
+                                    [(ngModel)]="master.isComplete">
+                                </nb-checkbox> <label class="col-form-label" for="isComplete"> <span>&nbsp;
+                                        Complete</span>&nbsp;&nbsp;&nbsp;&nbsp; <b>Yield:</b>&nbsp;<span>
+                                        {{percentCompleted}}%</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

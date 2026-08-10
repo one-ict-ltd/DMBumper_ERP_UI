@@ -1,0 +1,104 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-sm-3 col-form-label">Company Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.companyId = this.$event.id);getSBU(this.$event.id);getBudgetMainHead();"
+                                    [items]="companyItems" name="companyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="companyId" placeholder="Select Company"
+                                    appendTo="body" [(ngModel)]="master.companySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="budgetMainHeadId" class="col-sm-3 col-form-label">Main Head
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.budgetMainHeadId = this.$event.id);"
+                                    [items]="budgetMainHeadItems" name="sbuName" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="budgetMainHeadId"
+                                    placeholder="Select Main Head" appendTo="body"
+                                    [(ngModel)]="master.budgetMainHeadSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="subHeadCode" class="col-sm-3 col-form-label">Sub Head Code
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="subHeadCode" required
+                                    [(ngModel)]="master.subHeadCode" name="subHeadCode" nbInput fullWidth
+                                    placeholder="Sub Head Code">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sortOrder" class="col-sm-3 col-form-label">Sort Order
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="sortOrder" required
+                                    [(ngModel)]="master.sortOrder" name="sortOrder" nbInput fullWidth
+                                    placeholder="Sort Order">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="sbuId" class="col-sm-3 col-form-label">Branch Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.sbuId = this.$event.id);getBudgetMainHead();"
+                                    [items]="sbuItems" name="sbuName" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="sbuId" placeholder="Select Branch"
+                                    appendTo="body" [(ngModel)]="master.sbuSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="subHeadName" class="col-sm-3 col-form-label">Sub Head Name
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="subHeadName" required
+                                    [(ngModel)]="master.subHeadName" name="subHeadName" nbInput fullWidth
+                                    placeholder="Head Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">Is Active?</label>
+                            <div class="col-sm-9">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

@@ -1,0 +1,62 @@
+<div id="content" #content>
+    <div class="alert alert-info">
+
+        <button class="btn btn-success btn-sm" (click)="captureScreen('contentToConvert')"> Print PDF </button>
+
+    </div>
+</div>
+<nb-card>
+    <nb-card-body>
+        <label class="search-label" for="search">Search:</label>
+        <input nbInput [nbFilterInput]="dataSource" id="search" class="search-input">
+        <div id="contentToConvert">
+            <div class="header">
+                <div class="text-center" style="border-bottom: 1px solid black;">
+                    <ul *ngIf="company.name" class="list-inline">
+                        <li *ngIf="company.name">
+                            <h5 t-field="">{{company.name}}</h5>
+                        </li>
+                        <li *ngIf="company.address"><span t-field="">{{company.address}}</span> </li>
+                        <li *ngIf="company.phone">Phone: <span t-field="">{{company.phone}}, Fax {{company.fax}}</span></li>
+                        <li *ngIf="company.email">Email: <span t-field="company.email">{{company.email}}, {{company.website}}</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <table class="table-striped" [nbTreeGrid]="dataSource" [nbSort]="dataSource" (sort)="updateSort($event)">
+
+                <tr nbTreeGridHeaderRow *nbTreeGridHeaderRowDef="allColumns"></tr>
+                <tr nbTreeGridRow *nbTreeGridRowDef="let row; columns: allColumns"></tr>
+
+                <ng-container [nbTreeGridColumnDef]="customColumn">
+                    <th nbTreeGridHeaderCell [nbSortHeader]="getSortDirection(customColumn)" *nbTreeGridHeaderCellDef>
+                        {{customColumn}}
+                    </th>
+                    <td nbTreeGridCell *nbTreeGridCellDef="let row">
+                        <ngx-fs-icon [kind]="row.data.kind" [expanded]="row.expanded"></ngx-fs-icon>
+                        {{row.data[customColumn]}}
+                    </td>
+                </ng-container>
+
+                <ng-container *ngFor="let column of defaultColumns; let index = index" [nbTreeGridColumnDef]="column" [showOn]="getShowOn(index)">
+                    <th nbTreeGridHeaderCell [nbSortHeader]="getSortDirection(column)" *nbTreeGridHeaderCellDef>
+                        {{column}}
+                    </th>
+                    <td nbTreeGridCell *nbTreeGridCellDef="let row">{{row.data[column] || '-'}}</td>
+                </ng-container>
+
+            </table>
+
+            <br>
+            <div class="footer">
+                <div class="" style="border-top: 1px solid black;">
+                    <div class="copyright-wrap footer pb-2 row">
+                        <div class="blockquote-footer">
+                            <i> design & development by one ict limited </i><a href="/" title="ONE-ICT"> ONE-ICT </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

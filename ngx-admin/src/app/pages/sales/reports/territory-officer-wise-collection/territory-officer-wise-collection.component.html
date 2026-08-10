@@ -1,0 +1,87 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+   
+  <div class="row">
+     
+      <div class="col-lg-6 col-md-6 col-sm-6">
+          <div class="form-group row">
+              <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+              <div class="col-sm-8">
+                  <ng-select nbselect (change)="depotCode = $event.id;" [items]="depotList"
+                      name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                      placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                  </ng-select>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="row">
+      <div class="col-6">
+          <div class="form-group row">
+              <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date <span>*</span></label>
+              <div class="col-sm-8">
+                  <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                      placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                  <nb-datepicker #fdatepicker></nb-datepicker>
+              </div>
+          </div>
+      </div>
+      <div class="col-6">
+          <div class="form-group row">
+              <label for="todateSelected" class="col-sm-4 col-form-label">To Date <span>*</span></label>
+              <div class="col-sm-8">
+                  <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                      placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                  <nb-datepicker #datepicker></nb-datepicker>
+              </div>
+          </div>
+      </div>
+  </div>
+
+    <form [formGroup]="frmParams"><div class="row" hidden>
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row">
+          <label class="col-sm-12 col-form-label" for="depotCode">Depot<span class="text-danger">*</span></label>
+          <div class="col-sm-12">
+            <ng-select nbselect [items]="depotList" [virtualScroll]="true"
+                formControlName="depotCode" bindValue="value"
+                [ngClass]="frmParams.get('depotCode').errors?.required && submitted ? 'is-invalid':'is-valid'"
+                bindLabel="text" id="depoCode" placeholder="Select Depot" appendTo="body">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row">
+          <label class="col-sm-12 col-form-label" for="fromDate">From Date<span class="text-danger">*</span></label>
+          <div class="col-sm-12">
+            <input id="fromDate" [nbDatepicker]="fromDate" nbInput fullWidth placeholder="Date" formControlName="fromDate" readonly
+            [status]="frmParams.get('fromDate').errors?.required && submitted ? 'danger':''">
+            <nb-datepicker #fromDate></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row">
+          <label class="col-sm-12 col-form-label" for="toDate">To Date<span class="text-danger">*</span></label>
+          <div class="col-sm-12">
+            <input id="toDate" [nbDatepicker]="toDate" nbInput fullWidth placeholder="Date" formControlName="toDate" readonly
+            [status]="frmParams.get('toDate').errors?.required && submitted ? 'danger':''">
+            <nb-datepicker #toDate></nb-datepicker>
+          </div>
+        </div>
+      </div>
+    </div>
+    </form>
+
+    <div class="grid-wrapper" *ngIf="showbody">
+      <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine"
+        [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData" pagination='true'>
+      </ag-grid-angular>
+    </div>
+  </nb-card-body>
+</nb-card>
+

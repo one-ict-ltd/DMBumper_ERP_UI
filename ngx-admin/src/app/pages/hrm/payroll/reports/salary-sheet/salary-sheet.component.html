@@ -1,0 +1,202 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    <fieldset>
+      <form #masterForm="ngForm" novalidate>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group row">
+              <label for="empId" class="col-4 col-form-label">Employee Name<span>*</span></label>
+              <div class="col-sm-8">
+                <ng-select nbselect [items]="empItems" bindLabel="name" id="empId" name="empId"
+                  (change)="(master.empId = $event.id);" [(ngModel)]="master.empSelected"
+                  [ngModelOptions]="{standalone: true}" [virtualScroll]="true" placeholder="Select Employee"
+                  appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-group row">
+              <label for="salaryHeadId" class="col-4 col-form-label">Salary Head
+              </label>
+              <div class="col-sm-8">
+                <ng-select nbselect [items]="salaryHeadItems" (change)="onSalaryHeadChange($event)" name="salaryHeadId"
+                  bindLabel="name" id="salaryHeadId" [(ngModel)]="master.salaryHeadSelected"
+                  [ngModelOptions]="{standalone: true}" placeholder="Select Salary Head" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-body>
+</nb-card>
+
+
+<nb-card *ngIf="showbody">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id="simple_table" #simple_table #table class="table table-bordered mb-0">
+        <thead>
+          <tr>
+            <th colspan="24" class="reportHeaderClass" style="font: bold; text-align: center;">
+              <h4>{{companyName}}</h4>
+            </th>
+          </tr>
+
+          <tr>
+            <th colspan="24" class="reportHeaderClass" style="font: bold; text-align: center;">{{reportTitleName}}</th>
+          </tr>
+          <tr>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: Left;">Employee No: {{employeeNo}}
+            </th>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: right;">Joining Date:
+              {{joiningDate}}</th>
+          </tr>
+
+          <tr>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: Left;">Employee Name: {{fullName}}
+            </th>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: right;">Designation:
+              {{currentDesignation}}</th>
+          </tr>
+          <tr>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: Left;">Department:
+              {{currentDepartment}}</th>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: right;">Salary Location:
+              {{salary_Location}}</th>
+          </tr>
+          <tr>
+            <th *ngFor="let item of tableHeaderP; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <td>{{item.sl}}</td>
+            <td>{{item.PeriodMonth}}, {{item.PeriodYear}}</td>
+            <td style="text-align: right;">{{item.Basic}}</td>
+            <td style="text-align: right;">{{item.HouseRent}}</td>
+            <td style="text-align: right;">{{item.Medical}}</td>
+            <td style="text-align: right;">{{item.Transport}}</td>
+            <td style="text-align: right;">{{item.Utility}}</td>
+            <td style="text-align: right;">{{item.UpkeepAllow}}</td>
+            <td style="text-align: right;">{{item.OtherAllow}}</td>
+            <td style="text-align: right;">{{item.Arrear}}</td>
+            <td style="text-align: right;">{{item.Bonus}}</td>
+            <td style="text-align: right;">{{item.IncArrear}}</td>
+            <td style="text-align: right;">{{item.GrossPay}}</td>
+            <td style="text-align: right;">{{item.ProvidentFund}}</td>
+            <td style="text-align: right;">{{item.IT}}</td>
+            <td style="text-align: right;">{{item.MobileBill}}</td>
+            <td style="text-align: right;">{{item.FoodDed}}</td>
+            <td style="text-align: right;">{{item.MotorCycle}}</td>
+            <td style="text-align: right;">{{item.AdvanceLoan}}</td>
+            <td style="text-align: right;">{{item.RevenueStamp}}</td>
+            <td style="text-align: right;">{{item.LWP}}</td>
+            <td style="text-align: right;">{{item.OtherDeduction}}</td>
+            <td style="text-align: right;">{{item.TotalDeduction}}</td>
+            <td style="text-align: right;">{{item.NetAmount}}</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="font-weight: bold;">Total</td>
+            <td style="font-weight: bold;text-align: right;">{{basicTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{houseRentTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{medicalTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{transportTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{utilityTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{upkeepAllowTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{otherAllowTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{arrearTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{bonusTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{incArrearTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{grossPayTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{providentFundTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{itTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{mobileBillTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{foodDedTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{motorCycleTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{advanceLoanTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{revenueStampTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{lwpTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{otherDeductionTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{totalDeductionTotal}}</td>
+            <td style="font-weight: bold;text-align: right;">{{netAmountTotal}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>
+
+<nb-card *ngIf="showbody1">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id="simple_table1" #simple_table #table class="table table-bordered mb-0">
+        <thead>
+          <tr>
+            <th colspan="24" class="reportHeaderClass" style="font: bold; text-align: center;">
+              <h4>{{companyName}}</h4>
+            </th>
+          </tr>
+
+          <tr>
+            <th colspan="24" class="reportHeaderClass" style="font: bold; text-align: center;">{{reportTitleName}}</th>
+          </tr>
+          <tr>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: Left;">Employee No: {{employeeNo}}
+            </th>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: right;">Joining Date:
+              {{joiningDate}}</th>
+          </tr>
+
+          <tr>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: Left;">Employee Name: {{fullName}}
+            </th>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: right;">Designation:
+              {{currentDesignation}}</th>
+          </tr>
+          <tr>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: Left;">Department:
+              {{currentDepartment}}</th>
+            <th colspan="12" class="reportHeaderClass" style="font: bold; text-align: right;">Salary Location:
+              {{salary_Location}}</th>
+          </tr>
+          <tr>
+          </tr>
+          <tr>
+            <ng-container *ngFor="let item of tableHeaderP; let i = index">
+              <th *ngIf="i !== 2">{{item}}</th>
+              <th *ngIf="i === 2" colspan="12" style="font: bold; text-align: center;">{{item}}</th>
+            </ng-container>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <td>{{item.sl}}</td>
+            <td>{{item.PeriodMonth}}, {{item.PeriodYear}}</td>
+            <td colspan="12" style="text-align: right;">{{item.Amount}}</td>
+
+          </tr>
+          <tr>
+            <td colspan="2" style="font-weight: bold;">Total</td>
+            <td colspan="12" style="font-weight: bold;text-align: right;">{{Amountsum}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>

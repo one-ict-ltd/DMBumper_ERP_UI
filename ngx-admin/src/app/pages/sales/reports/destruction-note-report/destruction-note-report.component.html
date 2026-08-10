@@ -1,0 +1,116 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="getAllTerritory(depotCode = this.$event.id);" [items]="depotList"
+                            name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                            placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" hidden>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="partyId">Territory</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect
+                            (change)="(territoryCode = this.$event.id);GetPartyByTerritoryCode(this.$event.id);"
+                            [items]="territoryList" [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="territoryCode" placeholder="Select territory"
+                            appendTo="body" [(ngModel)]="territorySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fDate" class="col-sm-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="tDate" class="col-sm-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="tdatepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #tdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<div class="row" *ngIf="showbody">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card>
+
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 500px">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr style="text-align: center; background-color: darkseagreen;">
+                                    <th>#</th>
+                                    <th>Depot Name</th>
+                                    <th>Damage / Expire Transfer No.</th>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <!-- <th>Code</th>
+                                    <th>Product Name</th>
+                                    <th>Pack Size</th>
+                                    <th>Amount</th> -->
+                                    <th>Summary Report</th>
+                                    <th>Details Report</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of bodyData; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.depotName}}</td>
+                                    <td>{{details.damageExpireProductReturnNo}}</td>
+                                    <td>{{details.damageExpireProductReturnDate}}</td>
+                                    <td>{{details.miscellaneousType}}</td>
+                                    <!-- <td>{{details.skuNumber}}</td>
+                                    <td>{{details.productName}}</td>
+                                    <td>{{details.packSize}}</td>
+                                    <td style="font-weight: bold; text-align: right;">{{details.ttlQty}}</td>
+                                    <td style="font-weight: bold; text-align: right;">{{details.totalAmount}}</td> -->
+                                    <td style="text-align: center;">
+                                        <button
+                                            (click)="generateCrReport('Summary', details.damageExpireProductReturnMasterId)"
+                                            title="Destruction Note">View Summary</button>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <button
+                                            (click)="generateCrReport('Details', details.damageExpireProductReturnMasterId)"
+                                            title="Destruction Note">View Details</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>

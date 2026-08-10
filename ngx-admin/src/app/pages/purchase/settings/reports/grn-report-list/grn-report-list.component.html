@@ -1,0 +1,68 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group row">
+                    <label for="productTypeId" class="col-sm-12 col-form-label">Purchase Type<span>*</span></label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect (ngModelChange)="getPOListbyPurchaseType(this.$event)"
+                            [items]="quotationTypeList" name="purchaseTypeId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="purchaseTypeId" placeholder="Select Purchase Type"
+                            appendTo="body" [(ngModel)]="purchaseTypeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-form-label" for="purchaseOrderId"> Purchase Order No.</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect [items]="purchaseOrderList" name="purchaseOrderId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="purchaseOrderId"
+                            placeholder="Select Purchase Order" appendTo="body" [(ngModel)]="purchaseOrderSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-form-label" for="ImpPreLCInfoMasterId"> LC No.</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect [items]="lcNoList" name="ImpPreLCInfoMasterId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="ImpPreLCInfoMasterId" placeholder="Select LC No."
+                            appendTo="body" [(ngModel)]="lCNoSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-12 col-form-label" for="supplierChallanNo"> Supplier Challan No.</label>
+                    <div class="col-sm-12">
+                        <ng-select nbselect [items]="supplierChallanNoList" name="supplierChallanNo" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="supplierChallanNo" placeholder="Select Supplier Challan No."
+                            appendTo="body" [(ngModel)]="supplierChallanNoSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card>
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <iframe id="pdfPreview" [src]="base64Pdf" frameborder="0" width="100%" height="450px">
+            </iframe>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

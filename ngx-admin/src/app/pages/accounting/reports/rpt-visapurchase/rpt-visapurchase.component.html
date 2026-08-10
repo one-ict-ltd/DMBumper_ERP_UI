@@ -1,0 +1,143 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-md-3">
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label for="reportId" class="col-sm-3 col-form-label">Report Types
+                        <span>*</span></label>
+                    <div class="col-sm-9">
+                        <ng-select nbselect (change)="showHideDdl();" [items]="reportNamesItems" name="reportId"
+                            bindLabel="name" id="reportId" [(ngModel)]="ddlReportNameSelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Report Name" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="fromDateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input nbInput placeholder="From Date" [nbDatepicker]="formdatepicker" fullWidth
+                            [(ngModel)]="fromDateSelected">
+                        <nb-datepicker #formdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group row">
+                    <label for="toDateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input nbInput placeholder="To Date" [nbDatepicker]="todatepicker" fullWidth
+                            [(ngModel)]="toDateSelected">
+                        <nb-datepicker #todatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="showCompany">
+                <div class="form-group row">
+                    <label for="companyId" class="col-4 col-form-label">Company Name</label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="companyItems" name="companyId" bindLabel="name" id="companyId"
+                            [(ngModel)]="ddlCompanySelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Company" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4" *ngIf="showTrade">
+                <div class="form-group row">
+                    <label for="tradeId" class="col-4 col-form-label">Trade Name</label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="tradeItems" name="tradeId" bindLabel="name" id="tradeId"
+                            [(ngModel)]="ddlTradeSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Trade" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.companyName }}</td>
+                        <td>{{item.trade }}</td>
+                        <td>{{item.workOrderNo }}</td>
+                        <td>{{item.issueDate }}</td>
+                        <td align="center">{{item.purchaseVisa }}</td>
+                        <td align="right">{{this.currencyFormatter(item.purchaseAmount)}}</td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="6">Grand Total: </td>
+                        <td colspan="1">{{this.currencyFormatter(totalAmount)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Visa Purchase</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.companyName }}</td>
+                        <td>{{item.trade }}</td>
+                        <td>{{item.workOrderNo }}</td>
+                        <td>{{item.issueDate }}</td>
+                        <td>{{item.purchaseVisa }}</td>
+                        <td>{{this.currencyFormatter(item.purchaseAmount)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

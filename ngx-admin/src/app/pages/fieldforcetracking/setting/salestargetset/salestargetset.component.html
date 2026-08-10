@@ -1,0 +1,102 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="employeeId" class="col-sm-3 col-form-label">Select
+                                Employee<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.employeeId = this.$event.id);LoadTerritoryCode()"
+                                    [items]="EmployeeList" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId" placeholder="Select Employee"
+                                    appendTo="body" [(ngModel)]="master.EmployeeSelected" required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="territoryCode" class="col-sm-3 col-form-label">Territory
+                                Code<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="territoryCode" required
+                                    [(ngModel)]="master.territoryCode" name="territoryCode" nbInput fullWidth
+                                    placeholder=" Territory Code " readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="leaveTypeId" class="col-sm-3 col-form-label">Month<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.month = this.$event.id);" [items]="Monthlist"
+                                    name="month" bindLabel="name" [ngModelOptions]="{standalone: true}" id="month"
+                                    placeholder="Select month" appendTo="body" [(ngModel)]="master.MonthSelected"
+                                    required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="yearId" class="col-sm-3 col-form-label"> Year<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.year = this.$event.id);" [items]="YearList"
+                                    name="year" bindLabel="name" [ngModelOptions]="{standalone: true}" id="year"
+                                    placeholder="Select Year" appendTo="body" [(ngModel)]="master.YearSelected"
+                                    required>
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="targetBudget" class="col-sm-3 col-form-label">Sales Target<span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="targetBudget" required
+                                    [(ngModel)]="master.targetBudget" name="targetBudget" nbInput fullWidth
+                                    placeholder=" Sales Target">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="" class="col-sm-5 col-form-label"> Is Active ?</label>
+                            <div class="col-sm-7">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

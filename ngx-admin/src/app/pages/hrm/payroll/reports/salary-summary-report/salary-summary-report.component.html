@@ -1,0 +1,150 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <fieldset>
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryDepotId" class="col-4 col-form-label">Salary Depot
+                            </label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="salaryDepotList"
+                                    (change)="(master.salaryDepotName = $event.name);" name="salaryDepotId"
+                                    bindLabel="name" id="salaryDepotId" [(ngModel)]="master.salaryDepotSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Salary Depot"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryPeriodId" class="col-4 col-form-label">Salary Period
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="salaryPeriodItems"
+                                    (change)="(master.salaryPeriodId = $event.id);" name="salaryPeriodId"
+                                    bindLabel="name" id="salaryPeriodId" [(ngModel)]="master.salaryPeriodSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Salary Period"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6" hidden>
+                        <div class="form-group row">
+                            <label for="salaryPeriodId" class="col-4 col-form-label">Report Type
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="ApprovalStatusList" (change)="(master.typeId = $event.id);"
+                                    name="typeId" bindLabel="name" id="typeId" [(ngModel)]="ApprovalStatusSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Salary Period"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryTypeId" class="col-4 col-form-label">Salary Type
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="salaryTypeList"
+                                    (change)="(master.salaryTypeId = $event.id);" name="salaryTypeId" bindLabel="name"
+                                    id="salaryTypeId" [(ngModel)]="salaryTypeSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Salary Type"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryTypeId" class="col-4 col-form-label">Department
+                            </label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="DepartmentList" name="departmentId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="departmentId"
+                                    placeholder="Select Department" appendTo="body" [(ngModel)]="DepartmentSelected"
+                                    [multiple]="true">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="empTypeName" class="col-4 col-form-label">Employee Type
+                            </label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="empTypeList" (change)="(master.empTypeName = $event.name);"
+                                    name="empTypeName" bindLabel="name" id="empTypeName"
+                                    [(ngModel)]="master.empTypeSelected" [ngModelOptions]="{standalone: true}"
+                                    placeholder="Select Employee Type" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-7">
+                      <div class="form-group row">
+                          <label for="processComments" class="col-2 col-form-label">Comments</label>
+                          <div class="col-sm-10">
+                              <textarea type="text" class="form-control" id="processComments" required
+                                  [(ngModel)]="master.processComments" name="processComments" nbInput
+                                  fullWidth></textarea>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-1">
+                      <div class="form-group row">
+                          <label class=""></label>
+                          <div class="">
+                              <button (click)="ProcessSalary();" class="btn btn-success btn-sm">Process</button>
+                          </div>
+                      </div>
+                  </div> -->
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+        <label><b>Total Employee: {{totalEmployee}}</b></label>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table">
+                <thead>
+                    <tr>
+                        <th>SN</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th style="text-align: right;">Bank Payable</th>
+                        <th style="text-align: right;">Cash Payable</th>
+                        <th style="text-align: right;">Net Payable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;"
+                        (click)="GetRptPayslip(item.employeeId,item.salaryPeriodId)">
+                        <td>{{i+1}}</td>
+                        <td>{{item.fullName}}</td>
+                        <td>{{item.designation}}</td>
+                        <td align="right">{{currencyFormatter(item.bankPayable)}}</td>
+                        <td align="right">{{currencyFormatter(item.cashPayable)}}</td>
+                        <td align="right">{{currencyFormatter(item.netPayable)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

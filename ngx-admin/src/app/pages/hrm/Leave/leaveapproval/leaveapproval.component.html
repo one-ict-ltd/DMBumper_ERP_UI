@@ -1,0 +1,123 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <!-- "!show"> -->
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <!-- <div class="col-lg-4 col-md-4 col-sm-4">
+                        <div class="form-group row">
+                            <label for="leaveStatus" class="col-sm-12 col-form-label">Approval
+                                Status<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect [items]="ApprovalStatusList"
+                                    (change)="(master.leaveStatus = this.$event.id);" name="leaveStatus"
+                                    bindLabel="name" [ngModelOptions]="{standalone: true}" id="leaveStatus"
+                                    placeholder="select one" appendTo="body" [(ngModel)]="ApprovalStatusSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="col-4">
+                        <div class="form-group row">
+                            <label for="leaveStatus" class="col-sm-4 col-form-label">Approval Status
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <nb-radio-group [(ngModel)]="master.leaveStatus" name="leaveStatus">
+                                    <nb-radio value=1>
+                                        Approve
+                                    </nb-radio>
+                                    <nb-radio value=2>
+                                        Reject
+                                    </nb-radio>
+                                </nb-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+
+<div class="row" *ngIf="show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Leave For Approval" class="btn-tab">
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Employee Name</th>
+                                    <th>Leave Type</th>
+                                    <th>Year</th>
+                                    <th>Date</th>
+                                    <th>Day</th>
+                                    <th>Substitute</th>
+                                    <th>Location</th>
+                                    <th>Remarks</th>
+                                    <th>Comments</th>
+                                    <th>Action</th>
+                                </tr>
+
+                                <tr *ngFor="let details of master.lstMasterViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>
+                                        {{details.employeeName}}
+                                    </td>
+                                    <td style="width: 20%;">
+                                        <ng-select nbselect [(ngModel)]="details.typeName"
+                                            (change)="(details.leaveTypeId = this.$event.id);LoadLeaveBalance(rowIndex,details.employeeId,details.leaveTypeId,details.yearId)"
+                                            [items]="LeaveTypeList" name="LeaveType" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="Party" placeholder="Select Type"
+                                            appendTo="body">
+                                        </ng-select>
+                                    </td>
+                                    <td>
+                                        {{details.yearName}}
+                                    </td>
+                                    <td>
+                                        {{details.startDate}} To {{details.endDate}}
+                                    </td>
+                                    <td>
+                                        {{details.leaveDay}}
+                                    </td>
+                                    <td>
+                                        {{details.substituteEmployeeName}}
+                                    </td>
+                                    <td>
+                                        {{details.leaveLocation}}
+                                    </td>
+                                    <td>
+                                        {{details.remarks}}
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" [(ngModel)]="details.comments"
+                                            id="comments" name="comments" nbInput fullWidth
+                                            placeholder="Leave Comments">
+                                    </td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect">
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>

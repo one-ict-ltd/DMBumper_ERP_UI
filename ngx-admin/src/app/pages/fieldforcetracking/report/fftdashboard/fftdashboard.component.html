@@ -1,0 +1,262 @@
+<nb-card>
+  <nb-card-header>
+    <fieldset>
+      <form #masterForm="ngForm" novalidate>
+
+        <div class="row">
+          <div class="col-sm-12 card-body">
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="card bg-success text-white border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-xl-2">Today's
+                          Total Order</div>
+                        <div class="h5 mb-0 font-weight-bold ">
+                          {{this.currencyFormatter(todayTotalInvoice)}}</div>
+                      </div>
+                      <div class="col-auto">
+                        <!-- <i class="fas fa-file-invoice-dollar fa-3x text-black-500"></i> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4 py-0">
+                <div class="card bg-primary text-white border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">Today's
+                          Visited Customer's</div>
+                        <div class="h5 mb-0 font-weight-bold ">
+                          {{todayVisitedCustomer}}</div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-user fa-2x text-black-300"></i>
+                        <i class="fas fa-clinic-medical fa-3x text-black-500"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="card bg-info text-white border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">Today's
+                          Visited Doctor's</div>
+                        <div class="h5 mb-0 font-weight-bold ">
+                          {{todayVisitedDoctor}}</div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-user fa-2x text-black-300"></i>
+                        <i class="fas fa-user-md fa-3x text-black-500"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 card-body">
+
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="card bg-success text-white border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">Today's Total
+                          Collection</div>
+                        <div class="h5 mb-0 font-weight-bold ">
+                          {{this.currencyFormatter(todayTotalCollection)}}</div>
+                      </div>
+                      <div class="col-auto">
+                        <!-- <i class="fas fa-file-invoice-dollar fa-3x text-black-500"></i> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="col-sm-4 py-0">
+                <div class="card bg-primary text-white border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                          Total Customer's
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold ">
+                          {{totalCustomer}}</div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-clinic-medical fa-3x text-black-500"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-4 py-0">
+                <div class="card bg-info text-white border-left-warning shadow h-100 py-2">
+                  <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                      <div class="col mr-2">
+                        <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                          Total Doctor's
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold ">
+                          {{totalDoctor}}</div>
+                      </div>
+                      <div class="col-auto">
+                        <i class="fas fa-user-md fa-3x text-black-500"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12 card-body">
+            <div class="row">
+              <div class="col-sm-6">
+                <div id="chartContainer" style="height: 370px; width: 100%;">
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <!-- <div class="grid-wrapper">
+                                    <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine"
+                                        [modules]="modules" [columnDefs]="columnDefs" [defaultColDef]="defaultColDef"
+                                        [debug]="true" [rowData]="rowData" [frameworkComponents]="frameworkComponents"
+                                        (gridReady)="onGridReady($event)" rowSelection="multiple" pagination='true'>
+                                    </ag-grid-angular>
+                                </div> -->
+                <div class="row">
+                  <div class="col-sm-12 card-body">
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <div class="card bg-danger text-white border-left-warning shadow h-100 py-2"
+                          (click)="getLogOutList(dialog)">
+                          <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                              <div class="col mr-2">
+                                <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                                  Total Logged Out
+                                  Employee's</div>
+                                <div class="h5 mb-0 font-weight-bold ">
+                                  {{totalLoggedOut}}
+                                </div>
+                              </div>
+                              <div class="col-auto">
+                                <i class="fas fa-sign-out-alt fa-3x text-black-500"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="col-sm-4 py-0">
+                        <div class="card bg-warning text-white border-left-warning shadow h-100 py-2"
+                          (click)="getLogInList(dialog)">
+                          <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                              <div class="col mr-2">
+                                <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                                  Total Logged In
+                                  Employee's
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold ">
+                                  {{totalLoggedIn}}</div>
+                              </div>
+                              <div class="col-auto">
+                                <i class="fas fa-sign-in-alt fa-3x text-black-500"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-4 py-0">
+                        <div class="card bg-secondary text-white border-left-warning shadow h-100 py-2"
+                          (click)="getNotLocation(dialog)">
+                          <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                              <div class="col mr-2">
+                                <div class="text-xs font-weight-bold  text-uppercase mb-1">
+                                  Total Location not found
+                                  Employee's
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold ">
+                                  {{totalNotLocation}}</div>
+                              </div>
+                              <div class="col-auto">
+                                <i class="fas fa-map-marked-alt fa-3x text-black-500"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-header>
+</nb-card>
+
+<ng-template #dialog let-data let-ref="dialogRef">
+  <div class="col-md-12 col-lg-12">
+    <nb-card class="min-height">
+      <nb-card-header>{{labelTest}}</nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-md-12 col-lg-12">
+            <nb-card class="max-height">
+              <table class=" table table-bordered table-striped table-responsive" style="height:500px;width:650px;">
+                <thead>
+                  <th>SN</th>
+                  <th>Employee</th>
+                  <th>Location</th>
+                  <th>Time</th>
+                </thead>
+                <tr *ngFor="let detail of this.bodyDataLogOutList; let rowIndex = index">
+                  <td>{{rowIndex+1}}</td>
+                  <td>{{detail.EMP_ID}}</td>
+                  <td>{{detail.ZoneName}}</td>
+                  <td>{{detail.Date}}</td>
+                </tr>
+              </table>
+            </nb-card>
+          </div>
+        </div>
+      </nb-card-body>
+      <nb-card-footer>
+        <div class="row">
+          <div class="col-11">
+          </div>
+          <div class="col-1">
+            <button style="text-align: right;" nbButton (click)="ref.close()">X</button>
+          </div>
+        </div>
+      </nb-card-footer>
+    </nb-card>
+  </div>
+</ng-template>

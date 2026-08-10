@@ -1,0 +1,564 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="companyId" class="col-4 col-form-label">Company Name <span>*</span></label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect (change)="getBranch(this.$event.id);" [items]="companies" name="companyId"
+                            bindLabel="name" id="companyId" [(ngModel)]="ddlSelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="voucherTypeId" class="col-4 col-form-label">Rx Report Type</label>
+                    <div class="col-sm-7">
+                        <ng-select nbselect [items]="ApprovalStatusList" name="rxTypeId" bindLabel="name" id="rxTypeId"
+                            [(ngModel)]="ApprovalStatusSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Voucher Type" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="fromDateSelected" class="col-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input nbInput placeholder="From Date" [nbDatepicker]="formdatepicker" fullWidth
+                            [(ngModel)]="fromDateSelected">
+                        <nb-datepicker #formdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="toDateSelected" class="col-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-7">
+                        <input nbInput placeholder="To Date" [nbDatepicker]="todatepicker" fullWidth
+                            [(ngModel)]="toDateSelected">
+                        <nb-datepicker #todatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-sm-8 col-md-8 col-lg-8" hidden>
+                <div class="form-group row">
+                    <label for="voucherNo" class="col-sm-1 col-form-label">Search</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="searchText" required [(ngModel)]="searchText"
+                            name="searchText" nbInput fullWidth placeholder="Search...">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="doctorNo" class="col-4 col-form-label">Doctor No.</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="doctorNo" required [(ngModel)]="doctorNo"
+                            name="doctorNo" nbInput fullWidth placeholder="doctorNo">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="doctorName" class="col-4 col-form-label">Doctor Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="doctorName" required [(ngModel)]="doctorName"
+                            name="doctorName" nbInput fullWidth placeholder="doctorName">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="territoryName" class="col-4 col-form-label">Territory Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="territoryName" required [(ngModel)]="territoryName"
+                            name="territoryName" nbInput fullWidth placeholder="territoryName">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="territoryCode" class="col-4 col-form-label">Territory Code</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="territoryCode" required [(ngModel)]="territoryCode"
+                            name="territoryCode" nbInput fullWidth placeholder="territoryCode">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="areaCode" class="col-4 col-form-label">Area Code</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="areaCode" required [(ngModel)]="areaCode"
+                            name="areaCode" nbInput fullWidth placeholder="areaCode">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="regionCode" class="col-4 col-form-label">Region Code</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="regionCode" required [(ngModel)]="regionCode"
+                            name="regionCode" nbInput fullWidth placeholder="regionCode">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="brandName" class="col-4 col-form-label">Brand Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="brandName" required [(ngModel)]="brandName"
+                            name="brandName" nbInput fullWidth placeholder="brandName">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="productName" class="col-4 col-form-label">Product Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="productName" required [(ngModel)]="productName"
+                            name="productName" nbInput fullWidth placeholder="productName">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center mb-3">
+            <button class="btn btn-success" type="button" (click)="SearchGrid()"> Search </button>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Doctor No</th>
+                        <th>Doctor Name</th>
+                        <th>Basic Degree</th>
+                        <th>Doctor Degree</th>
+                        <th>Doctor Category Name</th>
+                        <th>Doctor Speciality</th>
+                        <th>Address</th>
+                        <th>Territory Name</th>
+                        <th>Territory Code</th>
+                        <th>Area Code</th>
+                        <th>Region Code</th>
+                        <th>Brand Name</th>
+                        <th>Product Name</th>
+                        <th style="text-align: right;">Total Rx</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData | filter: searchText; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.DoctorNo}}</td>
+                        <td>{{item.DoctorName}}</td>
+                        <td>{{item.BasicDegreeName}}</td>
+                        <td>{{item.Degree}}</td>
+                        <td>{{item.DoctorCategoryName}}</td>
+                        <td>{{item.Speciality}}</td>
+                        <td>{{item.Address}}</td>
+                        <td>{{item.TerritoryName}}</td>
+                        <td>{{item.TerritoryCode}}</td>
+                        <td>{{item.AreaCode}}</td>
+                        <td>{{item.RegionCode}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.skuName}}</td>
+                        <!-- <td align="right">{{(item.TotalRx)}}</td> -->
+                        <!-- <td align="right" (click)="openRxImage(item.TotalRx)"> {{item.TotalRx}}</td> -->
+                        <td (click)="openRxImage(item.TerritoryCode, item.DoctorNo, item.productName, item.skuName)">
+                            <span>{{item.TotalRx}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card *ngIf="showSearch">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-sm-8 col-md-8 col-lg-8" hidden>
+                <div class="form-group row">
+                    <label for="voucherNo" class="col-sm-1 col-form-label">Search</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="searchText" required [(ngModel)]="searchText"
+                            name="searchText" nbInput fullWidth placeholder="Search...">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="doctorNo" class="col-4 col-form-label">Doctor No.</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="doctorNo" required [(ngModel)]="doctorNo"
+                            name="doctorNo" nbInput fullWidth placeholder="doctorNo">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="doctorName" class="col-4 col-form-label">Doctor Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="doctorName" required [(ngModel)]="doctorName"
+                            name="doctorName" nbInput fullWidth placeholder="doctorName">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="territoryName" class="col-4 col-form-label">Territory Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="territoryName" required [(ngModel)]="territoryName"
+                            name="territoryName" nbInput fullWidth placeholder="territoryName">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="territoryCode" class="col-4 col-form-label">Territory Code</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="territoryCode" required [(ngModel)]="territoryCode"
+                            name="territoryCode" nbInput fullWidth placeholder="territoryCode">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="areaCode" class="col-4 col-form-label">Area Code</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="areaCode" required [(ngModel)]="areaCode"
+                            name="areaCode" nbInput fullWidth placeholder="areaCode">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="regionCode" class="col-4 col-form-label">Region Code</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="regionCode" required [(ngModel)]="regionCode"
+                            name="regionCode" nbInput fullWidth placeholder="regionCode">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="brandName" class="col-4 col-form-label">Brand Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="brandName" required [(ngModel)]="brandName"
+                            name="brandName" nbInput fullWidth placeholder="brandName">
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="productName" class="col-4 col-form-label">Product Name</label>
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="productName" required [(ngModel)]="productName"
+                            name="productName" nbInput fullWidth placeholder="productName">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 text-center mb-3">
+            <button class="btn btn-success" type="button" (click)="SearchGrid()"> Search </button>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Doctor No</th>
+                        <th>Doctor Name</th>
+                        <th>Basic Degree</th>
+                        <th>Doctor Degree</th>
+                        <th>Doctor Category Name</th>
+                        <th>Doctor Speciality</th>
+                        <th>Address</th>
+                        <th>Territory Name</th>
+                        <th>Territory Code</th>
+                        <th>Area Code</th>
+                        <th>Region Code</th>
+                        <th>Brand Name</th>
+                        <th>Product Name</th>
+                        <th style="text-align: right;">Total Rx</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of filteredBodyData | filter: searchText; let i = index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.DoctorNo}}</td>
+                        <td>{{item.DoctorName}}</td>
+                        <td>{{item.BasicDegreeName}}</td>
+                        <td>{{item.Degree}}</td>
+                        <td>{{item.DoctorCategoryName}}</td>
+                        <td>{{item.Speciality}}</td>
+                        <td>{{item.Address}}</td>
+                        <td>{{item.TerritoryName}}</td>
+                        <td>{{item.TerritoryCode}}</td>
+                        <td>{{item.AreaCode}}</td>
+                        <td>{{item.RegionCode}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.skuName}}</td>
+                        <!-- <td align="right">{{(item.TotalRx)}}</td> -->
+                        <!-- <td align="right" (click)="openRxImage(item.TotalRx)"> {{item.TotalRx}}</td> -->
+                        <td (click)="openRxImage(item.TerritoryCode, item.DoctorNo, item.productName, item.skuName)">
+                            <span>{{item.TotalRx}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+
+<!-- PDF -->
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Rx Report</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue}}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <!-- <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th> -->
+                        <th>#</th>
+                        <th>Doctor No</th>
+                        <th>Doctor Name</th>
+                        <th>Basic Degree</th>
+                        <th>Doctor Degree</th>
+                        <th>Doctor Category Name</th>
+                        <th>Doctor Speciality</th>
+                        <th>Address</th>
+                        <th>Territory Name</th>
+                        <th>Territory Code</th>
+                        <th>Area Code</th>
+                        <th>Region Code</th>
+                        <th>Brand Name</th>
+                        <th>Product Name</th>
+                        <th style="text-align: right;">Total Rx</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.DoctorNo}}</td>
+                        <td>{{item.DoctorName}}</td>
+                        <td>{{item.BasicDegreeName}}</td>
+                        <td>{{item.Degree}}</td>
+                        <td>{{item.DoctorCategoryName}}</td>
+                        <td>{{item.Speciality}}</td>
+                        <td>{{item.Address}}</td>
+                        <td>{{item.TerritoryName}}</td>
+                        <td>{{item.TerritoryCode}}</td>
+                        <td>{{item.AreaCode}}</td>
+                        <td>{{item.RegionCode}}</td>
+                        <td>{{item.productName}}</td>
+                        <td>{{item.skuName}}</td>
+                        <td align="right">{{(item.TotalRx)}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>
+
+<!-- VOUCHER PDF -->
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top_voucher" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td><strong>{{voucherTypeName}} VOUCHER</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table_voucher" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td>Voucher No:{{VoucherNo}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>Voucher Date:{{VoucherDate}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table_Voucher" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of vouchertableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyDataVoucher; let j = index;">
+                        <td>{{item.accountCode}}</td>
+                        <td>{{item.accountName}}</td>
+                        <!-- <td>{{item.partyName}}</td> -->
+                        <td>{{item.costCentreName}}</td>
+                        <td text-align="right">{{this.currencyFormatter(item.drAmount)}}</td>
+                        <td text-align="right">{{this.currencyFormatter(item.crAmount)}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td colspan="1">Total:</td>
+                        <td>{{this.currencyFormatter(TDR)}}</td>
+                        <td>{{this.currencyFormatter(TCR)}}</td>
+                    </tr>
+                    <tr style="background: white;border: transparent;">
+                        <td colspan="6"> <strong>Amount In Word :</strong> {{AmountInWord}} </td>
+                        <!-- <td colspan="4">{{AmountInWord}}</td> -->
+                    </tr>
+
+                    <tr style="background: white;border: transparent;">
+                        <td colspan="6"><strong>Narration:</strong>{{Narration}} </td>
+                        <!-- <td colspan="4">{{Narration}}</td> -->
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <table *ngIf="showPaymentSignature" id="footer_table" class="table" style="width: 550px;border: none;">
+                <tbody>
+                    <tr>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                    </tr>
+                    <tr>
+                        <td>Created By</td>
+                        <td>Checked By</td>
+                        <td>Reviewed By</td>
+                        <td>Approved By</td>
+                    </tr>
+                    <tr>
+                        <td>{{CreatedBy}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table *ngIf="showReceiptSignature" id="footer_table" class="table" style="width: 550px;border: none;">
+                <tbody>
+                    <tr>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                    </tr>
+                    <tr>
+                        <td>Created By</td>
+                        <td>Checked By</td>
+                        <td>Reviewed By</td>
+                        <td>Approved By</td>
+                    </tr>
+                    <tr>
+                        <td>{{CreatedBy}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table *ngIf="showJournalSignature" id="footer_table" class="table" style="width: 550px;border: none;">
+                <tbody>
+                    <tr>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                        <td><br><br><br></td>
+                    </tr>
+                    <tr>
+                        <td>Created By</td>
+                        <td>Checked By</td>
+                        <td>Reviewed By</td>
+                        <td>Approved By</td>
+                    </tr>
+                    <tr>
+                        <td>{{CreatedBy}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

@@ -1,0 +1,125 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-sm-3 col-form-label">Company Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.companyId = this.$event.id);getSBU(this.$event.id);getDdlLedgers();"
+                                    [items]="companyItems" name="companyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="companyId" placeholder="Select Company"
+                                    appendTo="body" [(ngModel)]="master.companySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sbuId" class="col-sm-3 col-form-label">Branch Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.sbuId = this.$event.id);getDdlLedgers();"
+                                    [items]="sbuItems" name="sbuName" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="sbuId" placeholder="Select Branch"
+                                    appendTo="body" [(ngModel)]="master.sbuSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="ledgerId" class="col-sm-3 col-form-label">Ledger Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.ledgerId = this.$event.id);getDuplicate();"
+                                    [items]="ledgerItems" name="ledgerId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="ledgerId" placeholder="Select Ledger"
+                                    appendTo="body" [(ngModel)]="master.ledgerSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="partyId" class="col-sm-3 col-form-label">Party Name</label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.partyId = this.$event.id);getDuplicate();"
+                                    [items]="partyItems" name="partyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="partyId" placeholder="Select Party"
+                                    appendTo="body" [(ngModel)]="master.partySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-sm-3 col-form-label">Remarks</label>
+                            <div class="col-sm-9">
+                                <textarea type="text" class="form-control" id="description" required
+                                    [(ngModel)]="master.description" name="description" nbInput fullWidth></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="balanceUpToShow" class="col-sm-3 col-form-label">Balance UpTo Date
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input (ngModelChange)="getActualDate($event);" id="balanceUpToShow" required
+                                    [(ngModel)]="master.balanceUpToShow" name="balanceUpToShow"
+                                    [nbDatepicker]="balanceUpToShow" nbInput fullWidth
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #balanceUpToShow></nb-datepicker>
+                                <!-- <input type="text" class="form-control" [(ngModel)]="master.balanceUpToShow"
+                                    id="balanceUpToShow" name="balanceUpToShow" autocomplete="off"
+                                    data-parsley-required="true"> -->
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="amount" class="col-sm-3 col-form-label">Amount <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="amount" required
+                                    [(ngModel)]="master.amount" name="amount" nbInput fullWidth placeholder="Amount">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="transactionModeId" class="col-sm-3 col-form-label">Transaction Mode
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.transactionModeId = this.$event.id)"
+                                    [items]="transactionModeItems" name="transactionModeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="transactionModeId"
+                                    placeholder="Select Transaction Mode" appendTo="body"
+                                    [(ngModel)]="master.transactionModeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label">Is Active?</label>
+                            <div class="col-sm-9">
+                                <div class="validation-checkboxes">
+                                    <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    </nb-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

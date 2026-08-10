@@ -1,0 +1,115 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show" hidden>
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryHeadId" class="col-sm-4 col-form-label">Download Format</label>
+                            <div class="col-sm-8">
+                                <a href="./../../../../assets/DocFormat/EmployeesSalaryIncrementUpload.xlsx"
+                                    download="EmployeesSalaryIncrementUpload.xlsx"
+                                    class="form-control btn btn-warning btn-sm">
+                                    Employee's Salary Increment Upload Format
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="structureAmount">Upload a file
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="file" (change)="onFileChange($event)" multiple="false"
+                                    class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <div class="col-12" style="text-align: center;">
+            <button (click)="VerifyData()" class="btn btn-success btn-md m-3"> Verify Data <i class="fa fa-check"
+                    aria-hidden="true"></i></button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-6">
+                <h6> Total <span>{{totalData}}</span> record(s) found.</h6>
+            </div>
+            <div class="col-6">
+                <h6> Verification Status: <span>{{verifyStatus}}</span>.</h6>
+            </div>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <tr>
+                    <th>SN</th>
+                    <th>Employee Code</th>
+                    <th>Employee Name</th>
+                    <th>Grade</th>
+                    <th style="text-align: right;">Salary</th>
+                    <th style="text-align: right;">Increment</th>
+                    <th style="text-align: right;">New Salary</th>
+                    <th style="text-align: right;">TAX</th>
+                    <th>status</th>
+                    <th>Action</th>
+                </tr>
+                <tr *ngFor="let details of master.lstMaster; let rowIndex = index">
+                    <td>{{rowIndex+1}}</td>
+                    <td>{{details.employeeNo}}</td>
+                    <td>{{details.employeeName}}</td>
+                    <td>{{details.salaryGrade}}</td>
+                    <td align="right">
+                        {{currencyFormatter(details.grossSalary)}}
+                    </td>
+                    <td align="right">
+                        {{currencyFormatter(details.increment)}}
+                    </td>
+                    <td align="right">
+                        {{currencyFormatter(details.structureAmount)}}
+                    </td>
+                    <td align="right">
+                        {{currencyFormatter(details.taxAmount)}}
+                    </td>
+                    <td>{{details.status}}</td>
+                    <td>
+                        <button (click)="deleteDetails(rowIndex)" class="btn btn-danger btn-sm m-1">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

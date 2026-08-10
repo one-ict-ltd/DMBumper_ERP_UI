@@ -1,0 +1,641 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="reportName">Report Name <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="reportName=$event.id" [items]="reportNameList" name="reportName"
+                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="reportName"
+                            placeholder="Select Report" appendTo="body" [(ngModel)]="reportNameSelected"
+                            (ngModelChange)="reportChange($event)">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isNationalPerformance">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="fullName">Invoice No. <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" required [(ngModel)]="invoiceNo" id="invoiceNo"
+                            name="invoiceNo" nbInput fullWidth placeholder="Enter full invoice number">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowReportType" hidden>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="reportType">Report Type <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="reportType=$event.id" [items]="reportTypeList" name="reportType"
+                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="reportType"
+                            placeholder="Select Report Type" appendTo="body" [(ngModel)]="reportTypeSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="!isNationalPerformance">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="zoneCode">Zone</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect
+                            (change)="handleUncoughtError('zone', $event);GetAllRegion(zoneCode = $event.id);zoneChange($event);"
+                            [items]="zoneList" name="zoneCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="zoneCode" placeholder="Select Zone" appendTo="body" [(ngModel)]="zoneSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="!isNationalPerformance">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="regionCode">Region</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect
+                            (change)="handleUncoughtError('region', $event); regionCode=$event.id;getAllArea($event.id);regionChange($event);"
+                            [items]="regionList" [virtualScroll]="true" name="regionCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="regionCode" placeholder="Select Region"
+                            appendTo="body" [(ngModel)]="regionSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="!isNationalPerformance">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="areaCode">Area</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect
+                            (change)="handleUncoughtError('area', $event); areaCode=$event.id;getAllTerritory($event.id);areaChange($event);"
+                            [items]="areaList" name="areaCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="areaCode" placeholder="Select Area" appendTo="body" [(ngModel)]="areaSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="!isNationalPerformance">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="depotCode">Depot</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect
+                            (change)="handleUncoughtError('depot', $event);getAllTerritoryByDepot(depotCode = $event.id);"
+                            [items]="depotList" name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                            id="depotCode" placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="!isNationalPerformance">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="territoryCode">Territory</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect
+                            (change)="handleUncoughtError('territory', $event); territoryCode=$event.id;territoryChange($event);GetAllMIOByTerritory();"
+                            [items]="territoryList" [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="territoryCode" placeholder="Select Territory"
+                            appendTo="body" [(ngModel)]="territorySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isMioShow">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="mioCode">MIO</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="handleUncoughtError('mio', $event);mioCode = $event.id;"
+                            [items]="mioList" [virtualScroll]="true" name="mioCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="mioCode" placeholder="Select a MIO"
+                            appendTo="body" [(ngModel)]="mioSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6" *ngIf="isMioWiseOutstandingReport">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-sm-4 col-form-label">As On Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" *ngIf="isShowProduct" hidden>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="productId">Product Name <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="productWiseSpecificationId=$event.id" [items]="productSpecList"
+                            [virtualScroll]="true" name="productId" bindLabel="name" id="productId"
+                            [(ngModel)]="productSelected" [ngModelOptions]="{standalone: true}"
+                            placeholder="Select Product" [virtualScroll]="true" appendTo="body"
+                            (ngModelChange)="productChange($event)">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" hidden>
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="checkbox" class="col-sm-2 col-form-label">Show Date Range</label>
+                    <div class="col-sm-10">
+                        <div class="validation-checkboxes">
+                            <nb-checkbox [(ngModel)]="showDateRange" name="checkbox" status="success"
+                                (change)="onCheckboxChange($event)">
+                            </nb-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6" *ngIf="!isMioWiseOutstandingReport">
+                <div class="form-group row">
+                    <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="fDate" [nbDatepicker]="fdatepicker" nbInput fullWidth
+                            placeholder="From Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #fdatepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6" *ngIf="!isMioWiseOutstandingReport">
+                <div class="form-group row">
+                    <label for="todateSelected" class="col-sm-4 col-form-label">To Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="tDate" [nbDatepicker]="datepicker" nbInput fullWidth
+                            placeholder="To Date" [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #datepicker></nb-datepicker>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </nb-card-body>
+</nb-card>
+
+
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" #simple_table #table class="table table-bordered mb-0">
+                <thead *ngIf="isNationalPerformanceByProduct">
+                    <tr>
+                        <th colspan="15" class="reportHeaderClass" style="font: bold; text-align: center;">
+                            <h4>{{companyName}}</h4>
+                        </th>
+                    </tr>
+                    <tr hidden>
+                        <th colspan="15" class="reportHeaderClass">{{companyAlias}} Division</th>
+                    </tr>
+                    <tr>
+                        <th colspan="15" class="reportHeaderClass">{{reportTitleName}}</th>
+                    </tr>
+                    <tr *ngIf="productName">
+                        <th colspan="15" class="reportHeaderClass">{{productName}}</th>
+                    </tr>
+                    <tr *ngIf="zone">
+                        <th colspan="15" class="reportHeaderClass">Zone Name: {{zone}}</th>
+                    </tr>
+                    <tr *ngIf="!zone">
+                        <th colspan="15" class="reportHeaderClass">Zone Name: All</th>
+                    </tr>
+                    <tr *ngIf="region">
+                        <th colspan="15" class="reportHeaderClass">Region Name: {{region}}</th>
+                    </tr>
+                    <tr *ngIf="!region">
+                        <th colspan="15" class="reportHeaderClass">Region Name: All</th>
+                    </tr>
+                    <tr *ngIf="areaName">
+                        <th colspan="15" class="reportHeaderClass">Area Name: {{areaName}}</th>
+                    </tr>
+                    <tr *ngIf="!areaName">
+                        <th colspan="15" class="reportHeaderClass">Area Name: All</th>
+                    </tr>
+                    <tr *ngIf="territory">
+                        <th colspan="15" class="reportHeaderClass">Territory Name: {{territory}}</th>
+                    </tr>
+                    <tr *ngIf="!territory">
+                        <th colspan="15" class="reportHeaderClass">Territory Name: All</th>
+                    </tr>
+                    <tr>
+                        <th colspan="15" class="reportHeaderClass">{{dateRange}}</th>
+                    </tr>
+
+                    <tr>
+                        <th colspan="15" class="reportHeaderClass"></th>
+                    </tr>
+                    <tr>
+                        <th colspan="3" rowspan="2">Product</th>
+                        <th colspan="5">MTD Performance</th>
+                        <th rowspan="2">MTD</th>
+                        <th colspan="5">YTD Performance</th>
+                        <th rowspan="2">YTD</th>
+                    </tr>
+                    <tr>
+                        <th colspan="2">UNIT</th>
+                        <th colspan="2">VALUE</th>
+                        <th>Achievement</th>
+                        <th colspan="2">UNIT</th>
+                        <th colspan="2">VALUE</th>
+                        <th>Achievement</th>
+                    </tr>
+                    <tr>
+                        <th *ngFor="let item of tableHeaderP; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <thead *ngIf="isNationalPerformance">
+                    <tr>
+                        <th colspan="18" class="reportHeaderClass">
+                            <h4>{{companyName}}</h4>
+                        </th>
+                    </tr>
+                    <tr hidden>
+                        <th colspan="18" class="reportHeaderClass">{{companyAlias}} Division</th>
+                    </tr>
+                    <tr>
+                        <th colspan="18" class="reportHeaderClass">{{reportTitleName}}</th>
+                    </tr>
+                    <tr *ngIf="productName">
+                        <th colspan="18" class="reportHeaderClass">{{productName}}</th>
+                    </tr>
+                    <!-- <tr *ngIf="zone">
+                        <th colspan="18" class="reportHeaderClass">Zone Name: {{zone}}</th>
+                    </tr>
+                    <tr *ngIf="!zone">
+                        <th colspan="18" class="reportHeaderClass">Zone Name: All</th>
+                    </tr>
+                    <tr *ngIf="region">
+                        <th colspan="18" class="reportHeaderClass">Region Name: {{region}}</th>
+                    </tr>
+                    <tr *ngIf="!region">
+                        <th colspan="18" class="reportHeaderClass">Region Name: All</th>
+                    </tr>
+                    <tr *ngIf="areaName">
+                        <th colspan="18" class="reportHeaderClass">Area Name: {{areaName}}</th>
+                    </tr>
+                    <tr *ngIf="!areaName">
+                        <th colspan="18" class="reportHeaderClass">Area Name: All</th>
+                    </tr>
+                    <tr *ngIf="territory">
+                        <th colspan="18" class="reportHeaderClass">Territory Name: {{territory}}</th>
+                    </tr>
+                    <tr *ngIf="!territory">
+                        <th colspan="18" class="reportHeaderClass">Territory Name: All</th>
+                    </tr> -->
+                    <tr>
+                        <th colspan="18" class="reportHeaderClass">{{dateRange}}</th>
+                    </tr>
+
+                    <tr>
+                        <th colspan="18" class="reportHeaderClass"></th>
+                    </tr>
+                    <tr>
+                        <!-- <th colspan="5">Basic Info</th> -->
+                        <th>Collection Date</th>
+                        <th>Money Receipt No.</th>
+                        <th>Collection Amount</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="isNationalPerformance">
+                    <tr *ngFor="let item of bodyData; let i = index;"
+                        [ngClass]="{'highlighted-row-sl-1': item.slNo === 1,'highlighted-row-sl-2': item.slNo ===2,'highlighted-row-sl-3': item.slNo === 3,'highlighted-row-sl-4': item.slNo === 4}">
+                        <td>{{item.collectionDate}}</td>
+                        <td>{{item.moneyReceiptNo}}</td>
+                        <td>{{item.TotalCollection}}</td>
+                    </tr>
+                </tbody>
+                <thead *ngIf="isOutstandingMonitoringReport">
+                    <tr>
+                        <th colspan="21" class="reportHeaderClass">
+                            <h4>{{companyName}}</h4>
+                        </th>
+                    </tr>
+                    <tr hidden>
+                        <th colspan="21" class="reportHeaderClass">{{companyAlias}} Division</th>
+                    </tr>
+                    <tr>
+                        <th colspan="21" class="reportHeaderClass">{{reportTitleName}}</th>
+                    </tr>
+                    <tr *ngIf="productName">
+                        <th colspan="21" class="reportHeaderClass">{{productName}}</th>
+                    </tr>
+                    <tr *ngIf="zone">
+                        <th colspan="21" class="reportHeaderClass">Zone Name: {{zone}}</th>
+                    </tr>
+                    <tr *ngIf="!zone">
+                        <th colspan="21" class="reportHeaderClass">Zone Name: All</th>
+                    </tr>
+                    <tr *ngIf="region">
+                        <th colspan="21" class="reportHeaderClass">Region Name: {{region}}</th>
+                    </tr>
+                    <tr *ngIf="!region">
+                        <th colspan="21" class="reportHeaderClass">Region Name: All</th>
+                    </tr>
+                    <tr *ngIf="areaName">
+                        <th colspan="21" class="reportHeaderClass">Area Name: {{areaName}}</th>
+                    </tr>
+                    <tr *ngIf="!areaName">
+                        <th colspan="21" class="reportHeaderClass">Area Name: All</th>
+                    </tr>
+                    <tr *ngIf="depot">
+                        <th colspan="21" class="reportHeaderClass">Depot Name: {{depot}}</th>
+                    </tr>
+                    <tr *ngIf="!depot">
+                        <th colspan="21" class="reportHeaderClass">Depot Name: All</th>
+                    </tr>
+                    <tr *ngIf="territory">
+                        <th colspan="21" class="reportHeaderClass">Territory Name: {{territory}}</th>
+                    </tr>
+                    <tr *ngIf="!territory">
+                        <th colspan="21" class="reportHeaderClass">Territory Name: All</th>
+                    </tr>
+                    <tr>
+                        <th colspan="21" class="reportHeaderClass">{{dateRange}}</th>
+                    </tr>
+                    <tr>
+                        <th *ngFor="let item of tableHeaderP; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="isOutstandingMonitoringReport">
+                    <tr *ngFor="let item of bodyData; let i = index;"
+                        [ngClass]="{'highlighted-row-sl-1': item.slNo === 1,'highlighted-row-sl-2': item.slNo ===2,'highlighted-row-sl-3': item.slNo === 3,'highlighted-row-sl-4': item.slNo === 4}">
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td>
+                    </tr>
+                    <!-- <tr *ngFor="let item of bodyData; let i = index;">
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td>
+                    </tr> -->
+                </tbody>
+                <thead *ngIf="isProductWiseMIO">
+                    <tr>
+                        <th colspan="33" class="reportHeaderClass">
+                            <h4>{{companyName}}</h4>
+                        </th>
+                    </tr>
+                    <tr hidden>
+                        <th colspan="33" class="reportHeaderClass">{{companyAlias}} Division</th>
+                    </tr>
+                    <tr>
+                        <th colspan="33" class="reportHeaderClass">{{reportTitleName}}</th>
+                    </tr>
+                    <tr *ngIf="productName">
+                        <th colspan="33" class="reportHeaderClass">Product Name: {{productName}}</th>
+                    </tr>
+                    <tr *ngIf="!productName">
+                        <th colspan="33" class="reportHeaderClass">Product Name: All</th>
+                    </tr>
+                    <tr *ngIf="zone">
+                        <th colspan="33" class="reportHeaderClass">Zone Name: {{zone}}</th>
+                    </tr>
+                    <tr *ngIf="!zone">
+                        <th colspan="33" class="reportHeaderClass">Zone Name: All</th>
+                    </tr>
+                    <tr *ngIf="region">
+                        <th colspan="33" class="reportHeaderClass">Region Name: {{region}}</th>
+                    </tr>
+                    <tr *ngIf="!region">
+                        <th colspan="33" class="reportHeaderClass">Region Name: All</th>
+                    </tr>
+                    <tr *ngIf="areaName">
+                        <th colspan="33" class="reportHeaderClass">Area Name: {{areaName}}</th>
+                    </tr>
+                    <tr *ngIf="!areaName">
+                        <th colspan="33" class="reportHeaderClass">Area Name: All</th>
+                    </tr>
+                    <tr *ngIf="territory">
+                        <th colspan="33" class="reportHeaderClass">Territory Name: {{territory}}</th>
+                    </tr>
+                    <tr *ngIf="!territory">
+                        <th colspan="33" class="reportHeaderClass">Territory Name: All</th>
+                    </tr>
+                    <tr>
+                        <th colspan="33" class="reportHeaderClass">{{dateRange}}</th>
+                    </tr>
+
+                    <tr>
+                        <th colspan="33" class="reportHeaderClass"></th>
+                    </tr>
+                    <tr>
+                        <th rowspan="2">Depot Name</th>
+                        <th colspan="3">Opening OS</th>
+                        <th rowspan="2"># MIO</th>
+                        <th rowspan="2">MIO Avg. Sales</th>
+                        <th rowspan="2"># DA</th>
+                        <th rowspan="2">Supply / DA</th>
+                        <th colspan="3">Sales in TP</th>
+                        <th colspan="3">Net Sales</th>
+                        <th colspan="3">Current Collection</th>
+                        <th colspan="3">Previous Collection</th>
+                        <th colspan="3">Current Adjustment</th>
+                        <th colspan="3">Previous Adjustment</th>
+                        <th colspan="3">Current Dues</th>
+                        <th colspan="3">Previous Dues</th>
+                        <th rowspan="2">Closing OS</th>
+
+                    </tr>
+                    <tr>
+                        <th *ngFor="let item of tableHeaderP; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="isProductWiseMIO">
+                    <tr *ngFor="let item of bodyData; let i = index;"
+                        [ngClass]="{'highlighted-row-sl-1': item.slNo === 1,'highlighted-row-sl-2': item.slNo ===2,'highlighted-row-sl-3': item.slNo === 3,'highlighted-row-sl-4': item.slNo === 4}">
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td>
+                    </tr>
+                    <!-- <tr *ngFor="let item of bodyData; let i = index;">
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td>
+                    </tr> -->
+                </tbody>
+                <thead *ngIf="isMioWiseOutstandingReport">
+                    <tr>
+                        <th colspan="33" class="reportHeaderClass">
+                            <h4>{{companyName}}</h4>
+                        </th>
+                    </tr>
+                    <tr hidden>
+                        <th colspan="33" class="reportHeaderClass">{{companyAlias}} Division</th>
+                    </tr>
+                    <tr>
+                        <th colspan="33" class="reportHeaderClass">{{reportTitleName}}</th>
+                    </tr>
+                    <tr *ngIf="productName">
+                        <th colspan="33" class="reportHeaderClass">Product Name: {{productName}}</th>
+                    </tr>
+                    <tr *ngIf="!productName">
+                        <th colspan="33" class="reportHeaderClass">Product Name: All</th>
+                    </tr>
+                    <tr *ngIf="zone">
+                        <th colspan="33" class="reportHeaderClass">Zone Name: {{zone}}</th>
+                    </tr>
+                    <tr *ngIf="!zone">
+                        <th colspan="33" class="reportHeaderClass">Zone Name: All</th>
+                    </tr>
+                    <tr *ngIf="region">
+                        <th colspan="33" class="reportHeaderClass">Region Name: {{region}}</th>
+                    </tr>
+                    <tr *ngIf="!region">
+                        <th colspan="33" class="reportHeaderClass">Region Name: All</th>
+                    </tr>
+                    <tr *ngIf="areaName">
+                        <th colspan="33" class="reportHeaderClass">Area Name: {{areaName}}</th>
+                    </tr>
+                    <tr *ngIf="!areaName">
+                        <th colspan="33" class="reportHeaderClass">Area Name: All</th>
+                    </tr>
+                    <tr *ngIf="territory">
+                        <th colspan="33" class="reportHeaderClass">Territory Name: {{territory}}</th>
+                    </tr>
+                    <tr *ngIf="!territory">
+                        <th colspan="33" class="reportHeaderClass">Territory Name: All</th>
+                    </tr>
+                    <tr>
+                        <th colspan="33" class="reportHeaderClass">As On: {{toDate}}</th>
+                    </tr>
+
+                    <tr>
+                        <th colspan="33" class="reportHeaderClass"></th>
+                    </tr>
+                    <tr>
+                        <th *ngFor="let item of tableHeaderP; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="isMioWiseOutstandingReport">
+                    <tr *ngFor="let item of bodyData; let i = index;"
+                        [ngClass]="{'highlighted-row-sl-1': item.slNo === 1,'highlighted-row-sl-2': item.slNo ===2,'highlighted-row-sl-3': item.slNo === 3,'highlighted-row-sl-4': item.slNo === 4}">
+                        <!-- <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td> -->
+                        <td>{{i+1}}</td>
+                        <td>{{item.InvoiceNo}}</td>
+                        <td>{{item.invDate}}</td>
+                        <td>{{item.partyName}}</td>
+                        <td>{{item.partyAddress}}</td>
+                        <td>{{item.invMet}}</td>
+                        <td>{{item.invType}}</td>
+                        <td>{{item.netValue}}</td>
+                        <td>{{item.totalAdjustment}}</td>
+                        <td>{{item.balance}}</td>
+
+                    </tr>
+                    <!-- <tr *ngFor="let item of bodyData; let i = index;">
+                                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td>
+                                    </tr> -->
+                </tbody>
+                <!-- <tbody *ngIf="isAMProductSale">
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.ProductCode}}</td>
+                        <td>{{item.Productname}}</td>
+                        <td>{{item.packSize}}</td>
+                        <td>{{item.price}}</td>
+                        <td>{{item.S1}}</td>
+                        <td>{{item.R1}}</td>
+                        <td>{{item.S2}}</td>
+                        <td>{{item.R2}}</td>
+                        <td>{{item.S3}}</td>
+                        <td>{{item.R3}}</td>
+                        <td>{{item.S4}}</td>
+                        <td>{{item.R4}}</td>
+                        <td>{{item.S5}}</td>
+                        <td>{{item.R5}}</td>
+                        <td>{{item.S5}}</td>
+                        <td>{{item.R6}}</td>
+                        <td>{{item.S7}}</td>
+                        <td>{{item.R7}}</td>
+                        <td>{{item.S8}}</td>
+                        <td>{{item.R8}}</td>
+                        <td>{{item.S9}}</td>
+                        <td>{{item.R9}}</td>
+                        <td>{{item.S10}}</td>
+                        <td>{{item.R10}}</td>
+
+
+                    </tr>
+                </tbody> -->
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header-landscape></ngx-rpt-header-landscape>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td><strong>Nationally Sales Report-dyanmic name will show</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <td> <strong>{{item.leftLabel}}</strong></td>
+                        <td>{{item.leftValue }}</td>
+                        <td><strong>{{item.rightLabel}} </strong></td>
+                        <td>{{item.rightValue}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+
+                        <td *ngFor="let item of tableHeaderP; let i = index;">{{item}}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+
+                        <!-- <td>
+  
+                {{item.natureName}}
+              </td>
+              <td>
+  
+                {{item.groupName}}
+              </td>
+  
+              <td>
+  
+                {{item.accountName}}
+              </td> -->
+                        <!-- <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{this.currencyFormatter(item[itemx])}}</td> -->
+                        <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td>
+                        <!-- <td *ngFor="let itemx of tableHeaderPP; let i = index;">{{item[itemx]}}</td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>
+
+
+
+<nb-card hidden>
+    <nb-card-header>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <iframe id="pdfPreview" [src]="base64Pdf" frameborder="0" width="100%" height="480px">
+            </iframe>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

@@ -1,0 +1,166 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-sm-3 col-form-label">Company Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.companyId = this.$event.id);getSBU(this.$event.id)"
+                                    [items]="companyItems" name="companyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="companyId" placeholder="Select Company"
+                                    appendTo="body" [(ngModel)]="master.companySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="sbuId" class="col-sm-3 col-form-label">Branch Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.sbuId = this.$event.id)" [items]="sbuItems"
+                                    name="sbuName" bindLabel="name" [ngModelOptions]="{standalone: true}" id="sbuId"
+                                    placeholder="Select Branch" appendTo="body" [(ngModel)]="master.sbuSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="accountName" class="col-sm-3 col-form-label">Ledger Name <span>*</span></label>
+                            <div class="col-sm-9">
+                                <input type="text" (keyup)="getDuplicate();" class="form-control" id="accountName"
+                                    required [(ngModel)]="master.accountName" name="accountName" nbInput fullWidth
+                                    placeholder="Ledger Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="aliasName" class="col-sm-3 col-form-label">Alias Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="aliasName" required
+                                    [(ngModel)]="master.aliasName" name="aliasName" nbInput fullWidth
+                                    placeholder="Alias Name">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="ledgerTypeId" class="col-sm-3 col-form-label">Ledger Type <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.ledgerTypeId = this.$event.id)"
+                                    [items]="ledgerTypeItems" name="ledgerTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="ledgerTypeId"
+                                    placeholder="Select Ledger Type" appendTo="body"
+                                    [(ngModel)]="master.ledgerTypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="noteId" class="col-sm-3 col-form-label">Note Master<span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.noteId = this.$event.id)" [items]="noteItems"
+                                    name="noteId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="noteId"
+                                    placeholder="Select Note Master" appendTo="body" [(ngModel)]="master.noteSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="accountNatureId" class="col-sm-3 col-form-label">Group Nature
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.accountNatureId = this.$event.id);getDdlAccountGroupData(this.$event.id);getNoteItems()"
+                                    [items]="groupNatureItems" name="accountNatureId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="accountNatureId"
+                                    placeholder="Select Group Nature" appendTo="body"
+                                    [(ngModel)]="master.accountNatureSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="accountGroupId" class="col-sm-3 col-form-label">Account Group
+                                <span>*</span></label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect
+                                    (change)="(master.accountGroupId = this.$event.id);GetAutoLedgerCode(this.$event.id)"
+                                    [items]="accountGroupItems" name="accountGroupId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="accountGroupId" placeholder="Select Group"
+                                    appendTo="body" [(ngModel)]="master.accountGroupSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="accountCode" class="col-sm-3 col-form-label">Ledger Code</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="accountCode" required
+                                    [(ngModel)]="master.accountCode" name="accountCode" nbInput fullWidth
+                                    placeholder="Ledger Code">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="ledgerPrefix" class="col-sm-3 col-form-label">Ledger Prefix</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="ledgerPrefix" required
+                                    [(ngModel)]="master.ledgerPrefix" name="ledgerPrefix" nbInput fullWidth
+                                    placeholder="Ledger Prefix">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="currencyId" class="col-sm-3 col-form-label">Currency</label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.currencyId = this.$event.id)"
+                                    [items]="currencyItems" name="currencyId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="currencyId" placeholder="Select Currency"
+                                    appendTo="body" [(ngModel)]="master.currencySelected">
+                                </ng-select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label"></label>
+                            <div class="col-sm-3 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="checkbox" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                            <div class="col-sm-3 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.haveSubledger" name="haveSubledger"
+                                    (change)="onCheckboxChange($event)">
+                                    <b>Have Sub-ledger?</b>
+                                </nb-checkbox>
+                            </div>
+                            <div class="col-sm-3 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.haveCostCentre" name="haveCostCentre"
+                                    (change)="onCheckboxChangeC($event)">
+                                    <b>Have Cost Centre?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

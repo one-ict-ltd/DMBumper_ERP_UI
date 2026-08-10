@@ -1,0 +1,134 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="companyId" class="col-3 col-form-label">Company Name <span>*</span></label>
+          <div class="col-sm-9">
+            <ng-select nbselect [items]="companies" name="companyId" bindLabel="name" id="companyId"
+              [(ngModel)]="ddlSelected" [ngModelOptions]="{standalone: true}" placeholder="Select Company"
+              appendTo="body">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="accountNatureId" class="col-sm-3 col-form-label">Group Nature
+            <span>*</span></label>
+          <div class="col-sm-9">
+            <ng-select nbselect (change)="(accountNatureId = this.$event.id);getDdlAccountGroupData(this.$event.id)"
+              [items]="groupNatureItems" name="accountNatureId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+              id="accountNatureId" placeholder="Select Group Nature" appendTo="body"
+              [(ngModel)]="accountNatureSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="accountGroupId" class="col-sm-3 col-form-label">Account Group
+            <span>*</span></label>
+          <div class="col-sm-9">
+            <ng-select nbselect (change)="(accountGroupId = this.$event.id);getDdlAccountSubGroupData(this.$event.id)"
+              [items]="accountGroupItems" name="accountGroupId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+              id="accountGroupId" placeholder="Select Group" appendTo="body" [(ngModel)]="accountGroupSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="accountSubGroupId" class="col-sm-3 col-form-label">Account Sub-Group
+            <span>*</span></label>
+          <div class="col-sm-9">
+            <ng-select nbselect (change)="(accountSubGroupId = this.$event.id);" [items]="accountSubGroupItems"
+              name="accountSubGroupId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="accountSubGroupId"
+              placeholder="Select Sub-Group" appendTo="body" [(ngModel)]="accountSubGroupSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id="simple_table" class="table table-bordered table-striped mb-0">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader0; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <!-- <td>{{i+1}}</td>
+            <td>{{item.natureName}}</td>
+            <td>{{item.groupCode}}</td>
+            <td>{{item.groupName}}</td> -->
+            <td>
+              <pre [innerHtml]="item.accountCode"></pre>
+            </td>
+            <td>
+              <pre [innerHtml]="item.accountName"></pre>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+  <nb-card-header>
+    <div id="reportHeader">
+      <ngx-rpt-header></ngx-rpt-header>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <table id="header_table_top" class="table" style="width: 550px;">
+        <tbody>
+          <tr>
+            <td>Chart of Accounts</td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="body_table" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{item.natureName}}</td>
+            <td>{{item.groupCode}}</td>
+            <td>{{item.groupName}}</td>
+            <td>{{item.accountCode}}</td>
+            <td>{{item.accountName}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <ngx-rpt-footer></ngx-rpt-footer>
+  </nb-card-footer>
+</nb-card>

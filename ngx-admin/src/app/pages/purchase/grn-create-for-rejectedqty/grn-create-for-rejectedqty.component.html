@@ -1,0 +1,370 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="grnNo"> GRN No <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.grnNo" id="grnNo"
+                                    name="grnNo" nbInput fullWidth placeholder=" GRN No." readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="grnDate">GRN
+                                Date <span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.grnDate" (ngModelChange)="getGRNNo();"
+                                    name="grnDate" id="grnDate" [nbDatepicker]="idatepicker" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #idatepicker></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <lable class="col-sm-12 col-form-label" for="purchaseOrderId"> Purchase Order No.</lable>
+                            <div class="col-sm-12">
+                                <ng-select nbselect
+                                    (change)="(master.purchaseOrderId = this.$event.id);getAllRejectedGRNList(this.$event.id)"
+                                    [items]="purchaseOrderList" name="purchaseOrderId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="purchaseOrderId"
+                                    placeholder="Select Purchase Order" [(ngModel)]="master.purchaseOrderSelected"
+                                    (ngModelChange)="getPurchaseOrderItems(this.$event)" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <lable class="col-sm-12 col-form-label" for="rejectedGRNId"> Rejected GRN No.</lable>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.rejectedGRN = this.$event.name);"
+                                    [items]="rejectedGRNList" name="rejectedGRNId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="rejectedGRNId"
+                                    placeholder="Select Rejected GRN" [(ngModel)]="master.RejectedGRNSelected"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="purchaseOrderDate"> Purchase Order Date
+                            </label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.purchaseOrderDate"
+                                    id="purchaseOrderDate" name="purchaseOrderDate" nbInput fullWidth
+                                    placeholder="Purchase Order Date" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <lable class="col-sm-12 col-form-label" for="Supplier"> Supplier</lable>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="(master.partyId = this.$event.id)" [items]="parties"
+                                    name="PartyId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="Party"
+                                    placeholder="Select Party" [(ngModel)]="master.partySelected" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="supplierChallanNo"> Supplier Challan No.
+                            </label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.supplierChallanNo"
+                                    id="supplierChallanNo" name="supplierChallanNo" nbInput fullWidth
+                                    placeholder="Supplier Challan No">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="inhouseChallanNo"> Inhouse Challan No. </label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.inhouseChallanNo"
+                                    id="inhouseChallanNo" name="inhouseChallanNo" nbInput fullWidth
+                                    placeholder="Inhouse Challan No.">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="factoryReceiveSINo"> Factory Receive SI. No.
+                            </label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.factoryReceiveSINo"
+                                    id="factoryReceiveSINo" name="factoryReceiveSINo" nbInput fullWidth
+                                    placeholder=" Factory Receive SI. No.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="factoryReceivedDate"> Factory Received Date
+                            </label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.factoryReceivedDate" name="factoryReceivedDate"
+                                    id="factoryReceivedDate" [nbDatepicker]="factoryReceivedDate" nbInput fullWidth
+                                    placeholder="Date" [ngModelOptions]="{standalone: true}" readonly>
+                                <nb-datepicker #factoryReceivedDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card style="height: 450px;">
+            <nb-card-header>
+                <div class="row">
+                    <div class="col-8"> Purchase Order Items</div>
+
+                </div>
+            </nb-card-header>
+            <nb-card-body>
+                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="grid-wrapper" style="overflow-y:scroll ; max-height: 350px">
+                        <table class=" table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="3"></th>
+                                    <th colspan="5">Procurement</th>
+                                    <th colspan="5"> </th>
+                                    <th colspan="2">Warehouse</th>
+                                    <th> </th>
+                                </tr>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th>UOM</th>
+                                    <th>QTY.</th>
+                                    <th>Received Qty.</th>
+                                    <th>Approve Qty</th>
+                                    <th>Receive Qty</th>
+                                    <th>Rate</th>
+                                    <th>Total</th>
+                                    <th>VAT(%)</th>
+                                    <th>VAT Amount</th>
+                                    <th>Actual Amount</th>
+                                    <th>Rcv. UOM</th>
+                                    <th>Warehouse Rcv. Qty</th>
+                                    <th>Select</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+                                    <td>
+                                        {{rowIndex+1}}
+                                    </td>
+                                    <td>{{details.productCode}}</td>
+                                    <td>{{details.productName}}</td>
+                                    <td>{{details.uomName}}</td>
+                                    <td>{{details.reqQty}}</td>
+                                    <td style="font-weight: bold; text-align: right">{{details.receivedTotal}}</td>
+                                    <td style="font-weight: bold; text-align: right">{{details.approveTotal}}</td>
+                                    <td style="font-weight: bold; text-align: right">
+                                        <input type="number" min="0" class="form-control text-right"
+                                            [(ngModel)]="details.receivedQty"
+                                            (ngModelChange)="CalculateLineTotal(rowIndex);"
+                                            (keyup)="CalculateLineTotalkeyFunc($event,rowIndex)" id="receivedQty"
+                                            name="receivedQty" fullWidth placeholder="Receive Qty"
+                                            [disabled]="details.isEnable ? null : 'disabled'">
+                                    </td>
+                                    <td style="font-weight: bold; text-align: right"> {{details.price}}</td>
+                                    <td style="font-weight: bold; text-align: right">
+                                        <!-- <input type="number" min="0" class="form-control text-right"
+                                            [(ngModel)]="details.total" id="total" name="total" nbInput
+                                            fullWidth placeholder="total" [disabled]="details.isEnable ? null : 'disabled'"> -->
+                                        {{details.totalAmount}}
+                                    </td>
+                                    <td>
+                                        <input type="number" min="0" class="form-control text-right"
+                                            [(ngModel)]="details.vatPercent" id="vatPercent" name="vatPercent"
+                                            (ngModelChange)="CalculateLineTotal(rowIndex);" fullWidth
+                                            placeholder="vat percent" [disabled]="details.isEnable ? null : 'disabled'">
+                                    </td>
+                                    <td style="font-weight: bold; text-align: right">
+                                        {{details.vatAmount}}
+                                    </td>
+
+                                    <td style="font-weight: bold; text-align: right">
+                                        {{details.actualAmount}}
+                                    </td>
+
+                                    <td>
+                                        <ng-select nbselect [(ngModel)]="uomSelected[rowIndex]"
+                                            (change)="(details.toUOMId = this.$event.id);" [items]="productUOMList"
+                                            name="toUOMId" bindLabel="name" [ngModelOptions]="{standalone: true}"
+                                            id="toUOMId" placeholder="Select UOM" appendTo="body"
+                                            [disabled]="details.isEnable ? null : 'disabled'">
+                                        </ng-select>
+                                    </td>
+
+                                    <td style="font-weight: bold; text-align: right">
+                                        <input type="number" min="0" class="form-control text-right"
+                                            [(ngModel)]="details.actualRcvQty" id="actualRcvQty" name="actualRcvQty"
+                                            fullWidth placeholder="Qty"
+                                            [disabled]="details.isEnable ? null : 'disabled'">
+                                    </td>
+                                    <td>
+                                        <nb-checkbox name="isSelect" id="isSelect" status="success"
+                                            [(ngModel)]="details.isSelect" (change)="checkChange($event,rowIndex)">
+                                            <!-- [disabled]="details.isEdit ? null : 'disabled'" -->
+                                        </nb-checkbox>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </nb-card-body>
+            <nb-card-footer>
+            </nb-card-footer>
+        </nb-card>
+    </div>
+</div>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Goods Receive No</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td>GRN No:</td>
+                        <td>{{grnNo}}</td>
+                        <td>GRN Date:</td>
+                        <td>{{grnDate}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Purchase Order No:</td>
+                        <td>{{poNo}}</td>
+                        <td>Factory Receive Date:</td>
+                        <td>{{frDate}}</td>
+
+                    </tr>
+                    <tr>
+                        <td>Supplier Name:</td>
+                        <td>{{supplierName}}</td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td>Address:</td>
+                        <td>{{address}}</td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+
+                    <tr>
+                        <td>Supplier Challan No:</td>
+                        <td>{{chalanNo}}</td>
+                        <td></td>
+                        <td></td>
+
+
+                    </tr>
+
+
+
+                </tbody>
+            </table>
+            <table id="body_table1" class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>UOM</th>
+                        <th>QTY.</th>
+                        <th>Received Qty.</th>
+                        <th>VAT Amount</th>
+                        <th>Actual Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let details of master.lstDetailsViewModel; let rowIndex = index">
+                        <td>
+                            {{rowIndex+1}}
+                        </td>
+                        <td>{{details.productCode}}</td>
+                        <td>{{details.productName}}</td>
+                        <td>{{details.uomName}}</td>
+                        <td>{{details.reqQty}}</td>
+                        <td style="font-weight: bold; text-align: right">{{details.receivedTotal}}</td>
+
+
+                        <td style="font-weight: bold; text-align: right">
+                            {{details.vatAmount}}
+                        </td>
+
+                        <td style="font-weight: bold; text-align: right">
+                            {{details.actualAmount}}
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

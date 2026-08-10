@@ -1,0 +1,184 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+
+    <nb-card-body>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="salesInvoiceDate">Month Name <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect [items]="salaryPeriodItems"
+                            (change)="(master.salaryPeriodLoadId = this.$event.id);" name="salaryPeriodLoadId"
+                            bindLabel="name" id="salaryPeriodLoadId" [(ngModel)]="master.salaryPeriodLoadSelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Salary Period" appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <!-- <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="salesInvoiceDate">To
+                        Date <span>*</span></label>
+                    <div class="col-sm-8">
+                        <input required [(ngModel)]="master.loadToDateShow" name="loadToDateShow" id="loadToDateShow"
+                            [nbDatepicker]="idatepicker2" nbInput fullWidth placeholder="Date"
+                            [ngModelOptions]="{standalone: true}">
+                        <nb-datepicker #idatepicker2></nb-datepicker>
+                    </div>
+                </div> -->
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <button class="btn btn-primary" nbButton (click)="getSalaryHeadAmount();">Load Data</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryHeadId" class="col-sm-4 col-form-label">Download Format</label>
+                            <div class="col-sm-8">
+                                <a href="./../../../../assets/DocFormat/EmployeeMobileBillUpload.xlsx"
+                                    download="EmployeeMobileBillUpload.xlsx"
+                                    class="form-control btn btn-warning btn-sm">
+                                    Employee's Mobile Bill Upload
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="col-md-6">
+                        <div class="form-group row">
+                            <label for="salaryTypeId" class="col-sm-4 col-form-label">Employee's Name
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect
+                                    (change)="(master.employeeId = this.$event.id);GetSalaryFixedHeadByEmpId();"
+                                    [items]="employeeItems" name="employeeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="employeeId"
+                                    placeholder="Select an Employee" appendTo="body" [(ngModel)]="employeeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+                <div class="row">
+
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="salaryPeriodId" class="col-sm-4 col-form-label">Select Month
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="salaryPeriodItems"
+                                    (change)="(master.salaryPeriodId = this.$event.id);" name="salaryPeriodId"
+                                    bindLabel="name" id="salaryPeriodId" [(ngModel)]="salaryPeriodSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Salary Period"
+                                    appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="structureAmount">Upload a file
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input type="file" (change)="onFileChange($event)" multiple="false"
+                                    class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<!-- <div class="row" *ngIf="!show">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+                    <nb-tab tabTitle="Upload Data List" class="btn-tab">
+
+                    </nb-tab>
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div> -->
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <div class="col-12" style="text-align: center;">
+            <button (click)="VerifyData()" class="btn btn-success btn-md m-3"> Verify Data <i class="fa fa-check"
+                    aria-hidden="true"></i></button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="row">
+            <div class="col-6">
+                <h6> Total <span>{{totalData}}</span> record(s) found.</h6>
+            </div>
+            <div class="col-6">
+                <h6> Verification Status: <span>{{verifyStatus}}</span>.</h6>
+            </div>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <tr>
+                    <th>SN</th>
+                    <th>MobileNumber</th>
+                    <th style="text-align: right;">Limit</th>
+                    <th style="text-align: right;">ActualBill</th>
+                    <th>Employee Code</th>
+                    <th>Employee Name</th>
+                    <th>status</th>
+                    <th>Action</th>
+                </tr>
+                <tr *ngFor="let details of master.lstMaster; let rowIndex = index">
+                    <td>{{rowIndex+1}}</td>
+                    <td>{{details.MobileNumber}}</td>
+                    <td>{{details.Limit}}</td>
+                    <td>{{details.ActualBill}}</td>
+                    <td>{{details.employeeNo}}</td>
+                    <td>{{details.employeeName}}</td>
+                    <td>{{details.status}}</td>
+                    <td>
+                        <button (click)="deleteDetails(rowIndex)" class="btn btn-danger btn-sm m-1">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>

@@ -1,0 +1,74 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="moduleId" class="col-sm-3 col-form-label">Module Name</label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.moduleId = this.$event.id);" [items]="moduleItems"
+                                    name="moduleId" bindLabel="name" [ngModelOptions]="{standalone: true}" id="moduleId"
+                                    placeholder="Select Module" appendTo="body" [(ngModel)]="master.moduleSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="reportTypeId" class="col-sm-3 col-form-label">Report Type</label>
+                            <div class="col-sm-9">
+                                <ng-select nbselect (change)="(master.reportTypeId = this.$event.id);"
+                                    [items]="reportTypeItems" name="reportTypeId" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="reportTypeId"
+                                    placeholder="Select Report Type" appendTo="body"
+                                    [(ngModel)]="master.reportTypeSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="reportName" class="col-sm-3 col-form-label">Report Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required [(ngModel)]="master.reportName"
+                                    id="reportName" name="reportName" nbInput fullWidth placeholder="Report Name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label for="" class="col-sm-3 col-form-label"></label>
+                            <div class="col-sm-3 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>

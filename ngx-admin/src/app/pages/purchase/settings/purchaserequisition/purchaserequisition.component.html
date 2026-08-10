@@ -1,0 +1,458 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-common-button (click)="ButtonAction()"></ngx-common-button>
+    </nb-card-header>
+</nb-card>
+
+<nb-card *ngIf="show">
+    <nb-card-header class="text-right">
+        <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
+                [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
+                [frameworkComponents]="frameworkComponents" (gridReady)="onGridReady($event)"
+                (rowClicked)="onRowClicked($event)" rowSelection="multiple" pagination='true'>
+            </ag-grid-angular>
+        </div>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="!show">
+    <nb-card-header>
+        <fieldset [disabled]="disabled ? 'disabled' : null">
+            <form #masterForm="ngForm">
+                <div class="row">
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="purchaseReqDate">Purchase Req.
+                                Date<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input required [(ngModel)]="master.purchaseReqDate"
+                                    (ngModelChange)="getProductReqNo();" name="purchaseReqDate" id="purchaseReqDate"
+                                    [nbDatepicker]="fdatepicker" nbInput fullWidth placeholder="Date"
+                                    [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #fdatepicker [min]="minDate" [max]="maxDate"></nb-datepicker>
+
+                                <!-- <input required [(ngModel)]="purchaseReqDate" [nbDatepicker]="fdatepicker" nbInput fullWidth placeholder="Date" [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #fdatepicker></nb-datepicker> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="purReqNo">Purchase Requisition
+                                no<span>*</span></label>
+                            <div class="col-sm-12">
+                                <input type="text" class="form-control" required [(ngModel)]="master.purReqNo"
+                                    id="purReqNo" name="purReqNo" nbInput fullWidth
+                                    placeholder="Purchase Requisition no" readonly>
+                                <!-- <input type="text" class="form-control" required [(ngModel)]="master.purReqNo" id="purReqNo" name="purReqNo" nbInput fullWidth placeholder="Purchased Requisition no"> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="fromWarehouseId">SBU<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="( master.fromWarehouseId = this.$event.id);getStore();"
+                                    [items]="fromsbus" name="sbuName" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="fromWarehouseId"
+                                    placeholder="Select From SBU" appendTo="body" [(ngModel)]="master.fromsbusSelected">
+                                </ng-select>
+
+                                <!-- <input type="text" class="form-control" required [(ngModel)]="master.fromWarehouseId" id="fromWarehouseId" name="fromWarehouseId" nbInput fullWidth placeholder="From Warehouse"> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="toWarehouseId">To SBU<span>*</span></label>
+                            <div class="col-sm-12">
+                                <ng-select nbselect (change)="( master.toWarehouseId = this.$event.id);"
+                                    [items]="tosbus" name="toSbuName" bindLabel="name"
+                                    [ngModelOptions]="{standalone: true}" id="sbuId" placeholder="Select To SBU"
+                                    appendTo="body" [(ngModel)]="master.tosbusSelected">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-form-label" for="purpose">Remarks</label>
+                            <textarea type="text" class="form-control" required [(ngModel)]="master.purpose"
+                                id="purpose" name="purpose" nbInput fullWidth
+                                placeholder="Purpose">{{master.purpose}}</textarea>
+                            <div class="col-sm-12">
+                                <!-- <input type="text" class="form-control" required [(ngModel)]="master.purpose" id="purpose" name="purpose" nbInput fullWidth placeholder="Purpose"> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-8 col-sm-12" style="margin-top: 50px;">
+
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isUrgency" name="isUrgency" status="success">
+                                    <b>Is Urgency?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-8 col-sm-12" style="margin-top: 50px;">
+                        <div class="form-group row">
+                            <div class="col-sm-12 validation-checkboxes">
+                                <nb-checkbox [(ngModel)]="master.isActive" name="isActive" status="success">
+                                    <b>Is Active?</b>
+                                </nb-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-header>
+</nb-card>
+
+<div class="row" *ngIf="!show">
+    <div class="col-md-12 col-lg-12">
+        <nb-card class="min-height">
+            <fieldset [disabled]="disabled ? 'disabled' : null">
+                <nb-tabset>
+
+                    <nb-tab tabTitle="Product Requisition Details" class="btn-tab">
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row" hidden>
+                                    <div class="col-sm-12 validation-checkboxes">
+                                        <nb-checkbox [(ngModel)]="master.isPo" (change)="getbyPO();" name="isPo"
+                                            status="isPo">
+                                            <b>By Product Requisition?</b>
+                                        </nb-checkbox>
+                                    </div>
+                                </div>
+
+
+                                <div class="row" [hidden]="showpo ? 'showpo' : null">
+
+                                    <div class="col-sm-4">
+                                        <label class="col-form-label" for="prodReqId">Product Req.
+                                            NO.<span>*</span></label>
+                                        <ng-select nbselect (change)="(master.prodReqId = this.$event.id);"
+                                            [items]="prodSelected" name="prodReqId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="prodReqId"
+                                            placeholder="Select Req. NO." appendTo="body"
+                                            [(ngModel)]="master.productReqSelected">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="form-group row" [hidden]="!showpo ? '!showpo' : null">
+                                    <div class="col-sm-4">
+                                        <label class="col-form-label" for="productName">Product
+                                            Type<span>*</span></label>
+
+                                        <ng-select nbselect
+                                            (change)="(getTypeWiseProducts(0,this.$event.id)); (master.productTypeId = this.$event.id);"
+                                            [items]="productTypeList" name="productTypeId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="productSubCategoryId"
+                                            placeholder="Select Product Type" appendTo="body"
+                                            [(ngModel)]="master.productTypeSelected"
+                                            [disabled]="disabledProductType ? 'disabled' : null">
+                                            <!-- [disabled]="disabled ? 'disabled' : null" -->
+                                        </ng-select>
+
+
+                                        <!-- <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label"   for="productTypeId">Product
+                                                Type<span>*</span></label>
+                                            <div class="col-sm-9">
+                                                <ng-select nbselect (change)="(master.productTypeId = this.$event.id);getTypeWiseProducts(0,this.$event.id)"
+                                                [items]="productTypeList" name="productTypeId" bindLabel="name"
+                                                [ngModelOptions]="{standalone: true}" id="productSubCategoryId"
+                                                placeholder="Select Product Type" appendTo="body"
+                                                [(ngModel)]="master.productTypeSelected" [disabled]="disabled ? 'disabled' : null">
+                                            </ng-select>
+                                            </div>
+                                        </div> -->
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="col-form-label" for="productName">Product
+                                            Name<span>*</span></label>
+                                        <ng-select nbselect
+                                            (change)="(master.productWiseSpecificationId = this.$event.id);getProductById(this.$event.id);getLastPurchaseOrderDetailsBySpecId(this.$event,this.$event.id)"
+                                            [items]="productList" name="productWiseSpecificationId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="productWiseSpecificationId"
+                                            placeholder="Select product" appendTo="body"
+                                            [(ngModel)]="master.productSelected">
+                                        </ng-select>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="master.productTypeId==6">
+                                        <label class="col-form-label" for="Revision">Revision</label>
+                                        <ng-select nbselect
+                                            (change)="(master.revisionId = this.$event.id)"
+                                            [items]="requisitionRevisionList" name="revisionId" bindLabel="name"
+                                            [ngModelOptions]="{standalone: true}" id="revisionId"
+                                            placeholder="Select Revision" appendTo="body"
+                                            [(ngModel)]="master.revisionSelected">
+                                        </ng-select>
+                                    </div>
+                                    <div class="col-sm-2" *ngIf="master.productTypeId==6">
+                                        <label class="col-form-label" for="latestRevisionName">Latest Revision</label>
+                                        <input type="text" class="form-control" style="color: blue;" [(ngModel)]="latestRevisionName"
+                                            id="latestRevisionName" name="latestRevisionName" nbInput fullWidth placeholder="Latest Revision Name"
+                                            readonly>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <label class="col-form-label" for="purpose">Specification</label>
+                                        <input type="text" class="form-control" [(ngModel)]="master.prodSpecification"
+                                            id="prodSpecification" name="prodSpecification" nbInput fullWidth
+                                            placeholder="Product Specification">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="stockQty">Current Stock</label>
+                                        <input type="text" class="form-control" style="color: blue;" required
+                                            [(ngModel)]="master.stockQty" id="stockQty" name="stockQty" readonly nbInput
+                                            fullWidth placeholder="stockQty">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="reqQty">Req. Qty.<span>*</span></label>
+                                        <input type="number" class="form-control" required [(ngModel)]="master.reqQty"
+                                            id="reqQty" name="reqQty" nbInput fullWidth placeholder="Req. Qty.">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="col-form-label" for="uomName">UOM Name<span>*</span></label>
+                                        <input type="text" class="form-control" required [(ngModel)]="master.uomName"
+                                            id="uomName" name="uomName" nbInput fullWidth placeholder="UOM Name"
+                                            readonly>
+                                    </div>
+
+                                    <div class="col-sm-12">
+                                        <hr
+                                            style="height:2px;border-width:0;color:rgb(241, 238, 32);background-color:gray">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="partyName">Supplier Name</label>
+                                        <input type="text" class="form-control" required [(ngModel)]="master.partyName"
+                                            id="partyName" name="partyName" nbInput fullWidth placeholder="supplierName"
+                                            readonly>
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="supplierName">WO No.</label>
+                                        <input type="text" class="form-control" required [(ngModel)]="master.purOrderNo"
+                                            id="purOrderNo" name="purOrderNo" readonly nbInput fullWidth
+                                            placeholder="purOrderNo">
+                                        <input type="number" class="form-control" required
+                                            [(ngModel)]="master.purchaseOrderDetailId" id="purchaseOrderDetailId"
+                                            name="purchaseOrderDetailId" hidden>
+                                    </div>
+
+
+
+
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="purchaseOrderDate">WO Date</label>
+                                        <input type="text" class="form-control" required
+                                            [(ngModel)]="master.purchaseOrderDate" id="purchaseOrderDate"
+                                            name="purchaseOrderDate" readonly nbInput fullWidth
+                                            placeholder="Work Order Date">
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="price"> WO Rate</label>
+                                        <input type="number" class="form-control" required [(ngModel)]="master.price"
+                                            id="price" name="price" readonly nbInput fullWidth placeholder="rate">
+                                    </div>
+
+
+
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="vatAmount">VAT</label>
+                                        <input type="number" class="form-control" required
+                                            [(ngModel)]="master.vatAmount" id="vatAmount" name="vatAmount" readonly
+                                            nbInput fullWidth placeholder="vatAmount">
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="rateWithVat">Total</label>
+                                        <input type="number" class="form-control" required
+                                            [(ngModel)]="master.rateWithVat" id="rateWithVat" name="rateWithVat"
+                                            readonly nbInput fullWidth placeholder="rateWithVat">
+                                    </div>
+
+
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="purchaseOrderQty"> WO Qty</label>
+                                        <input type="number" class="form-control" required
+                                            [(ngModel)]="master.purchaseOrderQty" id="purchaseOrderQty"
+                                            name="purchaseOrderQty" readonly nbInput fullWidth placeholder="wo Qty">
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <label class="col-form-label" for="receivedQty">Received Qty</label>
+                                        <input type="number" class="form-control" required
+                                            [(ngModel)]="master.receivedQty" id="receivedQty" name="receivedQty"
+                                            readonly nbInput fullWidth placeholder="Received Qty">
+                                    </div>
+
+
+
+
+
+
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-9">
+
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-right">
+                                            <button (click)="refesh()" class="btn btn-warning btn-sm"> <i
+                                                    class="fa fa-refresh" aria-hidden="true"></i> Refresh </button>
+                                            <button (click)="addDetails(dialog)" class="btn btn-success btn-sm m-3"> <i
+                                                    class="fa fa-plus" aria-hidden="true"></i> Add </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-wrapper">
+                            <table class=" table table-bordered table-striped">
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Product Name</th>
+                                    <th>Revision</th>
+                                    <th>Specification</th>
+                                    <th>UOM</th>
+                                    <th>Stock Qty</th>
+                                    <th>Req. Qty.</th>
+                                    <td>Action</td>
+                                </tr>
+
+                                <tr *ngFor="let detail of master.lstReqDetailsViewModel; let rowIndex = index">
+                                    <td>{{rowIndex+1}}</td>
+                                    <td>
+                                        <!-- <input [(ngModel)]="detail.productName" type="text" class="form-control"
+                                            id="productName" required name="productName" nbInput fullWidth
+                                            placeholder="Product Name" readonly> -->
+                                        {{detail.productName}}
+                                    </td>
+                                    <td>
+                                        {{detail.revisionName}}
+                                    </td>
+
+                                    <td>
+                                        <input [(ngModel)]="detail.prodSpecification" type="text" class="form-control"
+                                            id="prodSpecification" required name="prodSpecification" nbInput fullWidth
+                                            placeholder="Spec. Name">
+                                        <!-- {{detail.prodSpecification}} -->
+                                    </td>
+                                    <td>
+                                        <!-- <input [(ngModel)]="detail.uomName"
+                                            (change)="( detail.uomName = this.$event.target.value)" type="text" readonly
+                                            class="form-control" id="text" readonly required name="text" nbInput
+                                            fullWidth placeholder="UOM"> -->
+                                        {{detail.uomName}}
+                                    </td>
+
+                                    <td>
+                                        <!-- <input [(ngModel)]="detail.currentStockQty"
+                                            (change)="( detail.readonly = this.$event.target.value)" type="number"
+                                            readonly class="form-control text-right" id="currentStockQty" readonly
+                                            required name="currentStockQty" nbInput fullWidth
+                                            placeholder="Current Stock"> -->
+                                        {{detail.currentStockQty}}
+                                    </td>
+
+                                    <td>
+                                        <input [(ngModel)]="detail.reqQty"
+                                            (change)="( detail.reqQty = this.$event.target.value)" type="number"
+                                            class="form-control text-right" id="reqQty" required name="reqQty" nbInput
+                                            fullWidth placeholder="Req. Qty.">
+                                    </td>
+
+                                    <td>
+                                        <button (click)="deleteDetail(rowIndex)" class="btn btn-danger btn-sm m-1">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+                    </nb-tab>
+
+                </nb-tabset>
+            </fieldset>
+        </nb-card>
+    </div>
+</div>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+
+            <table id="header_table_top" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Purchase Requisition</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="header_table" class="table" style="width: 550px;">
+                <tbody>
+                    <tr>
+                        <td> <strong>Purchase Req No:</strong></td>
+                        <td>{{purReqNo}}</td>
+                        <td><strong>Purchase Req Date:</strong></td>
+                        <td>{{purchaseReqDate}}</td>
+                    </tr>
+                    <tr>
+                        <td> <strong>Sbu Name:</strong></td>
+                        <td>{{Sbu}}</td>
+                        <td> <strong>Is Urgency:</strong></td>
+                        <td>{{isUrgency}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let j = index;">
+                        <td>{{j+1}}</td>
+                        <td>{{item.Name}}</td>
+                        <td>{{item.productName}}</td>
+                        <td text-align="right">{{item.reqQty}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

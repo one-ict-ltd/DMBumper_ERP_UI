@@ -1,0 +1,304 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="supplierId" class="col-4 col-form-label">Supplier Name<span></span></label>
+          <div class="col-sm-7">
+            <ng-select nbselect (change)="supplierId = this.$event.id" [items]="supplierList"
+              name="supplierName" bindLabel="name" [ngModelOptions]="{standalone: true}" id="supplierId"
+              placeholder="Select supplier" appendTo="body" [(ngModel)]="partySelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="productTypeId" class="col-4 col-form-label">Product Type<span></span></label>
+          <div class="col-sm-7">
+            <ng-select nbselect (change)="getTypeWiseProducts(0, this.$event.id); productTypeId = this.$event.id" [items]="productTypeList"
+              name="productTypeName" bindLabel="name" [ngModelOptions]="{standalone: true}" id="productTypeId"
+              placeholder="Select product type" appendTo="body" [(ngModel)]="productTypeSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6">
+        <div class="form-group row">
+          <label for="productId" class="col-4 col-form-label">Product<span></span></label>
+          <div class="col-sm-7">
+            <ng-select nbselect (change)="productId = this.$event.id" [items]="productSpecList"
+              name="name" bindLabel="name" [ngModelOptions]="{standalone: true}" id="id"
+              placeholder="Select product" appendTo="body" [(ngModel)]="productSelected">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group row">
+          <label class="col-4 col-form-label" for="fromDate">From Date<span></span></label>
+          <div class="col-sm-7">
+            <input requiredname="fromDate" id="fromDate" nbInput fullWidth placeholder="From Date"
+              [nbDatepicker]="fdatepicker" [(ngModel)]="fromDate"
+              [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #fdatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="form-group row">
+          <label class="col-4 col-form-label" for="toDate">To Date<span></span></label>
+          <div class="col-sm-7">
+            <input required [(ngModel)]="toDate" name="todate" id="toDate" [nbDatepicker]="tdatepicker"
+               nbInput fullWidth placeholder="To Date"
+              [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #tdatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+  <nb-card-header>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id="simple_table" class="table">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;" style="width: 100%;"
+            (click)="getPOReportDataById(item.purchaseOrderId)">
+            <td>{{i+1}}</td>
+            <td>{{item.purOrderNo}}</td>
+            <td>{{item.purchaseOrderDate}}</td>
+            <td>{{item.partyName}}</td>
+            <td>{{item.productName}}</td>
+            <td>{{item.quantity}}</td>
+            <td>{{item.price}}</td>
+            <td>{{item.amount}}</td>
+            <td>{{item.vatPercent}}</td>
+            <td>{{item.vatAmount}}</td>
+            <td>{{item.netAmount}}</td>
+            <td>{{item.receivedQty}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>
+
+
+<!-- Start PO Summary Report Form -->
+<nb-card style="visibility: hidden;">
+  <nb-card-header>
+    <div id="reportHeaderSummary">
+      <ngx-rpt-header></ngx-rpt-header>
+    </div>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <table id="header_tableSummary" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th colspan="4">
+              {{rReportHeader}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of params; let i = index;">
+            <td> <strong>{{item.leftLabel}}</strong></td>
+            <td>: {{item.leftValue}}</td>
+            <td><strong>{{item.rightLabel}} </strong></td>
+            <td>: {{item.rightValue}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="body_tableSummary" class="table" style="width: 550px;">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;" style="width: 100%;">
+            <!-- <td>{{i+1}}</td>
+            <td>{{item.partyName}}</td>
+            <td>{{item.purOrderNo}}</td>
+            <td>{{item.mobileNo}}</td>
+            <td>{{item.address}}</td>
+            <td>{{this.currencyFormatter(item.grandTotal)}}</td> -->
+            <td>{{i+1}}</td>
+            <td>{{item.purOrderNo}}</td>
+            <td>{{item.purchaseOrderDate}}</td>
+            <td>{{item.refNo}}</td>
+            <td>{{item.purpose}}</td>
+            <td>{{item.partyName}}</td>
+            <!-- <td>{{this.currencyFormatter(item.grandTotal)}}</td> -->
+          </tr>
+          <tr>
+            <td colspan="6">Grand Total</td>
+            <td>{{this.currencyFormatter(this.netTotal)}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <ngx-rpt-footer></ngx-rpt-footer>
+  </nb-card-footer>
+</nb-card>
+
+<!-- End PO Summary  Report Form  -->
+
+
+<!-- Start PO Report Form -->
+
+<nb-card style="visibility: hidden;">
+  <nb-card-header>
+    <div id="reportHeader">
+      <ngx-rpt-purchaseorderheader></ngx-rpt-purchaseorderheader>
+    </div>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="grid-wrapper">
+      <table id="header_table" class="table table-bordered">
+        <script type="style/css">
+          .VendorCopy{
+                    background-color: gray;
+                    text-align: center;
+                }
+                </script>
+        <tr>
+          <td id="VendorCopy" class="VendorCopy" style="width: 100px; background-color: gray;"><br />
+            &nbsp;&nbsp;&nbsp;&nbsp; Vendor Copy</td>
+          <td style="width: 225px;">
+            <strong>PO Date:</strong> {{purchaseOrderDate}}<br />
+            <strong>PO No.:</strong> {{purOrderNo}} <br />
+            <strong>PR No.:</strong> <br />
+            <strong>LC No.:</strong> {{LcNo}}<br />
+            <strong>Ref. No.:</strong> {{RefNo}}
+          </td>
+          <td colspan="2" style="width: 225px; text-align: center;"><br /> Address</td>
+        </tr>
+        <tr>
+          <td style="width: 325px; text-align: end;" colspan="2">
+            <h4><br /> <br />Terms And Conditions</h4>
+          </td>
+          <td style="width: 100px;"><strong>Vendor:</strong></td>
+          <td style="width: 125px;">
+            Supplier Name: N/A <br />
+            Address<br />
+            Contact Person: N/A<br />
+            Contact No.: N/A
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 325px;" colspan="2" rowspan="2">
+            <div *ngFor="let item of termsAndconditionData; let rowIndex = index">
+              <strong>{{rowIndex+1}}.</strong> {{item.termsAndConditions}} <br />
+            </div>
+          </td>
+          <td style="width: 100px;"><strong>Ship To:</strong></td>
+          <td style="width: 125px;">
+            Goods receive location Name: N/A <br />
+            Address<br />
+            Contacr Person: N/A<br />
+            Contact No.: N/A
+          </td>
+        </tr>
+        <tr>
+          <td style="width: 100px;"><strong>Bill To:</strong></td>
+          <td style="width: 125px;">
+            Bill collection / submmit <br />
+            address: N/A <br />
+            Contacr Person: N/A<br />
+            Contact No.: N/A
+          </td>
+        </tr>
+      </table>
+
+
+      <table id="body_table" class="table">
+        <thead>
+          <tr>
+            <th colspan="6">Delivery Date: N/A &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              Payments Mode: {{paymentMode}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Payments terms:
+              N/A
+            </th>
+          </tr>
+          <tr>
+            <th>#</th>
+            <th>Product Name</th>
+            <th>Order Qty.</th>
+            <th>UOM</th>
+            <th>Price</th>
+            <th>Extended Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of detailsData; let rowIndex = index">
+            <td>{{rowIndex+1}}</td>
+            <td>{{item.productName}}</td>
+            <td>{{item.reqQty}}</td>
+            <td>{{item.uomName}}</td>
+            <td>{{this.currencyFormatter(item.price)}}</td>
+            <td>{{this.currencyFormatter(item.price * item.reqQty)}}</td>
+          </tr>
+          <tr>
+            <td colspan="4" rowspan="6"> <br /> <br /> <br />
+              <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;_____________________________
+              <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Authorized By
+            </td>
+            <td>Sub-Total</td>
+            <td>{{this.currencyFormatter(grossAmount)}}</td>
+          </tr>
+          <tr>
+            <td>Discount</td>
+            <td>{{this.currencyFormatter(totalDiscount)}}</td>
+          </tr>
+          <tr>
+            <td>VAT</td>
+            <td>{{this.currencyFormatter(totalVat)}}</td>
+          </tr>
+          <tr>
+            <td>AIT</td>
+            <td>{{this.currencyFormatter(totalAit)}}</td>
+          </tr>
+          <tr>
+            <td>Freight Charge</td>
+            <td>{{this.currencyFormatter(freightCharge)}}</td>
+          </tr>
+          <tr>
+            <td align="left">Purchase Order Total</td>
+            <td>{{this.currencyFormatter(netAmount)}}</td>
+          </tr>
+          <tr>
+            <td colspan="6">{{netAmountInWord}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer>
+    <ngx-rpt-footer></ngx-rpt-footer>
+  </nb-card-footer>
+</nb-card>
+
+<!-- End PO Report Form  -->

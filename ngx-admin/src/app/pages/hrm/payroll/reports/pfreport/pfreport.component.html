@@ -1,0 +1,145 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+        <fieldset>
+            <form #masterForm="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="companyId" class="col-4 col-form-label">Company Name
+                                <span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="companyItems"
+                                    (change)="(master.companyId = this.$event.id);LoadEmployee();" name="companyId"
+                                    bindLabel="name" id="companyId" [(ngModel)]="companySelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="empId" class="col-4 col-form-label">Employee Name<span>*</span></label>
+                            <div class="col-sm-8">
+                                <ng-select nbselect [items]="empItems" (change)="(master.empId = this.$event.id);"
+                                    bindLabel="name" id="empId" name="empId" [(ngModel)]="empSelected"
+                                    [ngModelOptions]="{standalone: true}" placeholder="Select Employee" appendTo="body">
+                                </ng-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" hidden>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="startDate" class="col-4 col-form-label">From Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input id="startDate" required [(ngModel)]="master.startDate" name="startDate"
+                                    [nbDatepicker]="startDate" nbInput fullWidth [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #startDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group row">
+                            <label for="endDate" class="col-4 col-form-label">To Date <span>*</span></label>
+                            <div class="col-sm-8">
+                                <input id="endDate" required [(ngModel)]="master.endDate"
+                                    (ngModelChange)="DateValidation();" name="endDate" [nbDatepicker]="endDate" nbInput
+                                    fullWidth [ngModelOptions]="{standalone: true}">
+                                <nb-datepicker #endDate></nb-datepicker>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+    <nb-card-header>
+
+    </nb-card-header>
+    <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table id="simple_table" class="table table-bordered table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.PeriodMonth}}</td>
+                        <td>{{item.PeriodYear}}</td>
+                        <td>{{item.PF}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">Total</td>
+                        <td>{{totalDays}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+    </nb-card-footer>
+</nb-card>
+
+<nb-card style="visibility: hidden;">
+    <nb-card-header>
+        <div id="reportHeader">
+            <ngx-rpt-header></ngx-rpt-header>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+        <div class="grid-wrapper">
+            <table id="header_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th colspan="4">
+                            {{rReportHeader}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of params; let i = index;">
+                        <th> <strong>{{item.leftLabel}}</strong></th>
+                        <td>: {{item.leftValue}}</td>
+                        <th><strong>{{item.rightLabel}} </strong></th>
+                        <td>: {{item.rightValue}}</td>
+                    </tr>
+                    <!-- <tr>
+                        <td colspan="4">Attendance For : {{attendanceDate}}</td>
+                    </tr> -->
+                </tbody>
+            </table>
+            <table id="body_table" class="table" style="width: 550px;">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bodyData; let i = index;">
+                        <td>{{i+1}}</td>
+                        <td>{{item.PeriodMonth}}</td>
+                        <td>{{item.PeriodYear}}</td>
+                        <td>{{item.PF}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">Total</td>
+                        <td>{{totalDays}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </nb-card-body>
+    <nb-card-footer>
+        <ngx-rpt-footer></ngx-rpt-footer>
+    </nb-card-footer>
+</nb-card>

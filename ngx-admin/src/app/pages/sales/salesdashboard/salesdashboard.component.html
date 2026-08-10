@@ -1,0 +1,463 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+  </nb-card-header>
+</nb-card>
+
+<nb-card>
+  <nb-card-body>
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="fdate">From
+            Date <span>*</span></label>
+          <div class="col-sm-8">
+            <input required [(ngModel)]="fdate" name="fdate" id="fdate" [nbDatepicker]="idatepicker" nbInput fullWidth
+              placeholder="Date" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #idatepicker></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row">
+          <label class="col-sm-4 col-form-label" for="tdate">To
+            Date <span>*</span></label>
+          <div class="col-sm-8">
+            <input required [(ngModel)]="tdate" name="tdate" id="tdate" [nbDatepicker]="idatepicker2" nbInput fullWidth
+              placeholder="Date" [ngModelOptions]="{standalone: true}">
+            <nb-datepicker #idatepicker2></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group row">
+          <button class="btn btn-primary" nbButton (click)="getDateWiseData();">Load Data</button>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>
+
+<div class="row">
+  <div class="col-lg-4 col-md-4 col-sm-4" (click)="generateDetails(1,dialog1)">
+    <nb-card class="solar-card">
+      <nb-card-header>Total Sales</nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-4">
+            <i class="fa fa-cart-plus fa-3x" aria-hidden="true"></i>
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 info">
+            <div class="h4 value">{{master.salesAmount}} Taka</div>
+            <div class="details subtitle-2"><span>count of</span> {{master.salesCount}}</div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+  <div class="col-lg-4 col-md-4 col-sm-4" (click)="generateDetails(2,dialog1)">
+    <nb-card class="solar-card">
+      <nb-card-header>Total Collection</nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-4">
+            <i class="fa fa-money-bill fa-3x" aria-hidden="true"></i>
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 info">
+            <div class="h4 value">{{master.collectionAmount}} Taka</div>
+            <div class="details subtitle-2"><span>count of</span> {{master.collectionCount}}</div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-4" (click)="generateDetails(3,dialog1)">
+    <nb-card class="solar-card">
+      <nb-card-header>Total Payment</nb-card-header>
+      <nb-card-body size="medium">
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-sm-4">
+            <i class="fa fa-money-bill fa-3x" aria-hidden="true"></i>
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-8 info">
+            <div class="h4 value">{{master.paymentAmount}} Taka</div>
+            <div class="details subtitle-2"><span>count of</span> {{master.paymentCount}}</div>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</div>
+<div class="row">
+
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <nb-card size="large">
+      <nb-card-header>Sales Vs Collection Vs Due</nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="offset-lg-2 offset-md-2 offset-sm-2 col-lg-8 col-md-8 col-sm-8">
+            <chart-multiple-xaxis [labels]="labels" [dataset]="dueChartData" [options]="chartOptions" height="400px">
+            </chart-multiple-xaxis>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+
+  <div class="col-lg-12 col-md-12 col-sm-12" hidden>
+    <nb-card size="large">
+      <nb-card-header>Sales Vs Collection Vs Payment</nb-card-header>
+      <nb-card-body>
+        <div class="row">
+          <div class="offset-lg-2 offset-md-2 offset-sm-2 col-lg-8 col-md-8 col-sm-8">
+            <chart-multiple-xaxis [labels]="labels" [dataset]="chartData" [options]="chartOptions" height="400px">
+            </chart-multiple-xaxis>
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <nb-card size="large">
+      <nb-card-header>
+        Target Vs Achievement
+      </nb-card-header>
+      <nb-card-body>
+        <ng-container *ngTemplateOutlet="targetVsAchievement"></ng-container>
+        <div style="max-height: 400px;">
+          <ng-container *ngTemplateOutlet="targetVsAchievementData"></ng-container>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+</div>
+
+
+<ng-template #dialog let-data let-ref="dialogRef">
+  <div class="col-sm-12 col-md-12 col-lg-12" style="width: 1050px;">
+    <nb-card class="min-height">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-11">
+            <h4>{{modalTitle}} Details</h4>
+          </div>
+          <div class="col-lg-1 col-md-1 col-sm-1">
+            <button style="text-align: right;" nbButton (click)="ref.close()"><span>X</span></button>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar" *ngIf="salesShow">
+          <table id="simple_table" class="table table-bordered table-striped mb-0">
+            <thead>
+              <tr>
+                <th>#SL</th>
+                <th>Sales Invoice No</th>
+                <th>Invoice Date</th>
+                <th>Customer Name</th>
+                <th>Product Name</th>
+                <th style="text-align: right;">Sales Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of salesDetailsViewModelMore; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{item.salesInvoiceNo}}</td>
+                <td>{{item.salesInvoiceDate}}</td>
+                <td>{{item.partyName}}</td>
+                <td>{{item.skuName}}</td>
+                <td>{{item.Total | currencyFormatter:2}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar" *ngIf="collectionShow">
+          <table id="simple_table" class="table table-bordered table-striped mb-0">
+            <thead>
+              <tr>
+                <th>#SL</th>
+                <th>Sales Collection No</th>
+                <th>Collection Date</th>
+                <th>Invoice No</th>
+                <th>Invoice Date</th>
+                <th>Customer Name</th>
+                <th>Product Name</th>
+                <th style="text-align: right;">Collection Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of collectionLstDetailsViewModelMore; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{item.collectionNumber}}</td>
+                <td>{{item.collectionDate}}</td>
+                <td>{{item.salesInvoiceNo}}</td>
+                <td>{{item.salesInvoiceDate}}</td>
+                <td>{{item.partyName}}</td>
+                <td>{{item.skuName}}</td>
+                <td>{{item.collectionAmount | currencyFormatter:2}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar" *ngIf="paymentShow">
+          <table id="simple_table" class="table table-bordered table-striped mb-0">
+            <thead>
+              <tr>
+                <th>#SL</th>
+                <th>Voucher No</th>
+                <th>Voucher Date</th>
+                <th>Account Name</th>
+                <th>Party Name</th>
+                <th style="text-align: right;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of paymentDetailsViewModelMore; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{item.voucherNo}}</td>
+                <td>{{item.voucherDate}}</td>
+                <td>{{item.accountName}}</td>
+                <td>{{item.partyName}}</td>
+                <td>{{item.amount | currencyFormatter:2}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </nb-card-body>
+      <nb-card-footer>
+
+      </nb-card-footer>
+    </nb-card>
+  </div>
+</ng-template>
+
+
+<ng-template #dialog1 let-data let-ref="dialogRef">
+  <div class="col-sm-12 col-md-12 col-lg-12" style="width: 1050px;">
+    <nb-card class="min-height">
+      <nb-card-header>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 col-sm-11">
+            <h4>{{modalTitle}} Details</h4>
+          </div>
+          <div class="col-lg-1 col-md-1 col-sm-1">
+            <button style="text-align: right;" nbButton (click)="ref.close()"><span>X</span></button>
+          </div>
+        </div>
+      </nb-card-header>
+      <nb-card-body>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar" *ngIf="salesShow">
+          <table id="simple_table" class="table table-bordered table-striped mb-0">
+            <thead>
+              <tr>
+                <th>#SL</th>
+                <th>Customer Name</th>
+                <th>Customer Address</th>
+                <th>Territory Code</th>
+                <th style="text-align: right;">Sales Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of salesDetailsViewModel; let i = index;"
+                (click)="generateDetailsMore(1,dialog,item.partyId)">
+                <td>{{i+1}}</td>
+                <td>{{item.partyName}}</td>
+                <td>{{item.addressLine}}</td>
+                <td>{{item.territoryCode}}</td>
+                <td style="text-align:right ;">{{item.Total | currencyFormatter:2}}</td>
+              </tr>
+
+              <tr class="text-bolder">
+                <th colspan="4">Total</th>
+                <th style="text-align:right ;">{{Total | currencyFormatter:2}}</th>
+              </tr>
+
+
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar" *ngIf="collectionShow">
+          <table id="simple_table" class="table table-bordered table-striped mb-0">
+            <thead>
+              <tr>
+                <th>#SL</th>
+                <th>Customer Name</th>
+                <th>Customer Address</th>
+                <th>Territory Code</th>
+                <th style="text-align: right;">Collection Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of collectionLstDetailsViewModel; let i = index;"
+                (click)="generateDetailsMore(2,dialog,item.partyId)">
+                <td>{{i+1}}</td>
+                <td>{{item.partyName}}</td>
+                <td>{{item.addressLine}}</td>
+                <td>{{item.territoryCode}}</td>
+                <td style="text-align:right ;">{{item.Total | currencyFormatter:2}}</td>
+              </tr>
+
+              <tr class="text-bolder">
+                <th colspan="4">Total</th>
+                <th style="text-align:right ;">{{Total | currencyFormatter:2}}</th>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-wrapper-scroll-y my-custom-scrollbar" *ngIf="paymentShow">
+          <table id="simple_table" class="table table-bordered table-striped mb-0">
+            <thead>
+              <tr>
+                <th>#SL</th>
+                <th>Voucher No</th>
+                <th>Voucher Date</th>
+                <th>Account Name</th>
+                <th>Party Name</th>
+                <th style="text-align: right;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of paymentDetailsViewModel; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{item.voucherNo}}</td>
+                <td>{{item.voucherDate}}</td>
+                <td>{{item.accountName}}</td>
+                <td>{{item.partyName}}</td>
+                <td style="text-align:right ;">{{item.amount | currencyFormatter:2}}</td>
+              </tr>
+
+              <tr class="text-bolder">
+                <th colspan="5">Total</th>
+                <th style="text-align:right ;">{{Total | currencyFormatter:2}}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </nb-card-body>
+      <nb-card-footer>
+
+      </nb-card-footer>
+    </nb-card>
+  </div>
+</ng-template>
+
+
+
+<ng-template #targetVsAchievement>
+  <form [formGroup]="targetVsAchievementForm">
+    <div class="row">
+      <div class="col-lg-5 col-md-5 col-sm-5">
+        <div class="form-group row">
+          <label for="depotId" class="col-sm-4 col-form-label">Depot
+            <span class="text-danger">*</span></label>
+          <div class="col-sm-8">
+            <ng-select nbselect [items]="depotItems" bindValue="id" bindLabel="name" id="depotId"
+              (change)="getAllTerritory($event.id)" formControlName="depotCode" placeholder="Select Depot"
+              appendTo="body">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 col-md-5 col-sm-5">
+        <div class="form-group row">
+          <label for="territoryId" class="col-sm-4 col-form-label">Territory <span>*</span>
+          </label>
+          <div class="col-sm-8">
+            <ng-select [items]="territoryItems" bindLabel="name" bindValue="id" id="territoryId"
+              formControlName="territoryCode" placeholder="Select Territory" appendTo="body">
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="offset-lg-1 offset-md-1 offset-sm-1 col-lg-1 col-md-1 col-sm-1">
+        <div class="form-group row">
+          <button class="btn btn-primary btn-block" nbButton (click)="getTargetVsAchievementData()">Load Data</button>
+        </div>
+      </div>
+      <div class="col-lg-5 col-md-5 col-sm-5">
+        <div class="form-group row">
+          <label for="fromdateSelected" class="col-sm-4 col-form-label">From Date
+            <span class="text-danger">*</span></label>
+          <div class="col-sm-8">
+            <input id="fromdateSelected" required [nbDatepicker]="startDate" nbInput fullWidth
+              formControlName="startDate" [readOnly]="true">
+            <nb-datepicker #startDate></nb-datepicker>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 col-md-5 col-sm-5">
+        <div class="form-group row">
+          <label for="todateSelected" class="col-sm-4 col-form-label">To Date <span class="text-danger">*</span></label>
+          <div class="col-sm-8">
+            <input id="todateSelected" readonly="true" nbInput fullWidth formControlName="endDate">
+          </div>
+        </div>
+      </div>
+      <div class="offset-lg-1 offset-md-1 offset-sm-1 col-lg-1 col-md-1 col-sm-1">
+        <div class="form-group row">
+          <button class="btn btn-primary btn-block" nbButton (click)="clearFilter()">Clear</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #targetVsAchievementData>
+
+  <div>
+    <div class="grid-wrapper" style="overflow-y:scroll; max-height: 400px">
+      <table  class="table table-bordered table-striped mb-0">
+        <thead>
+          <tr>
+            <th style="text-align: center;">#</th>
+            <th style="text-align: center;">Employee No</th>
+            <th style="text-align: center;">Employee Name</th>
+            <th style="text-align: center;">Territory Name</th>
+            <th style="text-align: center;">Sales Target</th>
+            <th style="text-align: center;">Sales Achievement</th>
+            <th style="text-align: center;">Achievement Rate(%)</th>
+            <th style="text-align: center;">Collection Target</th>
+            <th style="text-align: center;">Collection Achievement</th>
+            <th style="text-align: center;">Achievement Rate(%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of targetVsAchievementList; let i = index;">
+            <td>{{i+1}}</td>
+            <td>{{item.employeeNo}}</td>
+            <td>{{item.employeeName}}</td>
+            <td>{{item.territoryName}}</td>
+            <td align="right">{{item.salesTarget | currencyFormatter:2}}</td>
+            <td align="right">{{item.salesAchievement | currencyFormatter:2}}</td>
+            <td align="right">{{(item.salesTarget == 0 ? 100 : (item.salesAchievement * 100 / item.salesTarget)) | currencyFormatter:2}}%</td>
+            <td align="right">{{item.collectionTarget | currencyFormatter:2}}</td>
+            <td align="right">{{item.collectionAchievement | currencyFormatter:2}}</td>
+            <td align="right">{{(item.collectionTarget == 0 ? 100 : (item.collectionAchievement * 100 / item.collectionTarget)) | currencyFormatter:2}}%</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="4">Total</th>
+            <th style="text-align: right;">{{totalSalesTarget | currencyFormatter:2}}</th>
+            <th style="text-align: right;">{{totalSalesAchievement | currencyFormatter:2}}</th>
+            <th style="text-align: right;">{{(totalSalesTarget == 0 ? 100 : (totalSalesAchievement * 100 /  totalSalesTarget)) | currencyFormatter:2}}%</th>
+            <th style="text-align: right;">{{totalCollectionTarget | currencyFormatter:2}}</th>
+            <th style="text-align: right;">{{totalCollectionAchievement | currencyFormatter:2}}</th>
+            <th style="text-align: right;">{{(totalCollectionTarget == 0 ? 100 : (totalCollectionAchievement * 100 / totalCollectionTarget)) | currencyFormatter:2}}%</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</ng-template>

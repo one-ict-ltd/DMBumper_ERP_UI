@@ -1,0 +1,31 @@
+<nb-card class="custom-modal">
+    <nb-card-header>
+        <div class="header-content">
+            <button nbButton status="danger" class="close-button" (click)="cancel()">
+                <nb-icon icon="close-outline"></nb-icon>
+            </button>
+        </div>
+    </nb-card-header>
+    <nb-card-body>
+
+
+        <div class="modal-body">
+            <div class="row">
+
+                <div *ngFor="let imagePath of imagePaths let rinx = index" class="image-box col-sm-3"
+                    (click)="downloadImage(imagePath)">
+                    <img id="user_img_current" style="width: 80px; height: 100px; border-radius: 120px;"
+                        [src]="'assets/images/rxlogo.png'" alt=" Image">
+                    <p class="text-center"> {{imagePath}}</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </nb-card-body>
+    <nb-card-footer>
+
+    </nb-card-footer>
+</nb-card>

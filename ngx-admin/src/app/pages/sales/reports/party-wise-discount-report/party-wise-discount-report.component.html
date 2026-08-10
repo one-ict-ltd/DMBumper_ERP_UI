@@ -1,0 +1,65 @@
+<nb-card class="actions-card">
+    <nb-card-header>{{pageNavigation}}
+        <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+    </nb-card-header>
+    <nb-card-body>
+
+        <div class="row">
+
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="depotCode">Depot <span>*</span></label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="getAllTerritory(depotCode = $event.id);" [items]="depotList"
+                            name="depotCode" bindLabel="name" [ngModelOptions]="{standalone: true}" id="depotCode"
+                            placeholder="Select Depot Name" appendTo="body" [(ngModel)]="depotSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" for="partyId">Territory</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect
+                            (change)="(territoryCode = $event.id);GetPartyByTerritoryCode($event.id);GetAllMIOByTerritory();"
+                            [items]="territoryList" [virtualScroll]="true" name="territoryCode" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="territoryCode" placeholder="Select territory"
+                            appendTo="body" [(ngModel)]="territorySelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group row">
+                    <label for="partyId" class="col-2 col-form-label">Customer Name <span>*</span></label>
+                    <div class="col-sm-10">
+                        <ng-select nbselect [items]="parties" (change)="(partyId = $event.id);" [virtualScroll]="true"
+                            name="partyId" bindLabel="name" id="partyId" [(ngModel)]="partySelected"
+                            [ngModelOptions]="{standalone: true}" placeholder="Select Customer" [virtualScroll]="true"
+                            appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="form-group row">
+                    <label for="partyId" class="col-4 col-form-label">Discount Type</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect [items]="dt" (change)="(selectedDiscountType = $event.id);"
+                            [virtualScroll]="true" name="selectedDiscountType" bindLabel="name"
+                            id="selectedDiscountType" [(ngModel)]="selectedDiscountType"
+                            [ngModelOptions]="{standalone: true}" placeholder="Discount Type" [virtualScroll]="true"
+                            appendTo="body">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>

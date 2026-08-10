@@ -1,0 +1,93 @@
+<nb-card class="actions-card">
+  <nb-card-header>{{pageNavigation}}
+    <ngx-report-button (click)="RptButtonAction()"></ngx-report-button>
+  </nb-card-header>
+  <nb-card-body>
+    <fieldset>
+      <form #masterForm="ngForm" novalidate>
+        <div class="row">
+          <div class="col-6">
+            <div class="form-group row">
+              <label for="companyId" class="col-3 col-form-label">Company Name
+                <span>*</span></label>
+              <div class="col-sm-9">
+                <ng-select nbselect [items]="companyItems" (change)="(master.companyId = this.$event.id);"
+                  name="companyId" bindLabel="name" id="companyId" [(ngModel)]="master.companySelected"
+                  [ngModelOptions]="{standalone: true}" placeholder="Select Company" appendTo="body">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group row">
+              <label for="startDate" class="col-6 col-form-label">1st Date of Month <span>*</span></label>
+              <div class="col-sm-6">
+                <input id="startDate" required [(ngModel)]="master.startDate"
+                  (ngModelChange)="getFirstAndLastDayOfMonth();" name="startDate" [nbDatepicker]="startDate" nbInput
+                  fullWidth [ngModelOptions]="{standalone: true}">
+                <nb-datepicker #startDate></nb-datepicker>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-group row">
+              <label for="endDate" class="col-6 col-form-label">Last Date of Month<span>*</span></label>
+              <div class="col-sm-6">
+                <input id="endDate" [(ngModel)]="master.endDate" (ngModelChange)="getFirstAndLastDayOfMonth();"
+                  name="endDate" [nbDatepicker]="endDate" readonly="true" nbInput fullWidth
+                  [ngModelOptions]="{standalone: true}">
+                <nb-datepicker #endDate aria-disabled="true"></nb-datepicker>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12" style="text-align: center;">
+            <div class="form-group row">
+              <label class=""></label>
+              <div class="col-sm-11">
+                <button (click)="ProcessAttendance();" class="btn btn-success btn-sm">Process</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </fieldset>
+  </nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="showbody">
+  <nb-card-header>
+    <label><b>Total Data Processed: {{TotalDataProcessed}}</b></label>
+  </nb-card-header>
+  <nb-card-body>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table id="simple_table" class="table table-bordered table-striped mb-0">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tableHeader; let i = index;">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of bodyData; let i = index;">
+            <!-- (click)="GetRptPayslip(item.employeeId,item.salaryPeriodId)"> -->
+            <td>{{i+1}}</td>
+            <td>{{item.employeeNo}}</td>
+            <td>{{item.fullName}}</td>
+            <td>{{item.currentDesignation}}</td>
+            <td>{{item.currentDepartment}}</td>
+            <td>{{item.attendanceDate}}</td>
+            <td>{{item.startTime}}</td>
+            <td>{{item.endTime}}</td>
+            <!-- <td>{{item.workingTime}}</td> -->
+            <td>{{item.workingTimeTest}}</td>
+            <!-- <td>{{item.latetime}}</td> -->
+            <td>{{item.latetimeTest}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+  </nb-card-footer>
+</nb-card>
