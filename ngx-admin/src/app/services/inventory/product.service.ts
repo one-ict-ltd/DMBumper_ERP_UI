@@ -41,12 +41,26 @@ export class ProductService {
       this.httpOptions
     );
   }
-  public getProductSubCategorybyId(categoryId, subcategoryId): Observable<any> {
+  public getProductSubCategorybyId(categoryId: number, subcategoryId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}ProductCategory/getProductSubCategory?productCategoryId=${categoryId}&productSubCategoryId=${subcategoryId}`,
       this.httpOptions
     );
   }
+
+  public getMakeById(): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}ProductCategory/getMakeById`,
+      this.httpOptions
+    );
+  }
+  public getMakeModelByMakeId(makeId: number, makeModelId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}ProductCategory/getMakeModelByMakeId?makeId=${makeId}&makeModelId=${makeModelId}`,
+      this.httpOptions
+    );
+  }
+
   public getProductType(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}ProductCategory/getProductType`,
@@ -122,6 +136,12 @@ export class ProductService {
       this.httpOptions
     );
   }
+  public getInvProductWiseSpecificationById(productWiseSpecificationId: any) {
+    return this.http.get<any>(
+      `${this.apiUrl}Product/GetInvProductWiseSpecificationById?productWiseSpecificationId=${productWiseSpecificationId}`,
+      this.httpOptions
+    );
+  }
   public getFinishedProduct() {
     return this.http.get<any>(
       `${this.apiUrl}Product/getFinishedProducts`,
@@ -173,7 +193,7 @@ export class ProductService {
   }
 
 
-  public saveProductSpecification(master: any, productId): Observable<string> {
+  public saveProductSpecification(master: any, productId: number): Observable<string> {
     return this.http.post<string>(
       `${this.apiUrl}Product/setProductWiseSpecification?productId=${productId}`,
       master,
@@ -181,7 +201,7 @@ export class ProductService {
     );
   }
 
-  public saveProductSize(master: any, productId): Observable<string> {
+  public saveProductSize(master: any, productId: number): Observable<string> {
     return this.http.post<string>(
       `${this.apiUrl}Product/setProductWiseSize?productId=${productId}`,
       master,
@@ -189,7 +209,7 @@ export class ProductService {
     );
   }
 
-  public saveProductPricing(master: any, productId): Observable<string> {
+  public saveProductPricing(master: any, productId: number): Observable<string> {
     return this.http.post<string>(
       `${this.apiUrl}Product/setProducPricing?productId=${productId}`,
       master,
@@ -197,7 +217,7 @@ export class ProductService {
     );
   }
 
-  public saveProductDiscount(master: any, productId): Observable<string> {
+  public saveProductDiscount(master: any, productId: number): Observable<string> {
     return this.http.post<string>(
       `${this.apiUrl}Product/setProductDiscount?productId=${productId}`,
       master,
@@ -205,7 +225,7 @@ export class ProductService {
     );
   }
 
-  public saveProductSupplier(master: any, productId): Observable<string> {
+  public saveProductSupplier(master: any, productId: number): Observable<string> {
     return this.http.post<string>(
       `${this.apiUrl}Product/setProductSupplier?productId=${productId}`,
       master,
@@ -231,21 +251,21 @@ export class ProductService {
   }
 
 
-  public getcolorInUpdate(productId): Observable<any> {
+  public getcolorInUpdate(productId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductWiseColor?productId=${productId}`,
       this.httpOptions
     );
   }
 
-  public getSpecificationDetailsInUpdate(productId): Observable<any> {
+  public getSpecificationDetailsInUpdate(productId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductSpecificationDetailsInUpdate?productId=${productId}`,
       this.httpOptions
     );
   }
 
-  public getProductsupplierInUpdate(productId): Observable<any> {
+  public getProductsupplierInUpdate(productId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductWiseSupplierInUpdate?productId=${productId}`,
       this.httpOptions
@@ -259,28 +279,28 @@ export class ProductService {
     );
   }
 
-  public getproductSpecification(productCategoryId, productId, skuNumber): Observable<any> {
+  public getproductSpecification(productCategoryId: number, productId: number, skuNumber: string): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductSpecification?productCategoryId=${productCategoryId}&productId=${productId}&currentNumber=${skuNumber}`,
       this.httpOptions
     );
   }
 
-  public getSizeInUpdate(productId): Observable<any> {
+  public getSizeInUpdate(productId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductWiseSize?productId=${productId}`,
       this.httpOptions
     );
   }
 
-  public getSpecificationInUpdate(productId): Observable<any> {
+  public getSpecificationInUpdate(productId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductWiseSpecificationInUpdateJsonById?productId=${productId}`,
       this.httpOptions
     );
   }
 
-  public getDiscountList(productId): Observable<any> {
+  public getDiscountList(productId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getDiscountList?productId=${productId}`,
       this.httpOptions
@@ -294,14 +314,14 @@ export class ProductService {
     );
   }
 
-  public getBarCode(productId): Observable<any> {
+  public getBarCode(productId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductWiseBarCodeJsonById?productId=${productId}`,
       this.httpOptions
     );
   }
 
-  public getBarCodeInUpdate(productId): Observable<any> {
+  public getBarCodeInUpdate(productId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductWiseBarCodeInUpdateJsonById?productId=${productId}`,
       this.httpOptions
@@ -323,7 +343,7 @@ export class ProductService {
     );
   }
 
-  public getSupplierIdWise(supplierId): Observable<any> {
+  public getSupplierIdWise(supplierId: number): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}Product/getProductSupplierIdWise?supplierId=${supplierId}`,
       this.httpOptions
