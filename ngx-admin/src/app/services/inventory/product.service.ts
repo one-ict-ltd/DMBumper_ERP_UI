@@ -136,9 +136,9 @@ export class ProductService {
       this.httpOptions
     );
   }
-  public getInvProductWiseSpecificationById(productWiseSpecificationId: any,productCategoryId: any) {
+  public getInvProductWiseSpecificationById(productWiseSpecificationId: any,productCategoryId: any,skuNumber: any,partslink: any,interchange: any) {
     return this.http.get<any>(
-      `${this.apiUrl}Product/GetInvProductWiseSpecificationById?productWiseSpecificationId=${productWiseSpecificationId} &productCategoryId=${productCategoryId}`,
+      `${this.apiUrl}Product/GetInvProductWiseSpecificationById?productWiseSpecificationId=${productWiseSpecificationId} &productCategoryId=${productCategoryId}&skuNumber=${skuNumber}&partslink=${partslink}&interchange=${interchange}`,
       this.httpOptions
     );
   }

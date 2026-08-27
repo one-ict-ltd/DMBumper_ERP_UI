@@ -173,6 +173,10 @@ export class ProductEntryComponent implements OnInit {
 
     search_productCategoryId: number;
     search_productCategorySelected: {};
+    search_skuNumber: string;
+    search_partslink: string;
+    search_interchange: string;
+
   };
 
 
@@ -431,7 +435,7 @@ export class ProductEntryComponent implements OnInit {
       this.selectedRow = event.node.data;
       var productWiseSpecificationId = event.node.data.productWiseSpecificationId;
 
-      this.productService.getInvProductWiseSpecificationById(productWiseSpecificationId,0).subscribe((data: any) => {
+      this.productService.getInvProductWiseSpecificationById(productWiseSpecificationId,0,'','','').subscribe((data: any) => {
         if (data.success) {
           this.master = data.data[0];
 
@@ -531,7 +535,7 @@ export class ProductEntryComponent implements OnInit {
         this.toastrService.success(this.commonService.deletedmsg, "Message");
 
         //////////////Grid Refresh ///////////////////
-        this.productService.getInvProductWiseSpecificationById(0, categoryId).subscribe((data: any) => {
+        this.productService.getInvProductWiseSpecificationById(0, categoryId, '', '', '').subscribe((data: any) => {
           if (data.success) {
             this.rowData = data.data;
           }
@@ -544,7 +548,7 @@ export class ProductEntryComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.productService.getInvProductWiseSpecificationById(0,1).subscribe((data: any) => {
+    this.productService.getInvProductWiseSpecificationById(0,1,'','','').subscribe((data: any) => {
       if (data.success) {
         this.rowData = data.data;
       }
@@ -644,7 +648,7 @@ export class ProductEntryComponent implements OnInit {
         }
 
         //////////////Grid Refresh ///////////////////
-        this.productService.getInvProductWiseSpecificationById(0, categoryId).subscribe((data: any) => {
+        this.productService.getInvProductWiseSpecificationById(0, categoryId, '', '', '').subscribe((data: any) => {
           if (data.success) {
             this.rowData = data.data;
           }
@@ -875,7 +879,10 @@ export class ProductEntryComponent implements OnInit {
         makeModelSelected: null,
 
         search_productCategoryId: 0,
-        search_productCategorySelected: null
+        search_productCategorySelected: null,
+        search_skuNumber: "",
+        search_partslink: "",
+        search_interchange: ""
 
     };
   }
@@ -1040,12 +1047,26 @@ export class ProductEntryComponent implements OnInit {
   }
 
   public getProduct() {
-      if (this.master.search_productCategoryId == 0 || this.master.search_productCategoryId == null) {
-        this.toastrService.danger("Please select category.", "Message");
+      const fields = [
+        this.master.search_productCategoryId,
+        this.master.search_skuNumber,
+        this.master.search_partslink,
+        this.master.search_interchange
+      ];
+
+      const filledFields = fields.filter(x =>
+        x !== null &&
+        x !== undefined &&
+        x !== "" &&
+        x !== 0
+      ).length;
+
+      if (filledFields == 0) { 
+        this.toastrService.danger( "Please input only one search criteria.","Message");
         return false;
       }
 
-     this.productService.getInvProductWiseSpecificationById(0, this.master.search_productCategoryId).subscribe((data: any) => {
+     this.productService.getInvProductWiseSpecificationById(0, this.master.search_productCategoryId, this.master.search_skuNumber, this.master.search_partslink, this.master.search_interchange).subscribe((data: any) => {
           if (data.success) {
             this.rowData = data.data;
           }
