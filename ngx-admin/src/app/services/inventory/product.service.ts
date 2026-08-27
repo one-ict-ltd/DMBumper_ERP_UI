@@ -136,9 +136,9 @@ export class ProductService {
       this.httpOptions
     );
   }
-  public getInvProductWiseSpecificationById(productWiseSpecificationId: any) {
+  public getInvProductWiseSpecificationById(productWiseSpecificationId: any,productCategoryId: any) {
     return this.http.get<any>(
-      `${this.apiUrl}Product/GetInvProductWiseSpecificationById?productWiseSpecificationId=${productWiseSpecificationId}`,
+      `${this.apiUrl}Product/GetInvProductWiseSpecificationById?productWiseSpecificationId=${productWiseSpecificationId} &productCategoryId=${productCategoryId}`,
       this.httpOptions
     );
   }

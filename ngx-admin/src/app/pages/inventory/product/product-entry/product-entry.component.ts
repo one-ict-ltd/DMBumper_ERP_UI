@@ -170,6 +170,9 @@ export class ProductEntryComponent implements OnInit {
     makeSelected: {};
     makeModelId: number;
     makeModelSelected: {};
+
+    search_productCategoryId: number;
+    search_productCategorySelected: {};
   };
 
 
@@ -271,14 +274,14 @@ export class ProductEntryComponent implements OnInit {
         field: "skuNumber",
         filter: "agTextColumnFilter",
         editable: false,
-        width: 250,
+        width: 160,
       },
       {
         headerName: "Partslink",
         field: "partslink",
         filter: "agTextColumnFilter",
         editable: false,
-        width: 250,
+        width: 160,
       },
       {
         headerName: "Description",
@@ -292,25 +295,25 @@ export class ProductEntryComponent implements OnInit {
         field: "fromYear",
         filter: "agTextColumnFilter",
         editable: false,
-        width: 150,
+        width: 120,
       },
       {
         headerName: "To Year",
         field: "toYear",
         filter: "agTextColumnFilter",
         editable: false,
-        width: 150,
+        width: 120,
       },
       {
         headerName: "Make",
-        field: "make",
+        field: "makeName",
         filter: "agTextColumnFilter",
         editable: false,
-        width: 200,
+        width: 170,
       },
       {
         headerName: "Model",
-        field: "model",
+        field: "makeModelName",
         filter: "agTextColumnFilter",
         editable: false,
         width: 450,
@@ -428,7 +431,7 @@ export class ProductEntryComponent implements OnInit {
       this.selectedRow = event.node.data;
       var productWiseSpecificationId = event.node.data.productWiseSpecificationId;
 
-      this.productService.getInvProductWiseSpecificationById(productWiseSpecificationId).subscribe((data: any) => {
+      this.productService.getInvProductWiseSpecificationById(productWiseSpecificationId,0).subscribe((data: any) => {
         if (data.success) {
           this.master = data.data[0];
 
@@ -521,13 +524,14 @@ export class ProductEntryComponent implements OnInit {
 
   private agDelete(event) {
     this.master.productId = event.node.data.productId;
+    var categoryId = event.node.data.productcategoryId;
 
     this.productService.deleteProduct(this.master).subscribe((returns: any) => {
       if (returns.success) {
         this.toastrService.success(this.commonService.deletedmsg, "Message");
 
         //////////////Grid Refresh ///////////////////
-        this.productService.getInvProductWiseSpecificationById(0).subscribe((data: any) => {
+        this.productService.getInvProductWiseSpecificationById(0, categoryId).subscribe((data: any) => {
           if (data.success) {
             this.rowData = data.data;
           }
@@ -540,7 +544,7 @@ export class ProductEntryComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.productService.getInvProductWiseSpecificationById(0).subscribe((data: any) => {
+    this.productService.getInvProductWiseSpecificationById(0,1).subscribe((data: any) => {
       if (data.success) {
         this.rowData = data.data;
       }
@@ -626,7 +630,7 @@ export class ProductEntryComponent implements OnInit {
       this.commonService.valueSet("create");
       return false;
     }
-    
+    var categoryId = this.master.productCategoryId;
     this.show = true;
     this.productService.saveProduct(this.master).subscribe((returns: any) => {
       console.log(returns);
@@ -640,7 +644,7 @@ export class ProductEntryComponent implements OnInit {
         }
 
         //////////////Grid Refresh ///////////////////
-        this.productService.getInvProductWiseSpecificationById(0).subscribe((data: any) => {
+        this.productService.getInvProductWiseSpecificationById(0, categoryId).subscribe((data: any) => {
           if (data.success) {
             this.rowData = data.data;
           }
@@ -868,7 +872,10 @@ export class ProductEntryComponent implements OnInit {
         makeId: 0,
         makeSelected: null,
         makeModelId: 0,
-        makeModelSelected: null
+        makeModelSelected: null,
+
+        search_productCategoryId: 0,
+        search_productCategorySelected: null
 
     };
   }
@@ -1030,6 +1037,19 @@ export class ProductEntryComponent implements OnInit {
         name: val.companyName,
       }));
     });
+  }
+
+  public getProduct() {
+      if (this.master.search_productCategoryId == 0 || this.master.search_productCategoryId == null) {
+        this.toastrService.danger("Please select category.", "Message");
+        return false;
+      }
+
+     this.productService.getInvProductWiseSpecificationById(0, this.master.search_productCategoryId).subscribe((data: any) => {
+          if (data.success) {
+            this.rowData = data.data;
+          }
+        });
   }
 
   // public getcolorInUpdate() {

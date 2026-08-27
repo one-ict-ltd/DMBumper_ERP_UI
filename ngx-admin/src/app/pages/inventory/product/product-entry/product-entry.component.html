@@ -9,6 +9,29 @@
         <ngx-common-action (click)="agButtonAction()"></ngx-common-action>
     </nb-card-header>
     <nb-card-body>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <label for="search_productCategoryId" class="col-sm-3 col-form-label">Category<span style="color: red;">*</span></label>
+                    <div class="col-sm-9">
+                        <ng-select nbselect
+                            (change)="(master.search_productCategoryId = this.$event.id);"
+                            [items]="productCategoryList" name="search_productCategoryId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="search_productCategoryId"
+                            placeholder="Select Product Category" appendTo="body"
+                            [(ngModel)]="master.search_productCategorySelected"
+                            [disabled]="disabled ? 'disabled' : null" required>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <div class="form-group row">
+                    <button class="btn btn-primary" nbButton (click)="getProduct();">Load Data</button>
+                </div>
+            </div>
+        </div>
         <div class="grid-wrapper">
             <ag-grid-angular #agGrid style="height: 500px;" id="myGrid" class="ag-theme-alpine" [modules]="modules"
                 [columnDefs]="columnDefs" [defaultColDef]="defaultColDef" [debug]="true" [rowData]="rowData"
@@ -190,7 +213,7 @@
             <label for="productCategoryId" class="col-sm-12 col-form-label">Category<span style="color: red;">*</span></label>
             <div class="col-sm-12">
                 <ng-select nbselect
-                    (change)="(master.productCategoryId = this.$event.id);(master.productName = this.$event.name);(master.category = this.$event.name);getProductSubCategorybyCatId()"
+                    (change)="(master.productCategoryId = this.$event.id);(master.search_productCategoryId = this.$event.id);(master.productName = this.$event.name);(master.category = this.$event.name);getProductSubCategorybyCatId()"
                     [items]="productCategoryList" name="productCategoryId" bindLabel="name"
                     [ngModelOptions]="{standalone: true}" id="productCategoryId"
                     placeholder="Select Product Category" appendTo="body"
