@@ -27,6 +27,7 @@ import { PurchaseorderService } from "app/pages/purchase/settings/purchaseorder.
 import { StockinService } from "app/services/inventory/stockin.service";
 import { StockinwithoutpoService } from "app/services/inventory/Stockinwithoutpo.service";
 import { CommoncomboService } from "app/services/commoncombo.service";
+import { ProductService } from 'app/services/inventory/product.service';
 import { registerPrebuiltTheme } from "@nebular/theme/schematics/ng-add/register-theme";
 
 @Component({
@@ -80,6 +81,8 @@ export class StockinwithoutpoComponent implements OnInit {
     challanNo: string;
     lcNo: string;
     supplierName: string;
+    skuNumber: string;
+    productCategorySelected: {};
 
   };
   public sbus = [];
@@ -192,6 +195,8 @@ export class StockinwithoutpoComponent implements OnInit {
       challanNo: "",
       lcNo: "",
       supplierName: "",
+      skuNumber: "",
+      productCategorySelected: null,
 
     };
     this.SetDefaultValue();
@@ -329,11 +334,12 @@ export class StockinwithoutpoComponent implements OnInit {
     private PurchaseorderService: PurchaseorderService,
     private StockinService: StockinService,
     private StockinwithoutpoService: StockinwithoutpoService,
+    private productService: ProductService,
     private comboService: CommoncomboService
   ) {
     this.commonService.valueSet("showlist");
     this.getCompany();
-    this.getAllProduct();
+    this.getProductCategory();
     this.columnDefs = [
       {
         headerName: "#",
@@ -741,16 +747,16 @@ export class StockinwithoutpoComponent implements OnInit {
   }
 
   public ProductList = [];
-  public getAllProduct() {
-    // this.StockinwithoutpoService.getAllProduct().subscribe((returns: any) => {
-    //   this.ProductList = returns.data.map((val) => ({
-    //     id: val.productId,
-    //     name: val.productName,
-    //   }));
-    // });
+  // public getAllProduct() {
+  //   // this.StockinwithoutpoService.getAllProduct().subscribe((returns: any) => {
+  //   //   this.ProductList = returns.data.map((val) => ({
+  //   //     id: val.productId,
+  //   //     name: val.productName,
+  //   //   }));
+  //   // });
 
-    this.getAllProductForRequisition();
-  }
+  //   this.getAllProductForRequisition();
+  // }
 
   public ProductSpecificationList = [];
   public getAllProductSpecification(productId) {
@@ -765,21 +771,31 @@ export class StockinwithoutpoComponent implements OnInit {
     // });
 
   }
+  public productCategoryList = [];
+  public getProductCategory() {
+    this.productService.getProductCategory().subscribe((retuns: any) => {
+      if (retuns.success) {
+        this.productCategoryList = retuns.data.map((val: any) => ({
+          id: val.productCategoryId,
+          name: val.categoryName,
+        }))
+      }
+    })
+  }
 
-  public getAllProductForRequisition() {
-    //this.master.productspecificationSelected = {};
+  public getAllProductForRequisition(productCategoryId: any,skuNumber: any) {
     this.StockinwithoutpoService
-      .getAllProductForRequisition()
+      .getAllProductForRequisitionBySearchType(productCategoryId, skuNumber)
       .subscribe((returns: any) => {
         this.ProductSpecificationList = returns.data.map((val: any) => ({
           id: val.productWiseSpecificationId,
           name: val.productName,
-          uomId: val.uomId,
-          uomName: val.uomName,
-          productId: val.productId,
-          price: val.price,
-          tradePrice: val.tradePrice,
-          unitVat: val.unitVat,
+          // uomId: val.uomId,
+          // uomName: val.uomName,
+          // productId: val.productId,
+          // price: val.price,
+          // tradePrice: val.tradePrice,
+          // unitVat: val.unitVat,
         }));
       });
   }
@@ -788,7 +804,7 @@ export class StockinwithoutpoComponent implements OnInit {
     this.selectedRow = this.master.stockDetailsList[index];
     this.master.stockQty = this.selectedRow.stockQty;
     this.master.CurrentStock = this.selectedRow.CurrentStock;
-    this.getAllProduct();
+    // this.getAllProduct();
     this.master.productSelected = {
       id: this.selectedRow.productId,
       name: this.selectedRow.productName,

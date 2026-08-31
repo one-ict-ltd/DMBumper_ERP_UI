@@ -69,6 +69,8 @@ import { StationariesProductConsumeComponent } from './stationaries-product-cons
 import { ProductspecinfoComponent } from './settings/productspecinfo/productspecinfo.component';
 import { BatchWiseSerialNoUploadComponent } from './stock/batch-wise-serial-no-upload/batch-wise-serial-no-upload.component';
 import { ProductEntryComponent } from './product/product-entry/product-entry.component';
+import { MakeEntryComponent } from './settings/make-entry/make-entry.component';
+import { MakeModelEntryComponent } from './settings/make-model-entry/make-model-entry.component';
 
 const routes: Routes = [{
   path: '',
@@ -77,6 +79,14 @@ const routes: Routes = [{
     {
       path: 'product',
       component: ProductComponent,
+    },
+    {
+      path: 'make-entry',
+      component: MakeEntryComponent,
+    },
+    {
+      path: 'make-model-entry',
+      component: MakeModelEntryComponent,
     },
     {
       path: 'product-entry',

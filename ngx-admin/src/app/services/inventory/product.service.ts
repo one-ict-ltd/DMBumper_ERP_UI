@@ -47,10 +47,44 @@ export class ProductService {
       this.httpOptions
     );
   }
-
+ public saveMake(master: any): Observable<string> {
+    //debugger;
+    return this.http.post<string>(
+      `${this.apiUrl}ProductCategory/setMake`,
+      master,
+      this.httpOptions
+    );
+  }
+  public deleteMake(master: any): Observable<string> {
+    return this.http.post<string>(
+      `${this.apiUrl}ProductCategory/deleteMake`,
+      master,
+      this.httpOptions
+    );
+  }
   public getMakeById(): Observable<any> {
     return this.http.get<any>(
       `${this.apiUrl}ProductCategory/getMakeById`,
+      this.httpOptions
+    );
+  }
+  public getMakeByMakeId(makeId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}ProductCategory/getMakeById?makeId=${makeId}`,
+      this.httpOptions
+    );
+  }
+  public saveMakeModel(master: any): Observable<string> {
+    return this.http.post<string>(
+      `${this.apiUrl}ProductCategory/setMakeModel`,
+      master,
+      this.httpOptions
+    );
+  }
+  public deleteMakeModel(master: any): Observable<string> {
+    return this.http.post<string>(
+      `${this.apiUrl}ProductCategory/deleteMakeModel`,
+      master,
       this.httpOptions
     );
   }

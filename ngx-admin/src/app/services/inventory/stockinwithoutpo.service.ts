@@ -27,6 +27,13 @@ export class StockinwithoutpoService {
     );
   }
 
+  public getAllProductForRequisitionBySearchType(productCategoryId: any,skuNumber: any) {
+    return this.http.get<any>(
+      `${this.apiUrl}ProductCategory/GetAllProductForRequisitionBySearchType?productCategoryId=${productCategoryId}&skuNumber=${skuNumber}`,
+      this.httpOptions
+    );
+  }
+
   public GetAllPromoSampleProducts() {
     return this.http.get<any>(
       `${this.apiUrl}ProductCategory/GetAllPromoSampleProducts`,

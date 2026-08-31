@@ -101,6 +101,8 @@ import { StationariesProductConsumeComponent } from './stationaries-product-cons
 import { ProductspecinfoComponent } from './settings/productspecinfo/productspecinfo.component';
 import { BatchWiseSerialNoUploadComponent } from './stock/batch-wise-serial-no-upload/batch-wise-serial-no-upload.component';
 import { ProductEntryComponent } from './product/product-entry/product-entry.component';
+import { MakeEntryComponent } from './settings/make-entry/make-entry.component';
+import { MakeModelEntryComponent } from './settings/make-model-entry/make-model-entry.component';
 
 
 const MODULES = [
@@ -194,7 +196,7 @@ const SERVICES = [];
 
 @NgModule({
   imports: [...MODULES],
-  declarations: [...COMPONENTS, PromoProductUploadComponent, PromoDisburseDetailsReportComponent, PromoInvStockReportComponent, RmPmDirectStockInComponent, PromoPacketProcessComponent, PromoBulkPacketingComponent, MiscellaneousReqComponent, MiscellaneousIssueComponent, ProducttransferV2WithoutBatchComponent, PromoDisburseDetailsRegionWiseReportComponent, EmployeeWisePromoDisburseSummaryComponent, StationariesProductTransferComponent, StationariesProductReceiveComponent, StationariesProductConsumeComponent, ProductspecinfoComponent, BatchWiseSerialNoUploadComponent, ProductEntryComponent],
+  declarations: [...COMPONENTS, PromoProductUploadComponent, PromoDisburseDetailsReportComponent, PromoInvStockReportComponent, RmPmDirectStockInComponent, PromoPacketProcessComponent, PromoBulkPacketingComponent, MiscellaneousReqComponent, MiscellaneousIssueComponent, ProducttransferV2WithoutBatchComponent, PromoDisburseDetailsRegionWiseReportComponent, EmployeeWisePromoDisburseSummaryComponent, StationariesProductTransferComponent, StationariesProductReceiveComponent, StationariesProductConsumeComponent, ProductspecinfoComponent, BatchWiseSerialNoUploadComponent, ProductEntryComponent, MakeEntryComponent, MakeModelEntryComponent],
   providers: [...SERVICES],
 })
 
