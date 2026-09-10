@@ -32,9 +32,9 @@ export class PoductPricingService {
     );
   }
 
-  public GetProductPricingNewByMasterId(pricingId: any, productWiseSpecificationId: any): Observable<any> {
+  public GetProductPricingNewByMasterId(pricingId: any, productWiseSpecificationId: any,productCategoryId: any,skuNumber: any,partslink: any,interchange: any,yearId: any,makeId: any,makeModelId: any): Observable<any> {
     return this.http.get<any>(
-      `${this.apiUrl}ProductPricing/GetProductPricingNByMasterId?pricingId=${pricingId}&productWiseSpecificationId=${productWiseSpecificationId}`,
+      `${this.apiUrl}ProductPricing/GetProductPricingNByMasterId?pricingId=${pricingId}&productWiseSpecificationId=${productWiseSpecificationId}&productCategoryId=${productCategoryId}&skuNumber=${skuNumber}&partslink=${partslink}&interchange=${interchange}&yearId=${yearId}&makeId=${makeId}&makeModelId=${makeModelId}`,
       this.httpOptions
     );
   }

@@ -85,10 +85,10 @@
 
                     <div class="col-4">
                         <div class="form-group row">
-                            <label class="col-4 col-form-label" for="purchaseOrderNo">Proforma No.</label>
+                            <label class="col-4 col-form-label" for="purchaseOrderNo">Po Number</label>
                             <div class="col-8">
                                 <input type="text" class="form-control" required [(ngModel)]="master.purchaseOrderNo"
-                                    id="purchaseOrderNo" name="purchaseOrderNo" nbInput fullWidth placeholder="Proforma No.">
+                                    id="purchaseOrderNo" name="purchaseOrderNo" nbInput fullWidth placeholder="Po Number">
                             </div>
                         </div>
                     </div>
@@ -103,10 +103,10 @@
                     </div>
                     <div class="col-4">
                         <div class="form-group row">
-                            <label class="col-4 col-form-label" for="lcNo">LC No.</label>
+                            <label class="col-4 col-form-label" for="lcNo">LC/Import number</label>
                             <div class="col-8">
                                 <input type="text" class="form-control" required [(ngModel)]="master.lcNo"
-                                    id="lcNo" name="lcNo" nbInput fullWidth placeholder="LC No.">
+                                    id="lcNo" name="lcNo" nbInput fullWidth placeholder="LC/Import number">
                             </div>
                         </div>
                     </div>
@@ -179,11 +179,11 @@
 
                             <div class="col-4">
                                 <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label" for="skuNumber">Product Number</label>
+                                    <label class="col-sm-4 col-form-label" for="skuNumber">Search Number</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" required [(ngModel)]="master.skuNumber"
                                             id="skuNumber" name="skuNumber" nbInput fullWidth placeholder="Product Number"
-                                            (change)="getAllProductForRequisition (0,master.skuNumber);">
+                                            (ngModelChange)="onSkuNumberChange(master.skuNumber)">
                                     </div>
                                 </div>
                             </div>

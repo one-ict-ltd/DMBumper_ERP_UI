@@ -23,6 +23,7 @@ import {
 } from "@nebular/theme";
 import { DialogNamePromptComponent } from "app/pages/client/dialog-name-prompt/dialog-name-prompt.component";
 import { CommoncomboService } from "app/services/commoncombo.service";
+import { ProductService } from 'app/services/inventory/product.service';
 import { PoductPricingService } from "app/services/inventory/poduct-pricing.service";
 
 @Component({
@@ -33,6 +34,18 @@ import { PoductPricingService } from "app/services/inventory/poduct-pricing.serv
 export class ProductpricingComponent implements OnInit {
   master: {
     lstDetailsViewModel: any[];
+
+    search_productCategoryId: number;
+    search_productCategorySelected: {};
+    search_skuNumber: string;
+    search_partslink: string;
+    search_interchange: string;
+    search_yearId: number;
+    search_yearSelected: {};
+    search_makeId: number;
+    search_makeSelected: {};
+    search_makeModelId: number;
+    search_makeModelSelected: {};
   };
 
   disabled: boolean = false;
@@ -71,6 +84,14 @@ export class ProductpricingComponent implements OnInit {
     { title: null, body: "Titles are not always needed" },
     { title: null, body: "Toastr rock!" },
   ];
+
+  readonly currentYear = new Date().getFullYear();
+
+  search_yearItems = Array.from({ length: 10 }, (_, i) => {
+    const year = this.currentYear - i;
+    return { name: year, id: year };
+  });
+
   //////////////////
 
   show: boolean = true;
@@ -120,6 +141,18 @@ export class ProductpricingComponent implements OnInit {
   public getMaster() {
     this.master = {
       lstDetailsViewModel: [],
+
+      search_productCategoryId: 0,
+      search_productCategorySelected: {},
+      search_skuNumber: "",
+      search_partslink: "",
+      search_interchange: "",
+      search_yearId: 0,
+      search_yearSelected: {},
+      search_makeId: 0,
+      search_makeSelected: {},
+      search_makeModelId: 0,
+      search_makeModelSelected: {}
     };
   }
 
@@ -228,6 +261,7 @@ export class ProductpricingComponent implements OnInit {
     private commonService: CommonService,
     private toastrService: NbToastrService,
     private comboService: CommoncomboService,
+    private productService: ProductService,
     private poductPricingService: PoductPricingService
   ) {
     this.commonService.valueSet("showlist");
@@ -300,7 +334,9 @@ export class ProductpricingComponent implements OnInit {
     };
 
     this.getMaster();
-    this.loadPricingGrid();
+    this.getProductCategory();
+    this.getMakeById();
+    // this.loadPricingGrid();
   }
 
   currencyFormatter(currency) {
@@ -309,7 +345,64 @@ export class ProductpricingComponent implements OnInit {
     return `${formatted}`;
   }
 
+  public productCategoryList = [];
+  public makeList = [];
+  public makeModelList = [];
+
+  public getProductCategory() {
+    this.productService.getProductCategory().subscribe((retuns: any) => {
+      if (retuns.success) {
+        this.productCategoryList = retuns.data.map((val: any) => ({
+          id: val.productCategoryId,
+          name: val.categoryName,
+        }))
+      }
+    })
+  }
+
+  public getMakeById() {
+    this.productService.getMakeById().subscribe((retuns: any) => {
+      if (retuns.success) {
+        this.makeList = retuns.data.map((val: any) => ({
+          id: val.makeId,
+          name: val.makeName,
+        }))
+      }
+    })
+  }
+  public getMakeModelByMakeId(makeId: number = 0) {
+    this.productService.getMakeModelByMakeId(makeId, 0).subscribe((retuns: any) => {
+      if (retuns.success) {
+        this.makeModelList = retuns.data.map((val: any) => ({
+          id: val.makeModelId,
+          name: val.makeModelName,
+        }))
+      }
+    })
+  }
+
   loadPricingGrid() {
+    const fields = [
+        this.master.search_productCategoryId,
+        this.master.search_skuNumber,
+        this.master.search_partslink,
+        this.master.search_interchange,
+        this.master.search_yearId,
+        this.master.search_makeId,
+        this.master.search_makeModelId
+      ];
+
+      const filledFields = fields.filter(x =>
+        x !== null &&
+        x !== undefined &&
+        x !== "" &&
+        x !== 0
+      ).length;
+
+      if (filledFields == 0) { 
+        this.toastrService.danger( "Please input only one search criteria.","Message");
+        return false;
+      }
     this.poductPricingService
       .GetProductPricingByMasterId(0, 0)
       .subscribe((data: any) => {

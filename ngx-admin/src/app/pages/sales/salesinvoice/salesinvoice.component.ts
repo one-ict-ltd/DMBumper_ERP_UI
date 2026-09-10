@@ -29,6 +29,7 @@ import { ProductrequisitionService } from "app/pages/purchase/settings/productre
 import { ProductService } from "app/services/inventory/product.service";
 import { CommoncomboService } from "app/services/commoncombo.service";
 import { StockinService } from "app/services/inventory/stockin.service";
+import { StockinwithoutpoService } from "app/services/inventory/Stockinwithoutpo.service";
 import { PurchaseorderService } from "app/pages/purchase/settings/purchaseorder.service";
 import { SalesinvoiceService } from "app/services/sales/salesinvoice.service";
 import { FieldforcemasterService } from "app/services/fieldforcetracking/fieldforcemaster.service";
@@ -121,9 +122,10 @@ export class SalesinvoiceComponent implements OnInit {
     private toastrService: NbToastrService,
     // private ProducttransferService: ProducttransferService,
     private productrequisitionService: ProductrequisitionService,
-    // private productService: ProductService,
+    private productService: ProductService,
     private comboService: CommoncomboService,
     private stockinService: StockinService,
+    private stockinwithoutpoService: StockinwithoutpoService,
     private salesinvoiceService: SalesinvoiceService,
     private PurchaseorderService: PurchaseorderService,
     private datePipe: DatePipe,
@@ -158,20 +160,20 @@ export class SalesinvoiceComponent implements OnInit {
         field: "salesInvoiceDate",
         width: 130,
       },
-      {
-        headerName: "Territory Name",
-        field: "TerritoryName",
-        width: 220,
-      },
+      // {
+      //   headerName: "Territory Name",
+      //   field: "TerritoryName",
+      //   width: 220,
+      // },
       {
         headerName: "Customer Name",
         field: "partyName",
-        width: 220,
+        width: 320,
       },
       {
         headerName: "Address",
         field: "address",
-        width: 260,
+        width: 360,
       },
       // {
       //   headerName: "Gross Total",
@@ -223,9 +225,11 @@ export class SalesinvoiceComponent implements OnInit {
     this.getStore();
     this.getzone();
     //this.GetAllPartysByTypeId(0);
-    this.getAllTerritory();
-    this.getAllProductForRequisition();
+    // this.getAllTerritory();
+    // this.getAllProductForRequisition();
+    this.getProductCategory();
     this.GetTransactionType();
+    this.GetAllActivePartyByTypeId(0);
     this.loadFromDateShow.setDate(this.loadFromDateShow.getDate() - 0);
   }
 
@@ -566,6 +570,9 @@ export class SalesinvoiceComponent implements OnInit {
     areaSelected: {};
     territorySelected: {};
     terriSelected: {};
+
+    skuNumber: string;
+    productCategorySelected: {};
   };
 
   public getMaster() {
@@ -639,6 +646,9 @@ export class SalesinvoiceComponent implements OnInit {
       areaSelected: null,
       territorySelected: null,
       terriSelected: null,
+
+      skuNumber: "",
+      productCategorySelected: null,
     };
     this.getMaxNo();
     this.GetAutoStockInOutStatus();
@@ -883,41 +893,41 @@ GetAreaByDepoCode(DepoCode);
     console.log("CompanyId: ", this._CompanyId);
     console.log("CreditBalance: ", this.balanceAmount);
     console.log("Total Inv Value: ", this.master.grandTotal);
-    if (gid !== "1") {
+    // if (gid !== "1") {
 
-      if (this.master.salesInvoiceId > 0 && (this.master.hasCollection > 0 || this.master.hasPicking > 0)) {
-        if (this.master.collectionDate != null && (this.master.collectionDate < this.master.salesInvoiceDate)) {
-          this.toastrService.warning(`Invoice date can not be less than from collection / picking date (${this.commonService.DateFormat(this.master.collectionDate)}) .`, 'Warning !')
-          return false;
-        }
-      }
+    //   if (this.master.salesInvoiceId > 0 && (this.master.hasCollection > 0 || this.master.hasPicking > 0)) {
+    //     if (this.master.collectionDate != null && (this.master.collectionDate < this.master.salesInvoiceDate)) {
+    //       this.toastrService.warning(`Invoice date can not be less than from collection / picking date (${this.commonService.DateFormat(this.master.collectionDate)}) .`, 'Warning !')
+    //       return false;
+    //     }
+    //   }
 
-      if (this.master.salesInvoiceId > 0 && (this.master.hasCollection > 0 || this.master.hasPicking > 0)) {
-        this.toastrService.warning(`This Invoice has one or more collections / picking, so you can not edit this invoice.`, 'Warning !')
-        return false;
-      }
+    //   if (this.master.salesInvoiceId > 0 && (this.master.hasCollection > 0 || this.master.hasPicking > 0)) {
+    //     this.toastrService.warning(`This Invoice has one or more collections / picking, so you can not edit this invoice.`, 'Warning !')
+    //     return false;
+    //   }
 
-      if (this.AdjustAmount > this.master.grandTotal) {
-        this.toastrService.danger('Credit note adjust amount must be equal or less from Net invoice amount.', 'Warning !');
-        return false;
-      }
-      if ((this._CompanyId == 2 || this._CompanyId == 3) && this.balanceAmount < (this.master.grandTotal ?? 0)) {
-        this.toastrService.warning(`Customer Credit limit has crossed ! Available balance amount for this customer is TK${this.balanceAmount}`, "Message");
-        //return false;
-      }
+    //   if (this.AdjustAmount > this.master.grandTotal) {
+    //     this.toastrService.danger('Credit note adjust amount must be equal or less from Net invoice amount.', 'Warning !');
+    //     return false;
+    //   }
+    //   if ((this._CompanyId == 2 || this._CompanyId == 3) && this.balanceAmount < (this.master.grandTotal ?? 0)) {
+    //     this.toastrService.warning(`Customer Credit limit has crossed ! Available balance amount for this customer is TK${this.balanceAmount}`, "Message");
+    //     //return false;
+    //   }
 
-      let creditLimitAllowedDate = new Date('2025-04-30');// added on: 2025-Mar-24
-      if (this.master.salesInvoiceDate > creditLimitAllowedDate) {
-        if (this._CompanyId == 1 && this.master.transactionTypeId == 2 && this.balanceAmount < (this.master.grandTotal ?? 0)) {
-          this.toastrService.warning(`TO Credit limit has crossed ! Available balance amount for this TO is TK${this.balanceAmount}`, "Message");
-          return false;
-        }
-      }
-    }
-    if (this.hasNationalBonus == null) {
-      this.toastrService.danger('Network error occurred! You can not add to list this product.', 'Warning !');
-      return false;
-    }
+    //   let creditLimitAllowedDate = new Date('2025-04-30');// added on: 2025-Mar-24
+    //   if (this.master.salesInvoiceDate > creditLimitAllowedDate) {
+    //     if (this._CompanyId == 1 && this.master.transactionTypeId == 2 && this.balanceAmount < (this.master.grandTotal ?? 0)) {
+    //       this.toastrService.warning(`TO Credit limit has crossed ! Available balance amount for this TO is TK${this.balanceAmount}`, "Message");
+    //       return false;
+    //     }
+    //   }
+    // }
+    // if (this.hasNationalBonus == null) {
+    //   this.toastrService.danger('Network error occurred! You can not add to list this product.', 'Warning !');
+    //   return false;
+    // }
     if (this.master.salesInvoiceDate == null) {
       this.toastrService.warning("Please select invoice date.", "Warning");
       return false;
@@ -926,10 +936,10 @@ GetAreaByDepoCode(DepoCode);
       this.toastrService.warning("Please select party.", "Warning");
       return false;
     }
-    if (this.master.storeSlected == null) {
-      this.toastrService.warning("Please select store.", "Warning");
-      return false;
-    }
+    // if (this.master.storeSlected == null) {
+    //   this.toastrService.warning("Please select store.", "Warning");
+    //   return false;
+    // }
     if (this.master.transactionTypeId == null || this.master.transactionTypeId == 0) {
       this.toastrService.warning("Please select Transaction type.", "Warning");
       return false;
@@ -940,24 +950,24 @@ GetAreaByDepoCode(DepoCode);
       return false;
     }
 
-    if (this._CompanyId == 1 && (hasNationalBonusTtlCount ?? 0) > 0 && (ttlDiscountAmnt ?? 0) == 0) {
-      this.toastrService.warning("National Discount amount is zero (0). Please remove or add product to resolve this issue.", "Warning");
-      return false;
-    }
+    // if (this._CompanyId == 1 && (hasNationalBonusTtlCount ?? 0) > 0 && (ttlDiscountAmnt ?? 0) == 0) {
+    //   this.toastrService.warning("National Discount amount is zero (0). Please remove or add product to resolve this issue.", "Warning");
+    //   return false;
+    // }
 
-    if (this._CompanyId == 2 && ttlNationalAmnt >= 3000 && (hasNationalBonusTtlCount ?? 0) > 0 && (ttlDiscountAmnt ?? 0) == 0) {
-      this.toastrService.warning("National Discount amount is zero (0). Please remove or add product to resolve this issue.", "Warning");
-      return false;
-    }
+    // if (this._CompanyId == 2 && ttlNationalAmnt >= 3000 && (hasNationalBonusTtlCount ?? 0) > 0 && (ttlDiscountAmnt ?? 0) == 0) {
+    //   this.toastrService.warning("National Discount amount is zero (0). Please remove or add product to resolve this issue.", "Warning");
+    //   return false;
+    // }
 
-    this.salesinvoiceService
-      .getTerritoryOfficerByPartyId(this.master.partyId).subscribe((returns: any) => {
-        if (returns.success) {
-          if (returns.data[0].employeeId == 0) {
-            this.toastrService.warning("Territory Officer not Found!!", "Warning");
-            //this.commonService.valueSet("create");
-            return;
-          } else {
+    // this.salesinvoiceService
+    //   .getTerritoryOfficerByPartyId(this.master.partyId).subscribe((returns: any) => {
+    //     if (returns.success) {
+          // if (returns.data[0].employeeId == 0) {
+          //   this.toastrService.warning("Territory Officer not Found!!", "Warning");
+          //   //this.commonService.valueSet("create");
+          //   return;
+          // } else {
 
             console.log(this.master);
             //this.show = true;
@@ -1016,9 +1026,9 @@ GetAreaByDepoCode(DepoCode);
                   );
                 }
               });
-          }
-        }
-      });
+          // }
+      //   }
+      // });
   }
 
   private reset() {
@@ -1245,7 +1255,7 @@ GetAreaByDepoCode(DepoCode);
     this.TerritoryDetails = "";
     this.master.mobileNo = this.master.partySelected["mobileNo"];
     this.master.address = this.master.partySelected["address"];
-    this.TerritoryDetails = this.master.partySelected["territoryDetails"];
+    // this.TerritoryDetails = this.master.partySelected["territoryDetails"];
     //console.log(this.TerritoryDetails, this.master.partySelected);
 
     // 2024-03-05
@@ -1351,8 +1361,8 @@ GetAreaByDepoCode(DepoCode);
   public getProductSpecDetails() {
     this.master.totalPrice = 0;
     this.master.price = 0;
-    this.master.productId = this.master.productSpecSelected["productId"];
-    this.master.uomName = this.master.productSpecSelected["uomName"];
+    // this.master.productId = this.master.productSpecSelected["productId"];
+    // this.master.uomName = this.master.productSpecSelected["uomName"];
     this.master.productName = this.master.productSpecSelected["name"];
     this.master.productWiseSpecificationId =
       this.master.productSpecSelected["id"];
@@ -1363,20 +1373,59 @@ GetAreaByDepoCode(DepoCode);
     this.master.price = this.master.productSpecSelected["tradePrice"];
     this.master.vat = this.master.productSpecSelected["unitVat"];
 
-    this.getCurrentStock();
+    // this.getCurrentStock();
+  }
+
+  // public productSpecList = [];
+  // public getAllProductForRequisition() {
+  //   this.productrequisitionService
+  //     .getAllProductForRequisition()
+  //     .subscribe((returns: any) => {
+  //       this.productSpecList = returns.data.map((val: any) => ({
+  //         id: val.productWiseSpecificationId,
+  //         name: val.productName,
+  //         uomId: val.uomId,
+  //         uomName: val.uomName,
+  //         productId: val.productId,
+  //         price: val.price,
+  //         tradePrice: val.tradePrice,
+  //         unitVat: val.unitVat,
+  //       }));
+  //     });
+  // }
+
+  public productCategoryList = [];
+  public getProductCategory() {
+    this.productService.getProductCategory().subscribe((retuns: any) => {
+      if (retuns.success) {
+        this.productCategoryList = retuns.data.map((val: any) => ({
+          id: val.productCategoryId,
+          name: val.categoryName,
+        }))
+      }
+    })
   }
 
   public productSpecList = [];
-  public getAllProductForRequisition() {
-    this.productrequisitionService
-      .getAllProductForRequisition()
+  public onSkuNumberChange(value: string) {
+  if (value && value.trim().length >= 4) {
+    this.getAllProductForRequisition(0, value);
+  } else {
+    this.productSpecList = [];
+  }
+}
+
+  public getAllProductForRequisition(productCategoryId: any,skuNumber: any) {
+    this.productSpecList = [];
+    this.stockinwithoutpoService
+      .getAllProductForRequisitionBySearchType(productCategoryId, skuNumber)
       .subscribe((returns: any) => {
         this.productSpecList = returns.data.map((val: any) => ({
           id: val.productWiseSpecificationId,
           name: val.productName,
-          uomId: val.uomId,
-          uomName: val.uomName,
-          productId: val.productId,
+          // uomId: val.uomId,
+          // uomName: val.uomName,
+          // productId: val.productId,
           price: val.price,
           tradePrice: val.tradePrice,
           unitVat: val.unitVat,
@@ -1443,10 +1492,10 @@ GetAreaByDepoCode(DepoCode);
         ? 0
         : this.master.lstDetailsViewModel[index].ait;
 
-    if ((this._CompanyId == 1 || this._CompanyId == 2 || this._CompanyId == 3) && invoiceQty > currentStock) {
-      this.toastrService.warning("You do not have enough stock!", "Message");
-      return;
-    }
+    // if ((this._CompanyId == 1 || this._CompanyId == 2 || this._CompanyId == 3) && invoiceQty > currentStock) {
+    //   this.toastrService.warning("You do not have enough stock!", "Message");
+    //   return;
+    // }
 
     if (this._CompanyId == 1 || this._CompanyId == 2 || this._CompanyId == 3) {
 
@@ -1521,10 +1570,10 @@ GetAreaByDepoCode(DepoCode);
     }
     else {
       // AH
-      if (invoiceQty > currentStock) {
-        this.toastrService.warning("You do not have enough stock!", "Message");
-        return;
-      }
+      // if (invoiceQty > currentStock) {
+      //   this.toastrService.warning("You do not have enough stock!", "Message");
+      //   return;
+      // }
 
       //this.master.lstDetailsViewModel[index].discountAmount = this.calculateDiscount(price);
 
@@ -1635,44 +1684,44 @@ GetAreaByDepoCode(DepoCode);
 
   public addToDetailsGrid(e: any) {
     debugger;
-    if (this.master.batchNo.trim() == "") {
-      this.toastrService.danger('Batch Number not found. Without Batch you can not invoice for this product', 'Warning');
-      return;
-    }
+    // if (this.master.batchNo.trim() == "") {
+    //   this.toastrService.danger('Batch Number not found. Without Batch you can not invoice for this product', 'Warning');
+    //   return;
+    // }
 
-    if ((this.master.invoiceQty ?? 0) > (this.master.currentStock ?? 0)) {
-      this.toastrService.warning("You do not have enough stock!", "Message");
-      return;
-    }
-    if (this._CompanyId == 2 || this._CompanyId == 3) {
+    // if ((this.master.invoiceQty ?? 0) > (this.master.currentStock ?? 0)) {
+    //   this.toastrService.warning("You do not have enough stock!", "Message");
+    //   return;
+    // }
+    // if (this._CompanyId == 2 || this._CompanyId == 3) {
 
-      if (!this.hasDeed) {
-        this.toastrService.warning("This customer has not Deed. So you can not create any invoice for this customer!", "Message");
-        return;
-      }
-      if (this.overDuesStatus) {
-        this.toastrService.warning("This customer has over dues days invoice. So you can not create any invoice for this customer!", "Message");
-        return;
-      }
-      if (this.creditLimitCrossed) {
-        this.toastrService.warning("This customer has crossed Credit Limit. So you can not create any invoice for this customer!", "Message");
-        return;
-      }
+    //   if (!this.hasDeed) {
+    //     this.toastrService.warning("This customer has not Deed. So you can not create any invoice for this customer!", "Message");
+    //     return;
+    //   }
+    //   if (this.overDuesStatus) {
+    //     this.toastrService.warning("This customer has over dues days invoice. So you can not create any invoice for this customer!", "Message");
+    //     return;
+    //   }
+    //   if (this.creditLimitCrossed) {
+    //     this.toastrService.warning("This customer has crossed Credit Limit. So you can not create any invoice for this customer!", "Message");
+    //     return;
+    //   }
 
-      if (((this.master.totalPrice ?? 0) + (this.master.grandTotal ?? 0)) > this.balanceAmount) {
-        this.toastrService.warning(`Customer Credit limit has crossed ! Available balance amount for this customer is TK${this.balanceAmount}`, "Message");
-        //return;
-      }
+    //   if (((this.master.totalPrice ?? 0) + (this.master.grandTotal ?? 0)) > this.balanceAmount) {
+    //     this.toastrService.warning(`Customer Credit limit has crossed ! Available balance amount for this customer is TK${this.balanceAmount}`, "Message");
+    //     //return;
+    //   }
 
-      if (this.hasAddress == false && this._CompanyId == 2) {
-        this.toastrService.warning("This customer has no address. So you can not create any invoice for this customer!", "Message");
-        return;
-      }
-      if (this.hasMobileNo == false && this._CompanyId == 2) {
-        this.toastrService.warning("This customer has no contact number. So you can not create any invoice for this customer!", "Message");
-        return;
-      }
-    }
+    //   if (this.hasAddress == false && this._CompanyId == 2) {
+    //     this.toastrService.warning("This customer has no address. So you can not create any invoice for this customer!", "Message");
+    //     return;
+    //   }
+    //   if (this.hasMobileNo == false && this._CompanyId == 2) {
+    //     this.toastrService.warning("This customer has no contact number. So you can not create any invoice for this customer!", "Message");
+    //     return;
+    //   }
+    // }
 
     //#region has Collection Discount not applicable block
     /*
@@ -1724,28 +1773,28 @@ GetAreaByDepoCode(DepoCode);
 
     const isArr = Array.isArray(prod);
 
-    if (isArr && prod.length > 0 && this.discountType.trim() == '( Flat discount applied )') {
-      hasCollDiscount = 0;
-    }
+    // if (isArr && prod.length > 0 && this.discountType.trim() == '( Flat discount applied )') {
+    //   hasCollDiscount = 0;
+    // }
 
-    if (count > 0) {
-      let alreadyHasCollDiscount = 1;
-      if (this.master.lstDetailsViewModel.length > 0) {
-        alreadyHasCollDiscount = this.master.lstDetailsViewModel[0].hasCollDiscount;
-      }
-      if (hasCollDiscount != alreadyHasCollDiscount) {
-        this.toastrService.danger('You can not mix flat rate product with other product.', 'Warning !');
-        return;
-      }
-    }
+    // if (count > 0) {
+    //   let alreadyHasCollDiscount = 1;
+    //   if (this.master.lstDetailsViewModel.length > 0) {
+    //     alreadyHasCollDiscount = this.master.lstDetailsViewModel[0].hasCollDiscount;
+    //   }
+    //   if (hasCollDiscount != alreadyHasCollDiscount) {
+    //     this.toastrService.danger('You can not mix flat rate product with other product.', 'Warning !');
+    //     return;
+    //   }
+    // }
 
 
     //#endregion
 
-    if (this.hasNationalBonus == null) {
-      this.toastrService.danger('Network error occurred! You can not add to list this product.', 'Warning !');
-      return;
-    }
+    // if (this.hasNationalBonus == null) {
+    //   this.toastrService.danger('Network error occurred! You can not add to list this product.', 'Warning !');
+    //   return;
+    // }
     if (this.master.productSpecSelected == null) {
       this.toastrService.warning("Please select a product !", "Warning");
       return;
@@ -1754,10 +1803,10 @@ GetAreaByDepoCode(DepoCode);
       this.toastrService.warning("Price can not be zero !", "Warning");
       return;
     }
-    if (this.master.currentStock == null || this.master.currentStock == 0) {
-      this.toastrService.warning("Current stock information not available for this product.", "Message");
-      return false;
-    }
+    // if (this.master.currentStock == null || this.master.currentStock == 0) {
+    //   this.toastrService.warning("Current stock information not available for this product.", "Message");
+    //   return false;
+    // }
     if ((this.master.invoiceQty == null ? 0 : this.master.invoiceQty) == 0) {
       this.toastrService.warning("Quantity can not be zero !", "Warning");
       return;
@@ -1774,10 +1823,10 @@ GetAreaByDepoCode(DepoCode);
     //   this.toastrService.warning("Current stock is not available!", "Warning");
     //   return;
     // }
-    if (this.master.invoiceQty > this.master.currentStock) {
-      this.toastrService.warning("You do not have enough stock !", "Warning");
-      //return;
-    }
+    // if (this.master.invoiceQty > this.master.currentStock) {
+    //   this.toastrService.warning("You do not have enough stock !", "Warning");
+    //   return;
+    // }
 
 
 
@@ -1824,13 +1873,13 @@ GetAreaByDepoCode(DepoCode);
     //this.master.lstDetailsViewModel.push(elements);
     this.master.lstDetailsViewModel.splice(0, 0, elements);
     //console.log(elements);
-    if (this._CompanyId == 1) {
-      this.VerifyNationalBonusForGrid();
-      //this.calculateGrandTotal();
-    } else {
-      this.VerifyNationalBonusForGrid();
-      //this.calculateGrandTotal();
-    }
+    // if (this._CompanyId == 1) {
+    //   this.VerifyNationalBonusForGrid();
+    //   //this.calculateGrandTotal();
+    // } else {
+    //   this.VerifyNationalBonusForGrid();
+    //   //this.calculateGrandTotal();
+    // }
     //this.VerifyNationalBonusForGrid();
 
     this.resetCtrl();

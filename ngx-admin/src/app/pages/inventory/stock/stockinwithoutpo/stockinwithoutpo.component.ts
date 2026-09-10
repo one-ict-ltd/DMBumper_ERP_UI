@@ -367,7 +367,7 @@ export class StockinwithoutpoComponent implements OnInit {
         width: 140,
       },
       {
-        headerName: "Proforma No.",
+        headerName: "Po Number",
         field: "purchaseOrderNo",
         width: 160,
       },
@@ -377,7 +377,7 @@ export class StockinwithoutpoComponent implements OnInit {
         width: 160,
       },
       {
-        headerName: "LC No",
+        headerName: "LC/Import number",
         field: "lcNo",
         width: 160,
       },
@@ -783,7 +783,16 @@ export class StockinwithoutpoComponent implements OnInit {
     })
   }
 
+  public onSkuNumberChange(value: string) {
+  if (value && value.trim().length >= 4) {
+    this.getAllProductForRequisition(0, value);
+  } else {
+    this.ProductSpecificationList = [];
+  }
+}
+
   public getAllProductForRequisition(productCategoryId: any,skuNumber: any) {
+    this.ProductSpecificationList = [];
     this.StockinwithoutpoService
       .getAllProductForRequisitionBySearchType(productCategoryId, skuNumber)
       .subscribe((returns: any) => {
@@ -793,9 +802,9 @@ export class StockinwithoutpoComponent implements OnInit {
           // uomId: val.uomId,
           // uomName: val.uomName,
           // productId: val.productId,
-          // price: val.price,
-          // tradePrice: val.tradePrice,
-          // unitVat: val.unitVat,
+          price: val.price,
+          tradePrice: val.tradePrice,
+          unitVat: val.unitVat,
         }));
       });
   }

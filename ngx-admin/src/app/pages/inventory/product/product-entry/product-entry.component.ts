@@ -176,6 +176,13 @@ export class ProductEntryComponent implements OnInit {
     search_skuNumber: string;
     search_partslink: string;
     search_interchange: string;
+    search_yearId: number;
+    search_yearSelected: {};
+    search_makeId: number;
+    search_makeSelected: {};
+    search_makeModelId: number;
+    search_makeModelSelected: {};
+    
 
   };
 
@@ -231,6 +238,13 @@ export class ProductEntryComponent implements OnInit {
   description: string;
   selectedRow: any;
   MenuService: any;
+
+   readonly currentYear = new Date().getFullYear();
+
+  search_yearItems = Array.from({ length: 10 }, (_, i) => {
+    const year = this.currentYear - i;
+    return { name: year, id: year };
+  });
 
   private gridApi;
   private gridColumnApi;
@@ -435,7 +449,7 @@ export class ProductEntryComponent implements OnInit {
       this.selectedRow = event.node.data;
       var productWiseSpecificationId = event.node.data.productWiseSpecificationId;
 
-      this.productService.getInvProductWiseSpecificationById(productWiseSpecificationId,0,'','','').subscribe((data: any) => {
+      this.productService.getInvProductWiseSpecificationById(productWiseSpecificationId,0,'','','',0,0,0).subscribe((data: any) => {
         if (data.success) {
           this.master = data.data[0];
 
@@ -535,7 +549,7 @@ export class ProductEntryComponent implements OnInit {
         this.toastrService.success(this.commonService.deletedmsg, "Message");
 
         //////////////Grid Refresh ///////////////////
-        this.productService.getInvProductWiseSpecificationById(0, categoryId, '', '', '').subscribe((data: any) => {
+        this.productService.getInvProductWiseSpecificationById(0, categoryId, '', '', '',0,0,0).subscribe((data: any) => {
           if (data.success) {
             this.rowData = data.data;
           }
@@ -548,7 +562,7 @@ export class ProductEntryComponent implements OnInit {
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    this.productService.getInvProductWiseSpecificationById(0,1,'','','').subscribe((data: any) => {
+    this.productService.getInvProductWiseSpecificationById(0,1,'','','',0,0,0).subscribe((data: any) => {
       if (data.success) {
         this.rowData = data.data;
       }
@@ -648,7 +662,7 @@ export class ProductEntryComponent implements OnInit {
         }
 
         //////////////Grid Refresh ///////////////////
-        this.productService.getInvProductWiseSpecificationById(0, categoryId, '', '', '').subscribe((data: any) => {
+        this.productService.getInvProductWiseSpecificationById(0, categoryId, '', '', '',0,0,0).subscribe((data: any) => {
           if (data.success) {
             this.rowData = data.data;
           }
@@ -882,7 +896,13 @@ export class ProductEntryComponent implements OnInit {
         search_productCategorySelected: null,
         search_skuNumber: "",
         search_partslink: "",
-        search_interchange: ""
+        search_interchange: "",
+        search_yearId: 0,
+        search_yearSelected: null,
+        search_makeId: 0,
+        search_makeSelected: null,
+        search_makeModelId: 0,
+        search_makeModelSelected: null,
 
     };
   }
@@ -960,8 +980,8 @@ export class ProductEntryComponent implements OnInit {
       }
     })
   }
-  public getMakeModelByMakeId() {
-    this.productService.getMakeModelByMakeId(this.master.makeId, 0).subscribe((retuns: any) => {
+  public getMakeModelByMakeId(makeId: number = 0) {
+    this.productService.getMakeModelByMakeId(makeId, 0).subscribe((retuns: any) => {
       if (retuns.success) {
         this.makeModelList = retuns.data.map((val: any) => ({
           id: val.makeModelId,
@@ -1051,7 +1071,10 @@ export class ProductEntryComponent implements OnInit {
         this.master.search_productCategoryId,
         this.master.search_skuNumber,
         this.master.search_partslink,
-        this.master.search_interchange
+        this.master.search_interchange,
+        this.master.search_yearId,
+        this.master.search_makeId,
+        this.master.search_makeModelId
       ];
 
       const filledFields = fields.filter(x =>
@@ -1066,7 +1089,7 @@ export class ProductEntryComponent implements OnInit {
         return false;
       }
 
-     this.productService.getInvProductWiseSpecificationById(0, this.master.search_productCategoryId, this.master.search_skuNumber, this.master.search_partslink, this.master.search_interchange).subscribe((data: any) => {
+     this.productService.getInvProductWiseSpecificationById(0, this.master.search_productCategoryId, this.master.search_skuNumber, this.master.search_partslink, this.master.search_interchange, this.master.search_yearId, this.master.search_makeId, this.master.search_makeModelId).subscribe((data: any) => {
           if (data.success) {
             this.rowData = data.data;
           }

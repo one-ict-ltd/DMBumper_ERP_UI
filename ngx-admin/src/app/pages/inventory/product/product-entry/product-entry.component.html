@@ -52,6 +52,47 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="search_yearId" class="col-sm-4 col-form-label">Year</label>
+                    <div class="col-sm-8">
+                        <ng-select [items]="search_yearItems" (change)="(master.search_yearId = this.$event.id);" name="search_yearId"
+                            bindLabel="name" [ngModelOptions]="{standalone: true}" id="search_yearId"
+                            placeholder="Select Year" appendTo="body" [(ngModel)]="master.search_yearSelected">
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="search_makeId" class="col-sm-4 col-form-label">Make</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect
+                            (change)="(master.search_makeId = this.$event.id);getMakeModelByMakeId(this.$event.id);"
+                            [items]="makeList" name="search_makeId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="search_makeId"
+                            placeholder="Select Make" appendTo="body"
+                            [(ngModel)]="master.search_makeSelected"
+                            [disabled]="disabled ? 'disabled' : null" required>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-8 col-sm-12">
+                <div class="form-group row">
+                    <label for="search_makeModelId" class="col-sm-4 col-form-label">Model</label>
+                    <div class="col-sm-8">
+                        <ng-select nbselect (change)="(master.search_makeModelId = this.$event.id);"
+                            [items]="makeModelList" name="search_makeModelId" bindLabel="name"
+                            [ngModelOptions]="{standalone: true}" id="search_makeModelId"
+                            placeholder="Select Model" appendTo="body"
+                            [(ngModel)]="master.search_makeModelSelected"
+                            [disabled]="disabled ? 'disabled' : null" required>
+                        </ng-select>
+                    </div>
+                </div>
+            </div>
             
             <div class="col-lg-4 col-md-4 col-sm-4">
                 <div class="form-group row">
@@ -134,7 +175,7 @@
     </div>
 </div>
 
-<div class="col-lg-4 col-md-8 col-sm-12">
+<div class="col-lg-4 col-md-8 col-sm-12" hidden>
     <div class="form-group row">
         <label class="col-sm-12 col-form-label" for="listPrice">List Price</label>
         <div class="col-sm-12">
@@ -144,7 +185,7 @@
     </div>
 </div>
 
-<div class="col-lg-4 col-md-8 col-sm-12">
+<div class="col-lg-4 col-md-8 col-sm-12" hidden>
     <div class="form-group row">
         <label class="col-sm-12 col-form-label" for="costPrice">Cost Price</label>
         <div class="col-sm-12">
@@ -154,7 +195,7 @@
     </div>
 </div>
 
-<div class="col-lg-4 col-md-8 col-sm-12">
+<div class="col-lg-4 col-md-8 col-sm-12" hidden>
     <div class="form-group row">
         <label class="col-sm-12 col-form-label" for="salesPrice">Sales Price</label>
         <div class="col-sm-12">
@@ -209,7 +250,7 @@
             <label for="makeId" class="col-sm-12 col-form-label">Make<span style="color: red;">*</span></label>
             <div class="col-sm-12">
                 <ng-select nbselect
-                    (change)="(master.makeId = this.$event.id);(master.make = this.$event.name);getMakeModelByMakeId()"
+                    (change)="(master.makeId = this.$event.id);(master.make = this.$event.name);getMakeModelByMakeId(this.$event.id);"
                     [items]="makeList" name="makeId" bindLabel="name"
                     [ngModelOptions]="{standalone: true}" id="makeId"
                     placeholder="Select Make" appendTo="body"

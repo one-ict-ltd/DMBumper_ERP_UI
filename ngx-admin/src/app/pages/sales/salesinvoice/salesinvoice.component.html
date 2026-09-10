@@ -55,7 +55,7 @@
     <fieldset [disabled]="disabled ? 'disabled' : null">
       <form #masterForm="ngForm">
         <div class="row">
-          <div class="col-4">
+          <!-- <div class="col-4">
             <div class="form-group row">
               <label class="col-sm-4 col-form-label" for="partyId">Territory <span>*</span></label>
               <div class="col-sm-8">
@@ -66,7 +66,7 @@
                 </ng-select>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="col-4">
             <div class="form-group row">
               <label class="col-sm-4 col-form-label" for="salesInvoiceDate">Invoice
@@ -118,15 +118,16 @@
           </div> -->
           <div class="col-12">
             <div class="form-group row">
-              <label class="col-sm-2 col-form-label" for="partyId">Customer Name <span>*</span></label><label
-                class="col-sm-10 col-form-label" style="color: blue;" for="partyId">{{TerritoryDetails}}</label>
-              <div class="col-sm-12">
-                <!-- <ng-select nbselect (change)="(master.partyId = this.$event.id);GetPartyDetails();" [items]="partyList"
-                  name="partyName" bindLabel="name" [ngModelOptions]="{standalone: true}" id="partyId"
-                  placeholder="Select Customer" appendTo="body" [(ngModel)]="master.partySelected">
-                </ng-select> -->
+              <label class="col-sm-2 col-form-label" for="partyId">Customer Name <span>*</span></label>
+              <!-- <label class="col-sm-10 col-form-label" style="color: blue;" for="partyId">{{TerritoryDetails}}</label> -->
+              <div class="col-sm-10">
                 <div class="input-group">
-                  <ng-select nbselect (change)="(master.partyId = this.$event.id);GetPartyDetails();GetItemWsieBonus();"
+                  <!-- <ng-select nbselect (change)="(master.partyId = this.$event.id);GetPartyDetails();GetItemWsieBonus();"
+                    [items]="partyList" [virtualScroll]="true" name="partyName" bindLabel="name"
+                    [ngModelOptions]="{standalone: true}" id="partyId" placeholder="Select Customer" appendTo="body"
+                    [(ngModel)]="master.partySelected" style="width: 100%;">
+                  </ng-select> -->
+                  <ng-select nbselect (change)="(master.partyId = this.$event.id);GetPartyDetails();"
                     [items]="partyList" [virtualScroll]="true" name="partyName" bindLabel="name"
                     [ngModelOptions]="{standalone: true}" id="partyId" placeholder="Select Customer" appendTo="body"
                     [(ngModel)]="master.partySelected" style="width: 100%;">
@@ -227,108 +228,6 @@
   </nb-card-header>
 </nb-card>
 
-<!-- 
-<div class="row" *ngIf="!show">
-  <div class="col-md-12 col-lg-12">
-    <nb-card class="min-height">
-      <fieldset [disabled]="disabled ? 'disabled' : null">
-        <nb-tabset>
-          <nb-tab tabTitle="Sales Invoice Details" class="btn-tab">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group row">
-                  <div class="col-sm-8">
-                    <label class="col-form-label" for="productWiseSpecificationId">Product
-                      Name<span>*</span></label>
-                    <ng-select nbselect
-                      (change)="(master.productWiseSpecificationId = this.$event.id); getProductSpecDetails(); GetItemWsieBonus();"
-                      [items]="productSpecList" name="productName" bindLabel="name"
-                      [ngModelOptions]="{standalone: true}" id="productWiseSpecificationId" placeholder="Select product"
-                      appendTo="body" [(ngModel)]="master.productSpecSelected">
-                    </ng-select>
-                  </div>
-                  <div class="col-sm-4">
-                    <label class="col-form-label" for="currentStock">Current Stock
-                      <span></span></label>
-                    <input type="number" class="form-control text-right" readonly [(ngModel)]="master.currentStock"
-                      id="currentStock" name="currentStock" nbInput fullWidth placeholder="currentStock">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group row">
-                  <div class="col-sm-4">
-                    <label class="col-form-label" for="Invoice">Invoice Qty. <span>*</span></label>
-                    <div class="input-group" id="Invoice">
-                      <input type="number" class="form-control text-right" required [(ngModel)]="master.invoiceQty"
-                        id="invoiceQty" name="invoiceQty" fullWidth style="width: 85%;" nbInput
-                        placeholder="Invoice Qty." aria-describedby="uomName" (ngModelChange)="GetItemWsieBonus();">
-                      <div class="input-group-append">
-                        <span class="input-group-text" id="uomName">{{master.uomName}}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-sm-4">
-                    <label class="col-form-label" for="price">Unit Price / Rate <span>*</span></label>
-                    <input type="number" min="0" class="form-control text-right" required [(ngModel)]="master.price"
-                      id="price" name="price" nbInput fullWidth placeholder="Price"
-                      (ngModelChange)="CalculateTotalPrice();" readonly>
-                  </div>
-                  <div class="col-sm-4">
-                    <label class="col-form-label" for="total">Total Price</label>
-                    <input type="number" min="0" class="form-control text-right" required
-                      [(ngModel)]="master.totalPrice" id="total" name="total" nbInput fullWidth
-                      placeholder="Total Price" readonly (ngModelChange)="CaculateUnitPrice();">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group row">
-                  <div class="col-sm-4">
-                    <label class="col-form-label" for="vat">VAT</label>
-                    <input type="number" min="0" class="form-control text-right" required [(ngModel)]="master.vat"
-                      id="vat" name="vat" nbInput fullWidth readonly placeholder="VAT">
-                  </div>
-                  <div class="col-sm-4">
-                    <label class="col-form-label" for="ait">AIT</label>
-                    <input type="number" min="0" class="form-control text-right" required [(ngModel)]="master.ait"
-                      id="ait" name="ait" nbInput fullWidth readonly placeholder="AIT">
-                  </div>
-                  <div class="col-sm-4">
-                    <label class="col-form-label" for="discountAmount">Discount <span>{{discountType}}</span></label>
-                    <input type="number" min="0" class="form-control text-right" required readonly
-                      [(ngModel)]="master.discountAmount" id="discountAmount" name="discountAmount" nbInput fullWidth
-                      placeholder="Discount Amount">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group row">
-                  <div class="col-md-12">
-                    <div style="text-align: center;">
-                      <button (click)="refesh()" class="btn btn-warning btn-sm"> <i class="fa fa-refresh"
-                          aria-hidden="true"></i> Refresh </button>
-                      <button (click)="addToDetailsGrid(dialog)" class="btn btn-success btn-sm m-3"> <i
-                          class="fa fa-plus" aria-hidden="true"></i> Add </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </nb-tab>
-        </nb-tabset>
-      </fieldset>
-    </nb-card>
-  </div>
-</div> -->
-
 <nb-card class="actions-card" *ngIf="!show">
   <nb-card-header>
     <div class="row">
@@ -339,12 +238,37 @@
   <nb-card-body>
     <div class="row">
 
+      <div class="col-4">
+          <div class="form-group row">
+              <label class="col-sm-4 col-form-label" for="skuNumber">Search Number</label>
+              <div class="col-sm-8">
+                  <input type="text" class="form-control" required [(ngModel)]="master.skuNumber"
+                      id="skuNumber" name="skuNumber" nbInput fullWidth placeholder="Product Number"
+                      (ngModelChange)="onSkuNumberChange(master.skuNumber)">
+              </div>
+          </div>
+      </div>
       <div class="col-8">
+          <div class="form-group row">
+              <label for="productCategoryId" class="col-sm-2 col-form-label">Category</label>
+              <div class="col-sm-10">
+                  <ng-select nbselect
+                      (change)="getAllProductForRequisition (this.$event.id,'');"
+                      [items]="productCategoryList" name="productCategoryId" bindLabel="name"
+                      [ngModelOptions]="{standalone: true}" id="productCategoryId"
+                      placeholder="Select Product Category" appendTo="body"
+                      [(ngModel)]="master.productCategorySelected"
+                      [disabled]="disabled ? 'disabled' : null" required>
+                  </ng-select>
+              </div>
+          </div>
+      </div>
+      <div class="col-12">
         <div class="form-group row">
-          <label class="col-sm-2 col-form-label" for="productWiseSpecificationId">Product<span>*</span></label>
-          <div class="col-sm-10">
+          <label class="col-sm-1 col-form-label" for="productWiseSpecificationId">Product<span>*</span></label>
+          <div class="col-sm-11">
             <ng-select nbselect
-              (change)="(master.productWiseSpecificationId = this.$event.id); getProductSpecDetails(); GetItemWsieBonus();"
+              (change)="(master.productWiseSpecificationId = this.$event.id); getProductSpecDetails();"
               [items]="productSpecList" name="productName" bindLabel="name" [ngModelOptions]="{standalone: true}"
               id="productWiseSpecificationId" placeholder="Select product" appendTo="body"
               [(ngModel)]="master.productSpecSelected" [disabled]="disabled ? 'disabled' : null">
@@ -378,10 +302,13 @@
         <div class="form-group row">
           <label class="col-sm-4 col-form-label" for="Invoice">Invoice Qty. <span>*</span></label>
           <div class="col-sm-8 input-group" id="Invoice">
-            <input type="number" class="form-control" required [(ngModel)]="master.invoiceQty" min="0" id="invoiceQty"
+            <!-- <input type="number" class="form-control" required [(ngModel)]="master.invoiceQty" min="0" id="invoiceQty"
               name="invoiceQty" fullWidth style="width: 70%;" nbInput placeholder="Invoice Qty."
               aria-describedby="uomName" (ngModelChange)="GetItemWsieBonus();"
-              oninput="this.value = Math.abs(this.value)" [readonly]="isDisabled ? 'isDisabled' : null">
+              oninput="this.value = Math.abs(this.value)" [readonly]="isDisabled ? 'isDisabled' : null"> -->
+              <input type="number" class="form-control" required [(ngModel)]="master.invoiceQty" min="0" id="invoiceQty"
+              name="invoiceQty" fullWidth style="width: 70%;" nbInput placeholder="Invoice Qty."
+              aria-describedby="uomName"  oninput="this.value = Math.abs(this.value)">
             <div class="input-group-append">
               <span class="input-group-text" id="uomName">{{master.uomName}}</span>
             </div>
@@ -455,9 +382,11 @@
           <button hidden (click)="refesh()" class="btn btn-warning btn-sm"> <i class="fa fa-refresh"
               aria-hidden="true"></i>
             Refresh </button>
-          <button (click)="addToDetailsGrid(dialog)" class="btn btn-success btn-sm m-3"
+            <button (click)="addToDetailsGrid(dialog)" class="btn btn-success btn-sm m-3"> 
+              <i class="fa fa-plus" aria-hidden="true"></i> Add </button>
+          <!-- <button (click)="addToDetailsGrid(dialog)" class="btn btn-success btn-sm m-3"
             [disabled]="isDisabled ? 'isDisabled' : null"> <i class="fa fa-plus" aria-hidden="true"
-              [disabled]="disabled ? 'disabled' : null"></i> Add </button>
+              [disabled]="disabled ? 'disabled' : null"></i> Add </button> -->
         </div>
       </div>
 
@@ -476,7 +405,7 @@
             <tr>
               <th>#</th>
               <th>Product Name</th>
-              <th>Batch No.</th>
+              <!-- <th>Batch No.</th> -->
               <th>Invoice Qty.</th>
               <th>UOM</th>
               <th>Price</th>
@@ -496,12 +425,12 @@
                                                         id="productName" required name="productName" nbInput fullWidth readonly
                                                         placeholder="Product Name"> -->
               </td>
-              <td>{{details.batchNo}}
+              <!-- <td>{{details.batchNo}}</td> -->
 
                 <!-- <input [(ngModel)]="details.uomName" (change)="( details.uomName = this.$event.target.value)"
                                   type="text" readonly class="form-control" id="uomName" readonly required name="uomName" nbInput
                                   fullWidth placeholder="UOM"> -->
-              </td>
+              
               <td>
                 <input [(ngModel)]="details.invoiceQty" type="number" class="form-control" id="invoiceQty" min="0"
                   required name="invoiceQty" nbInput fullWidth placeholder="invoice Qty."
@@ -541,7 +470,7 @@
               </td>
             </tr>
             <tr>
-              <td rowspan="6" colspan="6"></td>
+              <td rowspan="6" colspan="5"></td>
               <td class="text-right" colspan="2"><b>Gross Total :</b></td>
               <td>
                 <!-- <div class="col-sm-12"> </div> -->
@@ -603,7 +532,7 @@
           </tbody>
           <tfoot>
             <tr>
-              <td class="text-right" colspan="8"><b> Net Invoice Amount :</b></td>
+              <td class="text-right" colspan="7"><b> Net Invoice Amount :</b></td>
 
               <td>
                 <!-- <div class="col-sm-12"> </div> -->
