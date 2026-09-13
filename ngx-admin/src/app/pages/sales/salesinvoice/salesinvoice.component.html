@@ -118,15 +118,10 @@
           </div> -->
           <div class="col-12">
             <div class="form-group row">
-              <label class="col-sm-2 col-form-label" for="partyId">Customer Name <span>*</span></label>
-              <!-- <label class="col-sm-10 col-form-label" style="color: blue;" for="partyId">{{TerritoryDetails}}</label> -->
-              <div class="col-sm-10">
+              <label class="col-sm-1 col-form-label" for="partyId">Customer<span>*</span></label>
+              <div class="col-sm-11">
                 <div class="input-group">
-                  <!-- <ng-select nbselect (change)="(master.partyId = this.$event.id);GetPartyDetails();GetItemWsieBonus();"
-                    [items]="partyList" [virtualScroll]="true" name="partyName" bindLabel="name"
-                    [ngModelOptions]="{standalone: true}" id="partyId" placeholder="Select Customer" appendTo="body"
-                    [(ngModel)]="master.partySelected" style="width: 100%;">
-                  </ng-select> -->
+                  
                   <ng-select nbselect (change)="(master.partyId = this.$event.id);GetPartyDetails();"
                     [items]="partyList" [virtualScroll]="true" name="partyName" bindLabel="name"
                     [ngModelOptions]="{standalone: true}" id="partyId" placeholder="Select Customer" appendTo="body"
@@ -140,7 +135,7 @@
               </div>
             </div>
           </div>
-          <div class="col-8" hidden>
+          <div class="col-8">
             <div class="form-group row">
               <label class="col-sm-2 col-form-label" for="address">Shipping Address</label>
               <div class="col-sm-10">
@@ -151,7 +146,7 @@
               </div>
             </div>
           </div>
-          <div class="col-4" hidden>
+          <div class="col-4">
             <div class="form-group row">
               <label class="col-sm-4 col-form-label" for="mobileNo">Mobile No.</label>
               <div class="col-sm-8">
@@ -172,7 +167,7 @@
             </div>
           </div>
 
-          <div class="col-4" hidden>
+          <div class="col-4">
             <div class="form-group row">
               <label class="col-sm-4 col-form-label" for="refNo">Ref. Number</label>
               <div class="col-sm-8">

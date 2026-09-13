@@ -1361,7 +1361,7 @@ GetAreaByDepoCode(DepoCode);
   public getProductSpecDetails() {
     this.master.totalPrice = 0;
     this.master.price = 0;
-    // this.master.productId = this.master.productSpecSelected["productId"];
+    this.master.productId = this.master.productSpecSelected["productId"];
     // this.master.uomName = this.master.productSpecSelected["uomName"];
     this.master.productName = this.master.productSpecSelected["name"];
     this.master.productWiseSpecificationId =
@@ -1425,7 +1425,7 @@ GetAreaByDepoCode(DepoCode);
           name: val.productName,
           // uomId: val.uomId,
           // uomName: val.uomName,
-          // productId: val.productId,
+          productId: val.productId,
           price: val.price,
           tradePrice: val.tradePrice,
           unitVat: val.unitVat,
@@ -1875,7 +1875,7 @@ GetAreaByDepoCode(DepoCode);
     //console.log(elements);
     // if (this._CompanyId == 1) {
     //   this.VerifyNationalBonusForGrid();
-    //   //this.calculateGrandTotal();
+      this.calculateGrandTotal();
     // } else {
     //   this.VerifyNationalBonusForGrid();
     //   //this.calculateGrandTotal();
